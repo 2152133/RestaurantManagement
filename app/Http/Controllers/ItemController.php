@@ -16,7 +16,7 @@ class ItemController extends Controller
     public function index()
     {
         // Get items
-        $items = Item::paginate(15);
+        $items = Item::orderBy('type', 'asc')->paginate(5);
 
         // Return collection of items as a resource
         return ItemResource::collection($items);
