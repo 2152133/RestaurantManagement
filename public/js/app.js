@@ -47411,6 +47411,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -47507,8 +47508,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 "photo_url": '',
                 "price": ''
             };
+        },
+        compactDescription: function compactDescription(text) {
+            // Limit text size
+            return text.length > 100 ? text.substr(0, 98) + '...' : text;
         }
-
     },
     mounted: function mounted() {
         this.getItems();
@@ -47742,10 +47746,16 @@ var render = function() {
             _c("img", {
               attrs: {
                 src: _vm.itemImageURL(item.photo_url),
-                height: "445",
-                width: "885"
+                height: "200",
+                width: "200"
               }
             })
+          ]),
+          _vm._v(" "),
+          _c("p", [
+            _vm._v(
+              "Descricao: " + _vm._s(_vm.compactDescription(item.description))
+            )
           ]),
           _vm._v(" "),
           _c("p", [_vm._v("Preco: " + _vm._s(item.price) + " €")]),

@@ -42,8 +42,9 @@
         <div class="card card-body mb-2" v-for="item in items" v-bind:key="item.id">
             <div>
                 <h3>{{ item.name }}</h3>
-                <img v-bind:src="itemImageURL(item.photo_url)" height="445" width="885">
-            </div>            
+                <img v-bind:src="itemImageURL(item.photo_url)" height="200" width="200">
+            </div>
+            <p>Descricao: {{ compactDescription(item.description) }}</p>            
             <p>Preco: {{ item.price }} €</p>
             <hr>
             <button @click="editItem(item)" class="btn btn-warning">Edit</button>
@@ -142,8 +143,11 @@ export default {
                 "photo_url": '',
                 "price": '',
             }
-        }
-        
+        },
+        compactDescription: function(text) {
+            // Limit text size
+            return text.length > 100 ? text.substr( 0, 98 )+'...' : text;
+        },
     },
     mounted() {
         this.getItems()
