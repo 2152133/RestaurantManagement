@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
         
         DB::statement("SET foreign_key_checks=1");
 
-        $this->call(UsersTableSeeder::class);
         $this->call(RestaurantTablesSeeder::class);
         $this->call(UsersSeeder::class);
         $this->call(ItemsSeeder::class);
