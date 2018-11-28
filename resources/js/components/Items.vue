@@ -112,7 +112,7 @@ export default {
                 // Edit item
                 axios.patch('api/item/' + this.item.id, this.item)
                 .then(response=>{
-                    this.emptyCurrentItem()
+                    rhis.item = {}
                     this.edit = false
                     this.getItems()
                 })
@@ -121,28 +121,15 @@ export default {
                 // Add new item
                 axios.post('api/item', this.item)
                 .then(response=>{
-                    this.emptyCurrentItem()
+                    this.item = {}
                     this.getItems()
                 })
                 .catch(error => console.log(error)) 
             }
         },
         editItem: function(item) {
-            console.log(item)
-            Object.assign(this.item, item);
-            console.log(this.item)
-            console.log(this.edit)
+            this.item = Object.assign({}, item);
             this.edit = true
-        },
-        emptyCurrentItem: function() {
-            this.item = {
-                "id": '',
-                "name": '',
-                "type": '',
-                "description": '',
-                "photo_url": '',
-                "price": '',
-            }
         },
         compactDescription: function(text) {
             // Limit text size
