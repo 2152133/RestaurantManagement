@@ -47476,7 +47476,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (this.edit === true) {
                 // Edit item
                 axios.patch('api/item/' + this.item.id, this.item).then(function (response) {
-                    _this3.emptyCurrentItem();
+                    rhis.item = {};
                     _this3.edit = false;
                     _this3.getItems();
                 }).catch(function (error) {
@@ -47485,7 +47485,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             } else {
                 // Add new item
                 axios.post('api/item', this.item).then(function (response) {
-                    _this3.emptyCurrentItem();
+                    _this3.item = {};
                     _this3.getItems();
                 }).catch(function (error) {
                     return console.log(error);
@@ -47493,21 +47493,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         },
         editItem: function editItem(item) {
-            console.log(item);
-            Object.assign(this.item, item);
-            console.log(this.item);
-            console.log(this.edit);
+            this.item = Object.assign({}, item);
             this.edit = true;
-        },
-        emptyCurrentItem: function emptyCurrentItem() {
-            this.item = {
-                "id": '',
-                "name": '',
-                "type": '',
-                "description": '',
-                "photo_url": '',
-                "price": ''
-            };
         },
         compactDescription: function compactDescription(text) {
             // Limit text size
