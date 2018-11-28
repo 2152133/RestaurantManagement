@@ -112,7 +112,7 @@ export default {
                 // Edit item
                 axios.patch('api/item/' + this.item.id, this.item)
                 .then(response=>{
-                    rhis.item = {}
+                    this.item = {}
                     this.edit = false
                     this.getItems()
                 })

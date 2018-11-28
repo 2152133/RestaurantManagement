@@ -47476,7 +47476,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (this.edit === true) {
                 // Edit item
                 axios.patch('api/item/' + this.item.id, this.item).then(function (response) {
-                    rhis.item = {};
+                    _this3.item = {};
                     _this3.edit = false;
                     _this3.getItems();
                 }).catch(function (error) {
