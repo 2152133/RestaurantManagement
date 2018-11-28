@@ -9,6 +9,9 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import VueRouter from 'vue-router';
+Vue.use(VueRouter);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -18,8 +21,11 @@ window.Vue = require('vue');
  */
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
-Vue.component('items', require('./components/Items.vue'));
 Vue.component('navbar', require('./components/Navbar.vue'));
+const itemsComp = Vue.component('items', require('./components/Items.vue'));
+const loginComp = Vue.component('login', require('./components/auth/Login.vue'));
+const logoutComp = Vue.component('logout', require('./components/auth/Logout.vue'));
+const registerComp = Vue.component('register', require('./components/auth/Register.vue'));
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
@@ -30,8 +36,21 @@ Vue.component('navbar', require('./components/Navbar.vue'));
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+const routes = [
+    { path: '/', redirect: '/items' },
+    { path: '/items', component: itemsComp },
+    { path: '/login', component: loginComp },
+    { path: '/logout', component: logoutComp },
+    { path: '/register', component: registerComp },
+];
+
+const router = new VueRouter({
+    routes:routes
+});
+
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    router
 });
 
 

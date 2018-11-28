@@ -22,6 +22,16 @@ Route::middleware('auth:api')->group(function () {
         return $request->user();
     });
 
+    // Create an item
+    Route::post('/item', 'ItemController@store');
+
+    // Update an item
+    Route::patch('/item/{id}', 'ItemController@store');
+
+    // Delete one item
+    Route::delete('/item/{id}', 'ItemController@destroy');
+
+    
     Route::post('/logout', 'AuthController@logout');
 });
 
@@ -35,11 +45,3 @@ Route::get('/items', 'ItemController@index');
 // List one item
 Route::get('/item/{id}', 'ItemController@show');
 
-// Create an item
-Route::post('/item', 'ItemController@store');
-
-// Update an item
-Route::patch('/item/{id}', 'ItemController@store');
-
-// Delete one item
-Route::delete('/item/{id}', 'ItemController@destroy');
