@@ -9,6 +9,9 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import VueRouter from 'vue-router';
+Vue.use(VueRouter);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -18,9 +21,10 @@ window.Vue = require('vue');
  */
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
-Vue.component('items', require('./components/Items.vue'));
 Vue.component('navbar', require('./components/Navbar.vue'));
-Vue.component('landing_page', require('./components/LandingPage.vue')); 
+const items = Vue.component('items', require('./components/Items.vue'));
+const landing_page = Vue.component('landing_page', require('./components/LandingPage.vue')); 
+const notifications_page = Vue.component('notifications_page', require('./components/Notifications.vue'));
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
@@ -31,8 +35,19 @@ Vue.component('landing_page', require('./components/LandingPage.vue'));
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+const routes = [
+    {path: '/items', component:items},
+    {path: '/dashboard', component: landing_page},
+    {path: '/notifications', component: notifications_page, name: 'notifications'},
+];
+
+const router = new VueRouter({
+    routes
+})
+
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    router
 });
 
 
