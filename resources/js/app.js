@@ -36,8 +36,9 @@ const notifications_page = Vue.component('notifications_page', require('./compon
  */
 
 const routes = [
+    {path:'/', redirect: '/items'},
     {path: '/items', component:items},
-    {path: '/dashboard', component: landing_page},
+    {path: '/dashboard', component: landing_page, name: 'dashboard'},
     {path: '/notifications', component: notifications_page, name: 'notifications'},
 ];
 

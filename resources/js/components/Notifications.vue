@@ -1,32 +1,41 @@
 <template>
-    <div>
-    <table class="table table-bordered">
-		<thead class="thead-dark">
-			<tr>
-				<th>Date</th>
-				<th>Type</th>
-				<th>Description</th>
-				<th>Action</th>
-			</tr>
-		</thead>
+  <div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1/1/2000</td>
+          <td>Meal</td>
+          <td>Refeição para a mesa 5</td>
+          <td>...</td>
+        </tr>
+      </tbody>
     </table>
-    <tbody>
-
-    </tbody>
-    </div>
+    <button class="btn btn-danger">
+      <router-link :to="{name: 'dashboard'}">Back to Dashboard</router-link>
+    </button>
+  </div>
 </template>
 <script>
 module.exports = {
   data: function() {
-    return {
-    };
+    return {};
   },
-  methods:{
-
-  },
-  mounted(){
-    }
-  };
-
+  methods: {},
+  mounted() {}
+};
 </script>
+<style>
+a {
+  color: #FFF;
+}
+</style>
+
 

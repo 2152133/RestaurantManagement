@@ -13,7 +13,8 @@
     <body>
         <div id="app">
             <navbar></navbar>
-            <div class="container">
+            
+                <div class="container">
             
                 <router-view></router-view>
             </div>
