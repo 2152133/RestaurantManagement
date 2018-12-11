@@ -20,6 +20,8 @@ window.Vue = require('vue');
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('items', require('./components/Items.vue'));
 Vue.component('navbar', require('./components/Navbar.vue'));
+Vue.component('orders', require('./components/Orders.vue'));
+Vue.component('orders-list', require('./components/OrdersList.vue'));
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
@@ -31,7 +33,7 @@ Vue.component('navbar', require('./components/Navbar.vue'));
  */
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
 });
 
 

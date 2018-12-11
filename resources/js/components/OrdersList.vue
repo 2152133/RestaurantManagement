@@ -6,9 +6,11 @@
                   <th>Id</th>
                   <th>State</th>
                   <th>Item Name</th>
+                  <th>Meal Id</th>
                   <th>Responsable cook</th>
                   <th>Start</th>
                   <th>End</th>
+                  <th>created_at</th>
                   <th>Actions</th>
                 </tr>
             </thead>
@@ -17,37 +19,36 @@
                     <td>{{order.id}}</td>
                     <td>{{order.state}}</td>
                     <td>{{order.item_id}}</td>
-                    <td>{{order.responsable_cook_id}}</td>
+                    <td>{{order.meal_id}}</td>
+                    <td>{{order.responsible_cook_id}}</td>
                     <td>{{order.start}}</td>
                     <td>{{order.end}}</td>
+                    <td>{{order.created_at.date}}</td>
+
                     <td>
-                        <button type="Submit" class="btn btn-primary btn-sm" @click="editOrder(order)">Edit</button>
-                        <button type="Submit" class="btn btn-danger btn-sm" @click="deleteOrder(order, index)">Delete</button>
+                        <button type="Submit" class="btn btn-primary btn-sm" @click="assignOrderToCook(order, index)">Assign to me</button>
+                        <button type="Submit" class="btn btn-danger btn-sm" @click="declareOrderAsPrepared(order, index)">Prepared</button>
                     </td>
                 </tr>
             </tbody>
         </table>
+
+
     </div>
 </template>
 
 <script>
-export default {
-    props: ["orders"],
-    data: function() {
-        return {
-            
-        }
-    },
-    methods: {
-        editOrder(order, index){
-
+    module.exports = {
+        props: ["orders"],
+        data: function() {
+            return {
+                
+            }
         },
-        deleteUser(user, index){
-
-        },
-        mounted() {
-            
+        methods: {
+            mounted() {
+                
+            }
         }
     }
-}
 </script>

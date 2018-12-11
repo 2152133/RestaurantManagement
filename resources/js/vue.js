@@ -17,11 +17,12 @@ import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
 const ordersListComponent = Vue.component('orders-list', require('./components/OrdersList.vue'));
-const OrdersComponent = Vue.component('orders', require('./components/orders.vue'));
+const OrdersComponent = Vue.component('orders', require('./components/Orders.vue'));
 
 const routes = [
+    {path: '/orders', component: OrdersComponent},
 ]
-
+ 
 const router = new VueRouter({
     routes: routes
 })
