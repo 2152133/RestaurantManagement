@@ -47945,6 +47945,7 @@ module.exports = Component.exports
 //
 //
 //
+//
 
 module.exports = {
     data: function data() {
@@ -47955,17 +47956,33 @@ module.exports = {
             successMessage: '',
             failMessage: '',
             currentOrder: {},
-            orders: []
+            currentUser: '52',
+            orders: [],
+            userOrders: []
         };
     },
 
     methods: {
-        loadOrders: function loadOrders() {
+        loadUserOrders: function loadUserOrders() {
             var _this = this;
+
+            axios.get('/api/orders/' + this.currentUser).then(function (response) {
+                // handle success
+                _this.userOrders = response.data.data;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        loadConfirmedOrders: function loadConfirmedOrders() {
+            var _this2 = this;
 
             axios.get('/api/orders/all').then(function (response) {
                 // handle success
-                _this.orders = response.data.data;
+                _this2.orders = response.data.data;
                 console.log(response);
             }).catch(function (error) {
                 // handle error
@@ -47976,7 +47993,8 @@ module.exports = {
         }
     },
     mounted: function mounted() {
-        this.loadOrders();
+        this.loadConfirmedOrders();
+        this.loadUserOrders();
     }
 };
 
@@ -47994,6 +48012,8 @@ var render = function() {
       _c("div", { staticClass: "jumbotron" }, [
         _c("h1", [_vm._v(_vm._s(_vm.title))])
       ]),
+      _vm._v(" "),
+      _c("orders-list", { attrs: { orders: _vm.userOrders } }),
       _vm._v(" "),
       _c("orders-list", { attrs: { orders: _vm.orders } }),
       _vm._v(" "),
@@ -48133,6 +48153,10 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
+//
 
 module.exports = {
     props: ["orders"],
@@ -48177,19 +48201,26 @@ var render = function() {
             _c("td", [_vm._v(_vm._s(order.created_at.date))]),
             _vm._v(" "),
             _c("td", [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary btn-sm",
-                  attrs: { type: "Submit" },
-                  on: {
-                    click: function($event) {
-                      _vm.assignOrderToCook(order, index)
-                    }
-                  }
-                },
-                [_vm._v("Assign to me")]
-              ),
+              order.state == "confirmed"
+                ? _c("div", [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary btn-sm",
+                        attrs: { type: "Submit" },
+                        on: {
+                          click: function($event) {
+                            _vm.assignOrderToCook(order, index)
+                          }
+                        }
+                      },
+                      [_vm._v("Assign to me")]
+                    ),
+                    _vm._v(" "),
+                    _c("br"),
+                    _c("br")
+                  ])
+                : _vm._e(),
               _vm._v(" "),
               _c(
                 "button",

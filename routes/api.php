@@ -47,3 +47,6 @@ Route::delete('/item/{id}', 'ItemController@destroy');
 
 // List all orders
 Route::get('/orders/all', 'OrderController@all');
+
+// List orders from a cook
+Route::get('/orders/{responsibleCookId}', 'OrderController@whereUser');

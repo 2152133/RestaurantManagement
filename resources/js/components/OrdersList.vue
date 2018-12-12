@@ -26,7 +26,11 @@
                     <td>{{order.created_at.date}}</td>
 
                     <td>
-                        <button type="Submit" class="btn btn-primary btn-sm" @click="assignOrderToCook(order, index)">Assign to me</button>
+                        <div v-if="order.state == 'confirmed'">
+                            <button type="Submit" class="btn btn-primary btn-sm" @click="assignOrderToCook(order, index)">Assign to me</button>
+                            <br></br>
+                        </div>
+                        
                         <button type="Submit" class="btn btn-danger btn-sm" @click="declareOrderAsPrepared(order, index)">Prepared</button>
                     </td>
                 </tr>

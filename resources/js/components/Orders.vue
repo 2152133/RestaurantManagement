@@ -4,6 +4,7 @@
             <h1>{{title}}</h1>
         </div>
         
+        <orders-list :orders="userOrders"></orders-list>
         <orders-list :orders="orders"></orders-list>
             
         <div class="alert" :class="{'alert-success':showSuccess, 'alert-danger':showFailure}" v-if="showSuccess || showFailure">
@@ -25,12 +26,29 @@
                 successMessage: '',
                 failMessage: '',
                 currentOrder: {},
-                orders: []
+                currentUser: '52',
+                orders: [],
+                userOrders: []
             }
         }
         ,
         methods: {
-            loadOrders: function(){
+            loadUserOrders: function(){
+                axios.get('/api/orders/' + this.currentUser)
+                    .then((response) => {
+                        // handle success
+                        this.userOrders = response.data.data;
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    })
+                    .then(function () {
+                        // always executed
+                    });
+            },
+            loadConfirmedOrders: function(){
                 axios.get('/api/orders/all')
                     .then((response) => {
                         // handle success
@@ -47,7 +65,8 @@
             },
         },
         mounted() {
-            this.loadOrders();
+            this.loadConfirmedOrders();
+            this.loadUserOrders();
         }
     };
 </script>
