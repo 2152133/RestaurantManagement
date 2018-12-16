@@ -24,32 +24,34 @@
                     <td>{{order.start}}</td>
                     <td>{{order.end}}</td>
                     <td>{{order.created_at.date}}</td>
-
                     <td>
                         <div v-if="order.state == 'confirmed'">
-                            <button type="Submit" class="btn btn-primary btn-sm" @click="assignOrderToCook(order, index)">Assign to me</button>
+                            <button type="Submit" class="btn btn-primary btn-sm btn-block" @click="assignOrderToCook(order, index)">Assign to me</button>
                             <br></br>
                         </div>
-                        
-                        <button type="Submit" class="btn btn-danger btn-sm" @click="declareOrderAsPrepared(order, index)">Prepared</button>
+                        <button type="Submit" class="btn btn-danger btn-sm btn-block" @click="declareOrderAsPrepared(order, index)">Prepared</button>
                     </td>
                 </tr>
             </tbody>
         </table>
-
-
     </div>
 </template>
 
 <script>
     module.exports = {
-        props: ["orders"],
+        props: ["orders", "user"],
         data: function() {
             return {
                 
             }
         },
         methods: {
+            assignOrderToCook(order, index){
+                this.$emit('assign-to-cook', order, index);        
+            },
+            declareOrderAsPrepared(order, index){
+
+            },
             mounted() {
                 
             }

@@ -14,7 +14,7 @@
         <div id="app">
             <navbar></navbar>
             <div class="container">
-                <orders></orders>
+                <router-view></router-view>
             </div>
         </div>
 

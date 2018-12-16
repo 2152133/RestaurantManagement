@@ -49,4 +49,7 @@ Route::delete('/item/{id}', 'ItemController@destroy');
 Route::get('/orders/all', 'OrderController@all');
 
 // List orders from a cook
-Route::get('/orders/{responsibleCookId}', 'OrderController@whereUser');
+Route::get('/orders/fromCook/{responsibleCookId}', 'OrderController@whereUser');
+
+// Patch order by order id
+Route::patch('/orders/{id}', 'OrderController@assignOrderToCook');
