@@ -39,7 +39,6 @@ class OrderController extends Controller
             $order = Order::findOrFail($requestOrder->id);
             
             $order->state = "in preparation";
-            
             $order->responsible_cook_id = $request->user;
 
             if($order->save())

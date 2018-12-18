@@ -377,33 +377,6 @@ module.exports = {
 /* 1 */
 /***/ (function(module, exports) {
 
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
 /* globals __VUE_SSR_CONTEXT__ */
 
 // IMPORTANT: Do NOT use ES2015 features in this file.
@@ -507,6 +480,33 @@ module.exports = function normalizeComponent (
     options: options
   }
 }
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
 /***/ }),
@@ -3154,7 +3154,7 @@ Popper.Defaults = Defaults;
 /* harmony default export */ __webpack_exports__["default"] = (Popper);
 //# sourceMappingURL=popper.js.map
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
 
 /***/ }),
 /* 5 */
@@ -13990,7 +13990,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(13);
-module.exports = __webpack_require__(57);
+module.exports = __webpack_require__(75);
 
 
 /***/ }),
@@ -14023,15 +14023,16 @@ Vue.use(__WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]);
  */
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
-var itemsComponent = Vue.component('items', __webpack_require__(43));
-Vue.component('navbar', __webpack_require__(41));
-var ordersComponent = Vue.component('orders', __webpack_require__(61));
-Vue.component('orders-list', __webpack_require__(64));
-Vue.component('pagination', __webpack_require__(67));
-var landing_page = Vue.component('landing_page', __webpack_require__(46));
-var notifications_page = Vue.component('notifications_page', __webpack_require__(49));
-var pendingInvoicesComponent = Vue.component('pending-invoices', __webpack_require__(70));
-Vue.component('invoices-list', __webpack_require__(73));
+var itemsComponent = Vue.component('items', __webpack_require__(41));
+Vue.component('navbar', __webpack_require__(44));
+var ordersComponent = Vue.component('orders', __webpack_require__(46));
+Vue.component('orders-list', __webpack_require__(49));
+Vue.component('pagination', __webpack_require__(52));
+var landing_page = Vue.component('landing_page', __webpack_require__(55));
+var notifications_page = Vue.component('notifications_page', __webpack_require__(58));
+var pendingInvoicesComponent = Vue.component('pending-invoices', __webpack_require__(66));
+Vue.component('invoices-list', __webpack_require__(69));
+Vue.component('edit-nif-name', __webpack_require__(72));
 
 var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/pendingInvoices', component: pendingInvoicesComponent }];
 
@@ -31227,7 +31228,7 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(16)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(16)(module)))
 
 /***/ }),
 /* 16 */
@@ -47059,7 +47060,7 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(38).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(38).setImmediate))
 
 /***/ }),
 /* 38 */
@@ -47129,7 +47130,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 39 */
@@ -47322,7 +47323,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(7)))
 
 /***/ }),
 /* 40 */
@@ -49954,160 +49955,11 @@ if (inBrowser && window.Vue) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = null
+var __vue_script__ = __webpack_require__(42)
 /* template */
-var __vue_template__ = __webpack_require__(42)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/Navbar.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-6dde423b", Component.options)
-  } else {
-    hotAPI.reload("data-v-6dde423b", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("nav", { staticClass: "navbar navbar-expand-sm navbar-dark bg-dark" }, [
-      _c("a", { staticClass: "navbar-brand", attrs: { href: "#" } }, [
-        _vm._v("Restaurant Manager")
-      ]),
-      _vm._v(" "),
-      _vm._m(0),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "collapse navbar-collapse",
-          attrs: { id: "navbarNavAltMarkup" }
-        },
-        [
-          _c("div", { staticClass: "navbar-nav" }, [
-            _c(
-              "a",
-              { staticClass: "nav-item nav-link" },
-              [
-                _c("router-link", { attrs: { to: "orders" } }, [
-                  _vm._v("Orders")
-                ])
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "a",
-              { staticClass: "nav-item nav-link" },
-              [
-                _c("router-link", { attrs: { to: "items" } }, [_vm._v("Items")])
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "a",
-              { staticClass: "nav-item nav-link" },
-              [
-                _c("router-link", { attrs: { to: "dashboard" } }, [
-                  _vm._v("Dashboard")
-                ])
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "a",
-              { staticClass: "nav-item nav-link" },
-              [
-                _c("router-link", { attrs: { to: "pendingInvoices" } }, [
-                  _vm._v("PendingInvoices")
-                ])
-              ],
-              1
-            )
-          ])
-        ]
-      )
-    ])
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "navbar-toggler",
-        attrs: {
-          type: "button",
-          "data-toggle": "collapse",
-          "data-target": "#navbarNavAltMarkup",
-          "aria-controls": "navbarNavAltMarkup",
-          "aria-expanded": "false",
-          "aria-label": "Toggle navigation"
-        }
-      },
-      [_c("span", { staticClass: "navbar-toggler-icon" })]
-    )
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-6dde423b", module.exports)
-  }
-}
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(2)
-/* script */
-var __vue_script__ = __webpack_require__(44)
-/* template */
-var __vue_template__ = __webpack_require__(45)
+var __vue_template__ = __webpack_require__(43)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -50146,7 +49998,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 44 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50301,7 +50153,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 45 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -50585,15 +50437,807 @@ if (false) {
 }
 
 /***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = null
+/* template */
+var __vue_template__ = __webpack_require__(45)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/Navbar.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-6dde423b", Component.options)
+  } else {
+    hotAPI.reload("data-v-6dde423b", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("nav", { staticClass: "navbar navbar-expand-sm navbar-dark bg-dark" }, [
+      _c("a", { staticClass: "navbar-brand", attrs: { href: "#" } }, [
+        _vm._v("Restaurant Manager")
+      ]),
+      _vm._v(" "),
+      _vm._m(0),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "collapse navbar-collapse",
+          attrs: { id: "navbarNavAltMarkup" }
+        },
+        [
+          _c("div", { staticClass: "navbar-nav" }, [
+            _c(
+              "a",
+              { staticClass: "nav-item nav-link" },
+              [
+                _c("router-link", { attrs: { to: "orders" } }, [
+                  _vm._v("Orders")
+                ])
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "a",
+              { staticClass: "nav-item nav-link" },
+              [
+                _c("router-link", { attrs: { to: "items" } }, [_vm._v("Items")])
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "a",
+              { staticClass: "nav-item nav-link" },
+              [
+                _c("router-link", { attrs: { to: "dashboard" } }, [
+                  _vm._v("Dashboard")
+                ])
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "a",
+              { staticClass: "nav-item nav-link" },
+              [
+                _c("router-link", { attrs: { to: "pendingInvoices" } }, [
+                  _vm._v("PendingInvoices")
+                ])
+              ],
+              1
+            )
+          ])
+        ]
+      )
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "navbar-toggler",
+        attrs: {
+          type: "button",
+          "data-toggle": "collapse",
+          "data-target": "#navbarNavAltMarkup",
+          "aria-controls": "navbarNavAltMarkup",
+          "aria-expanded": "false",
+          "aria-label": "Toggle navigation"
+        }
+      },
+      [_c("span", { staticClass: "navbar-toggler-icon" })]
+    )
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-6dde423b", module.exports)
+  }
+}
+
+/***/ }),
 /* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(47)
 /* template */
 var __vue_template__ = __webpack_require__(48)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/Orders.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-aebdd2e0", Component.options)
+  } else {
+    hotAPI.reload("data-v-aebdd2e0", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    data: function data() {
+        return {
+            title: 'List Orders',
+            showSuccess: false,
+            showFailure: false,
+            successMessage: '',
+            failMessage: '',
+            currentOrder: {},
+            currentUser: '52',
+            orders: [],
+            ordersMeta: [],
+            ordersLinks: [],
+            userOrders: [],
+            userOrdersMeta: [],
+            userOrdersLinks: [],
+            changingOrder: {}
+        };
+    },
+
+    methods: {
+        removeOrderFromArray: function removeOrderFromArray(array, index) {
+            var order = array[index];
+            array.splice(index, 1);
+            console.log(order);
+            return order;
+        },
+        addOrderToArray: function addOrderToArray(array, order) {
+            array.push(order);
+        },
+        assignOrderToCook: function assignOrderToCook(order, index) {
+            var _this = this;
+
+            axios.patch('/api/orders/' + order.id, { order: JSON.stringify(order), user: this.currentUser }).then(function (response) {
+                // handle success
+                _this.orders = [];
+                _this.userOrders = [];
+                _this.loadConfirmedOrders();
+                _this.loadUserOrders();
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        loadUserOrders: function loadUserOrders() {
+            var _this2 = this;
+
+            axios.get('/api/orders/fromCook/' + this.currentUser).then(function (response) {
+                // handle success
+                _this2.userOrders = response.data.data;
+                _this2.userOrdersMeta = response.data.meta;
+                _this2.userOrdersLinks = response.data.links;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        loadConfirmedOrders: function loadConfirmedOrders() {
+            var _this3 = this;
+
+            axios.get('/api/orders/all').then(function (response) {
+                // handle success
+                _this3.orders = response.data.data;
+                _this3.ordersMeta = response.data.meta;
+                _this3.ordersLinks = response.data.links;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        refreshOrders: function refreshOrders(newOrders, newMeta, newLinks) {
+            this.orders = newOrders;
+            this.ordersMeta = newMeta;
+            this.ordersLinks = newLinks;
+        },
+        refreshUserOrders: function refreshUserOrders(newUserOrders, newUserOrdersMeta, newUserOrdersLinks) {
+            this.userOrders = newUserOrders;
+            this.userOrdersMeta = newUserOrdersMeta;
+            this.userOrdersLinks = newUserOrdersLinks;
+        }
+    },
+    mounted: function mounted() {
+        this.loadConfirmedOrders();
+        this.loadUserOrders();
+    }
+};
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "jumbotron" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.title))])
+      ]),
+      _vm._v(" "),
+      _c("orders-list", {
+        attrs: {
+          orders: _vm.userOrders,
+          meta: _vm.userOrdersMeta,
+          links: _vm.userOrdersLinks
+        },
+        on: { refreshOrders: _vm.refreshUserOrders }
+      }),
+      _vm._v(" "),
+      _c("orders-list", {
+        attrs: {
+          orders: _vm.orders,
+          meta: _vm.ordersMeta,
+          links: _vm.ordersLinks,
+          user: _vm.currentUser
+        },
+        on: {
+          "assign-to-cook": _vm.assignOrderToCook,
+          refreshOrders: _vm.refreshOrders
+        }
+      }),
+      _vm._v(" "),
+      _vm.showSuccess || _vm.showFailure
+        ? _c(
+            "div",
+            {
+              staticClass: "alert",
+              class: {
+                "alert-success": _vm.showSuccess,
+                "alert-danger": _vm.showFailure
+              }
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "close-btn",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.showSuccess = false
+                      _vm.showFailure = false
+                    }
+                  }
+                },
+                [_vm._v("×")]
+              ),
+              _vm._v(" "),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
+              _vm._v(" "),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
+            ]
+          )
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-aebdd2e0", module.exports)
+  }
+}
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(50)
+/* template */
+var __vue_template__ = __webpack_require__(51)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/OrdersList.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-2845f04e", Component.options)
+  } else {
+    hotAPI.reload("data-v-2845f04e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    props: ["orders", "meta", "links", "user"],
+    data: function data() {
+        return {};
+    },
+    methods: {
+        assignOrderToCook: function assignOrderToCook(order, index) {
+            this.$emit('assign-to-cook', order, index);
+        },
+        declareOrderAsPrepared: function declareOrderAsPrepared(order, index) {},
+        refreshOrders: function refreshOrders(orders, meta, links) {
+            this.$emit('refreshOrders', orders, meta, links);
+        }
+    }
+};
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("pagination", {
+        attrs: { objects: _vm.orders, meta: _vm.meta, links: _vm.links },
+        on: { refreshObjects: _vm.refreshOrders }
+      }),
+      _vm._v(" "),
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.orders, function(order, index) {
+            return _c("tr", { key: order.id }, [
+              _c("td", [_vm._v(_vm._s(order.id))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(order.state))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(order.item_id))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(order.meal_id))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(order.responsible_cook_id))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(order.start))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(order.end))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(order.created_at.date))]),
+              _vm._v(" "),
+              _c("td", [
+                order.state == "confirmed"
+                  ? _c("div", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary btn-sm btn-block",
+                          attrs: { type: "Submit" },
+                          on: {
+                            click: function($event) {
+                              _vm.assignOrderToCook(order, index)
+                            }
+                          }
+                        },
+                        [_vm._v("Assign to me")]
+                      ),
+                      _vm._v(" "),
+                      _c("br"),
+                      _c("br")
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger btn-sm btn-block",
+                    attrs: { type: "Submit" },
+                    on: {
+                      click: function($event) {
+                        _vm.declareOrderAsPrepared(order, index)
+                      }
+                    }
+                  },
+                  [_vm._v("Prepared")]
+                )
+              ])
+            ])
+          })
+        )
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Id")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("State")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Item Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Meal Id")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Responsable cook")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Start")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("End")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("created_at")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Actions")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-2845f04e", module.exports)
+  }
+}
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(53)
+/* template */
+var __vue_template__ = __webpack_require__(54)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/pagination.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-603a89b6", Component.options)
+  } else {
+    hotAPI.reload("data-v-603a89b6", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    props: ["objects", "meta", "links"],
+    data: function data() {
+        return {};
+    },
+
+    methods: {
+        getObjects: function getObjects(url) {
+            var _this = this;
+
+            axios.get(url).then(function (response) {
+                _this.objects = response.data.data;
+                _this.makePagination(response.data.meta, response.data.links);
+                _this.$emit('refreshObjects', _this.objects, _this.meta, _this.links);
+            }).catch(function (error) {
+                return console.log(error);
+            });
+        },
+        makePagination: function makePagination(meta, links) {
+            this.meta = meta;
+            this.links = links;
+        }
+    }
+};
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
+    _c("ul", { staticClass: "pagination" }, [
+      _c(
+        "li",
+        { staticClass: "page-item", class: [{ disabled: !_vm.links.prev }] },
+        [
+          _c(
+            "a",
+            {
+              staticClass: "page-link",
+              attrs: { href: "#" },
+              on: {
+                click: function($event) {
+                  _vm.getObjects(_vm.links.prev)
+                }
+              }
+            },
+            [_vm._v("Previous")]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c("li", { staticClass: "page-item disabled" }, [
+        _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
+          _vm._v(
+            "Page " +
+              _vm._s(_vm.meta.current_page) +
+              " of " +
+              _vm._s(_vm.meta.last_page)
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "li",
+        { staticClass: "page-item", class: [{ disabled: !_vm.links.next }] },
+        [
+          _c(
+            "a",
+            {
+              staticClass: "page-link",
+              attrs: { href: "#" },
+              on: {
+                click: function($event) {
+                  _vm.getObjects(_vm.links.next)
+                }
+              }
+            },
+            [_vm._v("Next")]
+          )
+        ]
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-603a89b6", module.exports)
+  }
+}
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(56)
+/* template */
+var __vue_template__ = __webpack_require__(57)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -50632,7 +51276,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 47 */
+/* 56 */
 /***/ (function(module, exports) {
 
 //
@@ -50732,7 +51376,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 48 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -50841,19 +51485,19 @@ if (false) {
 }
 
 /***/ }),
-/* 49 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(50)
+  __webpack_require__(59)
 }
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(55)
+var __vue_script__ = __webpack_require__(64)
 /* template */
-var __vue_template__ = __webpack_require__(56)
+var __vue_template__ = __webpack_require__(65)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -50892,17 +51536,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 50 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(51);
+var content = __webpack_require__(60);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(53)("19d45fad", content, false, {});
+var update = __webpack_require__(62)("19d45fad", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -50918,10 +51562,10 @@ if(false) {
 }
 
 /***/ }),
-/* 51 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(52)(false);
+exports = module.exports = __webpack_require__(61)(false);
 // imports
 
 
@@ -50932,7 +51576,7 @@ exports.push([module.i, "\na {\r\n  color: #FFF;\n}\r\n", ""]);
 
 
 /***/ }),
-/* 52 */
+/* 61 */
 /***/ (function(module, exports) {
 
 /*
@@ -51014,7 +51658,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 53 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -51033,7 +51677,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(54)
+var listToStyles = __webpack_require__(63)
 
 /*
 type StyleObject = {
@@ -51242,7 +51886,7 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 54 */
+/* 63 */
 /***/ (function(module, exports) {
 
 /**
@@ -51275,7 +51919,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 55 */
+/* 64 */
 /***/ (function(module, exports) {
 
 //
@@ -51313,7 +51957,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 56 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -51377,667 +52021,15 @@ if (false) {
 }
 
 /***/ }),
-/* 57 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(2)
-/* script */
-var __vue_script__ = __webpack_require__(62)
-/* template */
-var __vue_template__ = __webpack_require__(63)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/Orders.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-aebdd2e0", Component.options)
-  } else {
-    hotAPI.reload("data-v-aebdd2e0", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports) {
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-module.exports = {
-    data: function data() {
-        return {
-            title: 'List Orders',
-            showSuccess: false,
-            showFailure: false,
-            successMessage: '',
-            failMessage: '',
-            currentOrder: {},
-            currentUser: '52',
-            orders: [],
-            ordersMeta: [],
-            ordersLinks: [],
-            userOrders: [],
-            userOrdersMeta: [],
-            userOrdersLinks: [],
-            changingOrder: {}
-        };
-    },
-
-    methods: {
-        removeOrderFromArray: function removeOrderFromArray(array, index) {
-            var order = array[index];
-            array.splice(index, 1);
-            console.log(order);
-            return order;
-        },
-        addOrderToArray: function addOrderToArray(array, order) {
-            array.push(order);
-        },
-        assignOrderToCook: function assignOrderToCook(order, index) {
-            var _this = this;
-
-            axios.patch('/api/orders/' + order.id, { order: JSON.stringify(order), user: this.currentUser }).then(function (response) {
-                // handle success
-                _this.orders = [];
-                _this.userOrders = [];
-                _this.loadConfirmedOrders();
-                _this.loadUserOrders();
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-        },
-        loadUserOrders: function loadUserOrders() {
-            var _this2 = this;
-
-            axios.get('/api/orders/fromCook/' + this.currentUser).then(function (response) {
-                // handle success
-                _this2.userOrders = response.data.data;
-                _this2.userOrdersMeta = response.data.meta;
-                _this2.userOrdersLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-        },
-        loadConfirmedOrders: function loadConfirmedOrders() {
-            var _this3 = this;
-
-            axios.get('/api/orders/all').then(function (response) {
-                // handle success
-                _this3.orders = response.data.data;
-                _this3.ordersMeta = response.data.meta;
-                _this3.ordersLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-        },
-        refreshOrders: function refreshOrders(newOrders, newMeta, newLinks) {
-            this.orders = newOrders;
-            this.ordersMeta = newMeta;
-            this.ordersLinks = newLinks;
-        },
-        refreshUserOrders: function refreshUserOrders(newUserOrders, newUserOrdersMeta, newUserOrdersLinks) {
-            this.userOrders = newUserOrders;
-            this.userOrdersMeta = newUserOrdersMeta;
-            this.userOrdersLinks = newUserOrdersLinks;
-        }
-    },
-    mounted: function mounted() {
-        this.loadConfirmedOrders();
-        this.loadUserOrders();
-    }
-};
-
-/***/ }),
-/* 63 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("div", { staticClass: "jumbotron" }, [
-        _c("h1", [_vm._v(_vm._s(_vm.title))])
-      ]),
-      _vm._v(" "),
-      _c("orders-list", {
-        attrs: {
-          orders: _vm.userOrders,
-          meta: _vm.userOrdersMeta,
-          links: _vm.userOrdersLinks
-        },
-        on: { refreshOrders: _vm.refreshUserOrders }
-      }),
-      _vm._v(" "),
-      _c("orders-list", {
-        attrs: {
-          orders: _vm.orders,
-          meta: _vm.ordersMeta,
-          links: _vm.ordersLinks,
-          user: _vm.currentUser
-        },
-        on: {
-          "assign-to-cook": _vm.assignOrderToCook,
-          refreshOrders: _vm.refreshOrders
-        }
-      }),
-      _vm._v(" "),
-      _vm.showSuccess || _vm.showFailure
-        ? _c(
-            "div",
-            {
-              staticClass: "alert",
-              class: {
-                "alert-success": _vm.showSuccess,
-                "alert-danger": _vm.showFailure
-              }
-            },
-            [
-              _c(
-                "button",
-                {
-                  staticClass: "close-btn",
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      _vm.showSuccess = false
-                      _vm.showFailure = false
-                    }
-                  }
-                },
-                [_vm._v("×")]
-              ),
-              _vm._v(" "),
-              _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
-              _vm._v(" "),
-              _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
-            ]
-          )
-        : _vm._e()
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-aebdd2e0", module.exports)
-  }
-}
-
-/***/ }),
-/* 64 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(2)
-/* script */
-var __vue_script__ = __webpack_require__(65)
-/* template */
-var __vue_template__ = __webpack_require__(66)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/OrdersList.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-2845f04e", Component.options)
-  } else {
-    hotAPI.reload("data-v-2845f04e", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 65 */
-/***/ (function(module, exports) {
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-module.exports = {
-    props: ["orders", "meta", "links", "user"],
-    data: function data() {
-        return {};
-    },
-    methods: {
-        assignOrderToCook: function assignOrderToCook(order, index) {
-            this.$emit('assign-to-cook', order, index);
-        },
-        declareOrderAsPrepared: function declareOrderAsPrepared(order, index) {},
-        refreshOrders: function refreshOrders(orders, meta, links) {
-            this.$emit('refreshOrders', orders, meta, links);
-        }
-    }
-};
-
-/***/ }),
 /* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("pagination", {
-        attrs: { objects: _vm.orders, meta: _vm.meta, links: _vm.links },
-        on: { refreshObjects: _vm.refreshOrders }
-      }),
-      _vm._v(" "),
-      _c("table", { staticClass: "table" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "tbody",
-          _vm._l(_vm.orders, function(order, index) {
-            return _c("tr", { key: order.id }, [
-              _c("td", [_vm._v(_vm._s(order.id))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.state))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.item_id))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.meal_id))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.responsible_cook_id))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.start))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.end))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.created_at.date))]),
-              _vm._v(" "),
-              _c("td", [
-                order.state == "confirmed"
-                  ? _c("div", [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-primary btn-sm btn-block",
-                          attrs: { type: "Submit" },
-                          on: {
-                            click: function($event) {
-                              _vm.assignOrderToCook(order, index)
-                            }
-                          }
-                        },
-                        [_vm._v("Assign to me")]
-                      ),
-                      _vm._v(" "),
-                      _c("br"),
-                      _c("br")
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-danger btn-sm btn-block",
-                    attrs: { type: "Submit" },
-                    on: {
-                      click: function($event) {
-                        _vm.declareOrderAsPrepared(order, index)
-                      }
-                    }
-                  },
-                  [_vm._v("Prepared")]
-                )
-              ])
-            ])
-          })
-        )
-      ])
-    ],
-    1
-  )
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Id")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("State")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Item Name")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Meal Id")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Responsable cook")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Start")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("End")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("created_at")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Actions")])
-      ])
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-2845f04e", module.exports)
-  }
-}
-
-/***/ }),
-/* 67 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(68)
+var __vue_script__ = __webpack_require__(67)
 /* template */
-var __vue_template__ = __webpack_require__(69)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/pagination.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-603a89b6", Component.options)
-  } else {
-    hotAPI.reload("data-v-603a89b6", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 68 */
-/***/ (function(module, exports) {
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-module.exports = {
-    props: ["objects", "meta", "links"],
-    data: function data() {
-        return {};
-    },
-
-    methods: {
-        getObjects: function getObjects(url) {
-            var _this = this;
-
-            axios.get(url).then(function (response) {
-                _this.objects = response.data.data;
-                _this.makePagination(response.data.meta, response.data.links);
-                _this.$emit('refreshObjects', _this.objects, _this.meta, _this.links);
-            }).catch(function (error) {
-                return console.log(error);
-            });
-        },
-        makePagination: function makePagination(meta, links) {
-            this.meta = meta;
-            this.links = links;
-        }
-    }
-};
-
-/***/ }),
-/* 69 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
-    _c("ul", { staticClass: "pagination" }, [
-      _c(
-        "li",
-        { staticClass: "page-item", class: [{ disabled: !_vm.links.prev }] },
-        [
-          _c(
-            "a",
-            {
-              staticClass: "page-link",
-              attrs: { href: "#" },
-              on: {
-                click: function($event) {
-                  _vm.getObjects(_vm.links.prev)
-                }
-              }
-            },
-            [_vm._v("Previous")]
-          )
-        ]
-      ),
-      _vm._v(" "),
-      _c("li", { staticClass: "page-item disabled" }, [
-        _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-          _vm._v(
-            "Page " +
-              _vm._s(_vm.meta.current_page) +
-              " of " +
-              _vm._s(_vm.meta.last_page)
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c(
-        "li",
-        { staticClass: "page-item", class: [{ disabled: !_vm.links.next }] },
-        [
-          _c(
-            "a",
-            {
-              staticClass: "page-link",
-              attrs: { href: "#" },
-              on: {
-                click: function($event) {
-                  _vm.getObjects(_vm.links.next)
-                }
-              }
-            },
-            [_vm._v("Next")]
-          )
-        ]
-      )
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-603a89b6", module.exports)
-  }
-}
-
-/***/ }),
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(2)
-/* script */
-var __vue_script__ = __webpack_require__(71)
-/* template */
-var __vue_template__ = __webpack_require__(72)
+var __vue_template__ = __webpack_require__(68)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -52076,9 +52068,11 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 71 */
+/* 67 */
 /***/ (function(module, exports) {
 
+//
+//
 //
 //
 //
@@ -52142,7 +52136,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 72 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -52162,7 +52156,10 @@ var render = function() {
           meta: _vm.pendingInvoicesMeta,
           links: _vm.pendingInvoicesLinks
         },
-        on: { refreshInvoices: _vm.refreshPendingInvoices }
+        on: {
+          refreshInvoices: _vm.refreshPendingInvoices,
+          declareAsPaid: _vm.loadPendingInvoices
+        }
       }),
       _vm._v(" "),
       _vm.showSuccess || _vm.showFailure
@@ -52212,15 +52209,15 @@ if (false) {
 }
 
 /***/ }),
-/* 73 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(74)
+var __vue_script__ = __webpack_require__(70)
 /* template */
-var __vue_template__ = __webpack_require__(75)
+var __vue_template__ = __webpack_require__(71)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -52259,9 +52256,18 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 74 */
+/* 70 */
 /***/ (function(module, exports) {
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -52300,17 +52306,35 @@ module.exports = Component.exports
 module.exports = {
     props: ["invoices", "meta", "links", "user"],
     data: function data() {
-        return {};
+        return {
+            editingNifName: false,
+            currentInvoice: {}
+        };
     },
     methods: {
         refreshInvoices: function refreshInvoices(invoices, meta, links) {
             this.$emit('refreshInvoices', invoices, meta, links);
+        },
+        fillNifName: function fillNifName(invoice, index) {
+            this.editingNifName = true;
+            this.currentInvoice = invoice;
+        },
+        endEditingSave: function endEditingSave($pendingInvoices, $meta, $links) {
+            this.invoices = $pendingInvoices;
+            this.meta = $meta;
+            this.links = $links;
+            this.editingNifName = false;
+            this.currentInvoice = {};
+        },
+        endEditingCancel: function endEditingCancel() {
+            this.editingNifName = false;
+            this.currentInvoice = {};
         }
     }
 };
 
 /***/ }),
-/* 75 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -52320,39 +52344,81 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("pagination", {
-        attrs: { objects: _vm.invoices, meta: _vm.meta, links: _vm.links },
-        on: { refreshObjects: _vm.refreshInvoices }
-      }),
-      _vm._v(" "),
-      _c("table", { staticClass: "table" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "tbody",
-          _vm._l(_vm.invoices, function(invoice, index) {
-            return _c("tr", { key: invoice.id }, [
-              _c("td", [_vm._v(_vm._s(invoice.id))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(invoice.state))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(invoice.meal_id))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(invoice.table_number))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(invoice.responsible_waiter_id))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(invoice.responsible_waiter_name))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(invoice.total_price))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(invoice.created_at.date))]),
-              _vm._v(" "),
-              _c("td")
-            ])
+      _vm.editingNifName
+        ? _c("edit-nif-name", {
+            attrs: { invoice: _vm.currentInvoice },
+            on: {
+              declareAsPaid: _vm.endEditingSave,
+              cancelEditing: _vm.endEditingCancel
+            }
           })
-        )
-      ])
+        : _vm._e(),
+      _vm._v(" "),
+      !_vm.editingNifName
+        ? _c(
+            "div",
+            [
+              _c("pagination", {
+                attrs: {
+                  objects: _vm.invoices,
+                  meta: _vm.meta,
+                  links: _vm.links
+                },
+                on: { refreshObjects: _vm.refreshInvoices }
+              }),
+              _vm._v(" "),
+              _c("table", { staticClass: "table" }, [
+                _vm._m(0),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.invoices, function(invoice, index) {
+                    return _c("tr", { key: invoice.id }, [
+                      _c("td", [_vm._v(_vm._s(invoice.id))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(invoice.state))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(invoice.meal_id))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(invoice.table_number))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(invoice.responsible_waiter_id))]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(_vm._s(invoice.responsible_waiter_name))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(invoice.nif))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(invoice.name))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(invoice.total_price))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(invoice.created_at.date))]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger btn-sm btn-block",
+                            attrs: { type: "Submit" },
+                            on: {
+                              click: function($event) {
+                                _vm.fillNifName(invoice, index)
+                              }
+                            }
+                          },
+                          [_vm._v("Paid")]
+                        )
+                      ])
+                    ])
+                  })
+                )
+              ])
+            ],
+            1
+          )
+        : _vm._e()
     ],
     1
   )
@@ -52376,6 +52442,10 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("responsible_waiter_name")]),
         _vm._v(" "),
+        _c("th", [_vm._v("nif")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("name")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Total Price")]),
         _vm._v(" "),
         _c("th", [_vm._v("created_at")]),
@@ -52393,6 +52463,229 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-1f06e68f", module.exports)
   }
 }
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(73)
+/* template */
+var __vue_template__ = __webpack_require__(74)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/PendingInvoicesNifName.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-2b472284", Component.options)
+  } else {
+    hotAPI.reload("data-v-2b472284", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    props: ['invoice', 'index'],
+    data: function data() {
+        return {};
+    },
+
+    methods: {
+        declareInvoiceAsPaid: function declareInvoiceAsPaid() {
+            var _this = this;
+
+            if (!(this.invoice.name && this.invoice.nif)) {
+                alert("Nif and name required");
+                return;
+            }
+            axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.invoice), user: this.currentUser }).then(function (response) {
+                axios.get('/api/invoices/pending').then(function (response) {
+                    // handle success
+                    $invoices = response.data.data;
+                    $meta = response.data.meta;
+                    $links = response.data.links;
+                    _this.$emit('declareAsPaid', $invoices, $meta, $links);
+                    console.log(response);
+                }).catch(function (error) {
+                    // handle error
+                    console.log(error);
+                }).then(function () {
+                    // always executed
+                });
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        cancel: function cancel() {
+            this.$emit('cancelEditing');
+        }
+    }
+};
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "form",
+      {
+        staticClass: "mb-3",
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            _vm.declareInvoiceAsPaid()
+          }
+        }
+      },
+      [
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Nif:")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.invoice.nif,
+                expression: "invoice.nif"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { type: "text", name: "nif" },
+            domProps: { value: _vm.invoice.nif },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.invoice, "nif", $event.target.value)
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Name:")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.invoice.name,
+                expression: "invoice.name"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { type: "text", name: "name" },
+            domProps: { value: _vm.invoice.name },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.invoice, "name", $event.target.value)
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          { staticClass: "btn btn-success", attrs: { type: "submit" } },
+          [_vm._v("Save")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-danger",
+            on: {
+              click: function($event) {
+                _vm.cancel()
+              }
+            }
+          },
+          [_vm._v("Cancel")]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-2b472284", module.exports)
+  }
+}
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);
