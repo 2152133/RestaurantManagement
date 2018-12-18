@@ -22,15 +22,19 @@ Vue.use(VueRouter);
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 const itemsComponent = Vue.component('items', require('./components/Items.vue'));
-const navbarComponent = Vue.component('navbar', require('./components/Navbar.vue'));
+Vue.component('navbar', require('./components/Navbar.vue'));
 const ordersComponent = Vue.component('orders', require('./components/Orders.vue'));
-const ordersListComponent = Vue.component('orders-list', require('./components/OrdersList.vue'));
-const paginationComponent = Vue.component('pagination', require('./components/pagination.vue'));
+Vue.component('orders-list', require('./components/OrdersList.vue'));
+Vue.component('pagination', require('./components/pagination.vue'));
+const landing_page = Vue.component('landing_page', require('./components/LandingPage.vue')); 
+const notifications_page = Vue.component('notifications_page', require('./components/Notifications.vue'));
 
 const routes = [
     {path: '/', redirect: '/orders'},
     {path: '/orders', component: ordersComponent},
     {path: '/items', component: itemsComponent},
+    {path: '/dashboard', component: landing_page, name: 'dashboard'},
+    {path: '/notifications', component: notifications_page, name: 'notifications'},
 ];
 
 // const files = require.context('./', true, /\.vue$/i)
