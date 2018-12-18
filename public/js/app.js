@@ -50040,8 +50040,13 @@ var render = function() {
             _vm._v(" "),
             _c(
               "a",
-              { staticClass: "nav-item nav-link", attrs: { href: "#" } },
-              [_vm._v("Disabled")]
+              { staticClass: "nav-item nav-link" },
+              [
+                _c("router-link", { attrs: { to: "dashboard" } }, [
+                  _vm._v("Dashboard")
+                ])
+              ],
+              1
             )
           ])
         ]
