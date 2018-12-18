@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,3 +44,12 @@ Route::patch('/item/{id}', 'ItemController@store');
 
 // Delete one item
 Route::delete('/item/{id}', 'ItemController@destroy');
+
+// List all orders
+Route::get('/orders/all', 'OrderController@all');
+
+// List orders from a cook
+Route::get('/orders/fromCook/{responsibleCookId}', 'OrderController@whereUser');
+
+// Patch order by order id
+Route::patch('/orders/{id}', 'OrderController@assignOrderToCook');
