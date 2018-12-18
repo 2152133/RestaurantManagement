@@ -29,6 +29,7 @@ Vue.component('pagination', require('./components/pagination.vue'));
 const landing_page = Vue.component('landing_page', require('./components/LandingPage.vue')); 
 const notifications_page = Vue.component('notifications_page', require('./components/Notifications.vue'));
 const pendingInvoicesComponent = Vue.component('pending-invoices', require('./components/PendingInvoices.vue'));
+Vue.component('invoices-list', require('./components/InvoicesList.vue'));
 
 const routes = [
     {path: '/', redirect: '/orders'},

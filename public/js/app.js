@@ -14031,6 +14031,7 @@ Vue.component('pagination', __webpack_require__(67));
 var landing_page = Vue.component('landing_page', __webpack_require__(46));
 var notifications_page = Vue.component('notifications_page', __webpack_require__(49));
 var pendingInvoicesComponent = Vue.component('pending-invoices', __webpack_require__(70));
+Vue.component('invoices-list', __webpack_require__(73));
 
 var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/pendingInvoices', component: pendingInvoicesComponent }];
 
@@ -50048,6 +50049,17 @@ var render = function() {
                 ])
               ],
               1
+            ),
+            _vm._v(" "),
+            _c(
+              "a",
+              { staticClass: "nav-item nav-link" },
+              [
+                _c("router-link", { attrs: { to: "pendingInvoices" } }, [
+                  _vm._v("PendingInvoices")
+                ])
+              ],
+              1
             )
           ])
         ]
@@ -52133,11 +52145,252 @@ module.exports = {
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports={render:function(){},staticRenderFns:[]}
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "jumbotron" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.title))])
+      ]),
+      _vm._v(" "),
+      _c("invoices-list", {
+        attrs: {
+          invoices: _vm.pendingInvoices,
+          meta: _vm.pendingInvoicesMeta,
+          links: _vm.pendingInvoicesLinks
+        },
+        on: { refreshInvoices: _vm.refreshPendingInvoices }
+      }),
+      _vm._v(" "),
+      _vm.showSuccess || _vm.showFailure
+        ? _c(
+            "div",
+            {
+              staticClass: "alert",
+              class: {
+                "alert-success": _vm.showSuccess,
+                "alert-danger": _vm.showFailure
+              }
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "close-btn",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.showSuccess = false
+                      _vm.showFailure = false
+                    }
+                  }
+                },
+                [_vm._v("×")]
+              ),
+              _vm._v(" "),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
+              _vm._v(" "),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
+            ]
+          )
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-a19500fc", module.exports)
+  }
+}
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(74)
+/* template */
+var __vue_template__ = __webpack_require__(75)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/InvoicesList.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-1f06e68f", Component.options)
+  } else {
+    hotAPI.reload("data-v-1f06e68f", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    props: ["invoices", "meta", "links", "user"],
+    data: function data() {
+        return {};
+    },
+    methods: {
+        refreshInvoices: function refreshInvoices(invoices, meta, links) {
+            this.$emit('refreshInvoices', invoices, meta, links);
+        }
+    }
+};
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("pagination", {
+        attrs: { objects: _vm.invoices, meta: _vm.meta, links: _vm.links },
+        on: { refreshObjects: _vm.refreshInvoices }
+      }),
+      _vm._v(" "),
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.invoices, function(invoice, index) {
+            return _c("tr", { key: invoice.id }, [
+              _c("td", [_vm._v(_vm._s(invoice.id))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(invoice.state))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(invoice.meal_id))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(invoice.table_number))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(invoice.responsible_waiter_id))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(invoice.responsible_waiter_name))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(invoice.total_price))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(invoice.created_at.date))]),
+              _vm._v(" "),
+              _c("td")
+            ])
+          })
+        )
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Id")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("State")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Meal Id")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Table Number")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("responsible_waiter_id")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("responsible_waiter_name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Total Price")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("created_at")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Actions")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-1f06e68f", module.exports)
   }
 }
 

@@ -4,7 +4,7 @@
             <h1>{{title}}</h1>
         </div>
         
-        <invoices-list :invoices="pendingInvoices" :meta="pendingInvoicesMeta" :links="pendingInvoicesLinks" @refreshInvoices="refreshPendingInvoices"></orders-list>
+        <invoices-list :invoices="pendingInvoices" :meta="pendingInvoicesMeta" :links="pendingInvoicesLinks" @refreshInvoices="refreshPendingInvoices"></invoices-list>
             
         <div class="alert" :class="{'alert-success':showSuccess, 'alert-danger':showFailure}" v-if="showSuccess || showFailure">
             <button type="button" @click="showSuccess = false; showFailure = false;" class="close-btn" >&times;</button>
