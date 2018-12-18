@@ -12,7 +12,6 @@ class Meal extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'state', 'table_number', 'start', 'end', 'responsible_waiter_id', 'total_price_preview',
     ];
 
     /**
@@ -31,11 +30,16 @@ class Meal extends Model
 
     public function responsible_waiter()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(User::class);
     }
 
     public function table()
     {
         return $this->belongsTo(RestaurantTable::class);
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
     }
 }

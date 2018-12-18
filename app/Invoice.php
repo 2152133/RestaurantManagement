@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RestaurantTable extends Model
+class Invoice extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -20,6 +20,11 @@ class RestaurantTable extends Model
      * @var array
      */
     protected $hidden = [
-        'deleted_at','created_at', 'updated_at',
+        'created_at', 'updated_at',
     ];
+
+    public function meal()
+    {
+        return $this->belongsTo(Meal::class);
+    }
 }
