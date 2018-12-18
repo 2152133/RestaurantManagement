@@ -14030,8 +14030,9 @@ Vue.component('orders-list', __webpack_require__(64));
 Vue.component('pagination', __webpack_require__(67));
 var landing_page = Vue.component('landing_page', __webpack_require__(46));
 var notifications_page = Vue.component('notifications_page', __webpack_require__(49));
+var pendingInvoicesComponent = Vue.component('pending-invoices', __webpack_require__(70));
 
-var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }];
+var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/pendingInvoices', component: pendingInvoicesComponent }];
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
@@ -52012,6 +52013,131 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-603a89b6", module.exports)
+  }
+}
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(71)
+/* template */
+var __vue_template__ = __webpack_require__(72)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/PendingInvoices.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-a19500fc", Component.options)
+  } else {
+    hotAPI.reload("data-v-a19500fc", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    data: function data() {
+        return {
+            title: 'Pending Invoices',
+            showSuccess: false,
+            showFailure: false,
+            successMessage: '',
+            failMessage: '',
+            currentInvoice: {},
+            currentUser: '52',
+            pendingInvoices: [],
+            pendingInvoicesMeta: [],
+            pendingInvoicesLinks: []
+        };
+    },
+
+    methods: {
+        loadPendingInvoices: function loadPendingInvoices() {
+            var _this = this;
+
+            axios.get('/api/invoices/pending/').then(function (response) {
+                // handle success
+                _this.pendingInvoices = response.data.data;
+                _this.pendingInvoicesMeta = response.data.meta;
+                _this.pendingInvoicesLinks = response.data.links;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        refreshPendingInvoices: function refreshPendingInvoices(newPendingInvoices, newMeta, newLinks) {
+            this.pendingInvoices = newPendingInvoices;
+            this.ordersMeta = newMeta;
+            this.ordersLinks = newLinks;
+        }
+    },
+    mounted: function mounted() {
+        this.loadPendingInvoices();
+    }
+};
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function(){},staticRenderFns:[]}
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-a19500fc", module.exports)
   }
 }
 

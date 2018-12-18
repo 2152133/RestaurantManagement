@@ -28,6 +28,7 @@ Vue.component('orders-list', require('./components/OrdersList.vue'));
 Vue.component('pagination', require('./components/pagination.vue'));
 const landing_page = Vue.component('landing_page', require('./components/LandingPage.vue')); 
 const notifications_page = Vue.component('notifications_page', require('./components/Notifications.vue'));
+const pendingInvoicesComponent = Vue.component('pending-invoices', require('./components/PendingInvoices.vue'));
 
 const routes = [
     {path: '/', redirect: '/orders'},
@@ -35,6 +36,7 @@ const routes = [
     {path: '/items', component: itemsComponent},
     {path: '/dashboard', component: landing_page, name: 'dashboard'},
     {path: '/notifications', component: notifications_page, name: 'notifications'},
+    {path: '/pendingInvoices', component: pendingInvoicesComponent},
 ];
 
 // const files = require.context('./', true, /\.vue$/i)
