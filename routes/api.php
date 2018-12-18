@@ -56,3 +56,6 @@ Route::patch('/orders/{id}', 'OrderController@assignOrderToCook');
 
 // Get all pending invoices
 Route::get('/invoices/pending', 'InvoiceController@getPending');
+
+// Declare a invoice as paid
+Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');

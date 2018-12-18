@@ -30,6 +30,7 @@ const landing_page = Vue.component('landing_page', require('./components/Landing
 const notifications_page = Vue.component('notifications_page', require('./components/Notifications.vue'));
 const pendingInvoicesComponent = Vue.component('pending-invoices', require('./components/PendingInvoices.vue'));
 Vue.component('invoices-list', require('./components/InvoicesList.vue'));
+Vue.component('edit-nif-name', require('./components/PendingInvoicesNifName.vue'));
 
 const routes = [
     {path: '/', redirect: '/orders'},
