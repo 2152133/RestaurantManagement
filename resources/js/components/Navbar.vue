@@ -8,7 +8,6 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
               <div class="navbar-nav">
                 <a class="nav-item nav-link"><router-link to="orders">Orders</router-link></a>
-                <a class="nav-item nav-link"><router-link to="orders">My Orders</router-link></a>
                 <a class="nav-item nav-link"><router-link to="items">Items</router-link></a>
                 <a class="nav-item nav-link" href="#">Disabled</a>
               </div>

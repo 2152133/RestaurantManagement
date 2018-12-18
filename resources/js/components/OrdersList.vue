@@ -1,5 +1,6 @@
 <template>
     <div>
+        <pagination :objects="orders" :meta="meta" :links="links" @refreshObjects="refreshOrders"></pagination>
         <table class="table">
             <thead>
                 <tr>
@@ -39,7 +40,7 @@
 
 <script>
     module.exports = {
-        props: ["orders", "user"],
+        props: ["orders", "meta", "links", "user"],
         data: function() {
             return {
                 
@@ -52,8 +53,8 @@
             declareOrderAsPrepared(order, index){
 
             },
-            mounted() {
-                
+            refreshOrders(orders, meta, links){
+                this.$emit('refreshOrders', orders, meta, links);
             }
         }
     }

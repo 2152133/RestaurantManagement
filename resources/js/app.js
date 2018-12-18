@@ -25,11 +25,11 @@ const itemsComponent = Vue.component('items', require('./components/Items.vue'))
 const navbarComponent = Vue.component('navbar', require('./components/Navbar.vue'));
 const ordersComponent = Vue.component('orders', require('./components/Orders.vue'));
 const ordersListComponent = Vue.component('orders-list', require('./components/OrdersList.vue'));
+const paginationComponent = Vue.component('pagination', require('./components/pagination.vue'));
 
 const routes = [
     {path: '/', redirect: '/orders'},
     {path: '/orders', component: ordersComponent},
-    {path: '/ordersList', component: ordersListComponent},
     {path: '/items', component: itemsComponent},
 ];
 

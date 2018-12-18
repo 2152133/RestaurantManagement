@@ -16,7 +16,7 @@ class OrderController extends Controller
     public function all()
     {
         // Get orders
-        $orders = Order::where('state', 'confirmed')->orderBy('created_at', 'asc')->paginate(10);
+        $orders = Order::where('state', 'confirmed')->orderBy('created_at', 'asc')->paginate(5);
 
         // Return collection of orders as a resource
         return OrderResource::collection($orders);
@@ -26,7 +26,7 @@ class OrderController extends Controller
     public function whereUser($user)
     {
         // Get orders
-        $orders = Order::where('state', 'in preparation')->where('responsible_cook_id', $user)->orderBy('created_at', 'asc')->paginate(10);
+        $orders = Order::where('state', 'in preparation')->where('responsible_cook_id', $user)->orderBy('created_at', 'asc')->paginate(3);
         
         // Return collection of orders as a resource
         return OrderResource::collection($orders);

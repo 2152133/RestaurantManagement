@@ -4,8 +4,9 @@
             <h1>{{title}}</h1>
         </div>
         
-        <orders-list :orders="userOrders"></orders-list>
-        <orders-list :orders="orders" :user="currentUser" v-on:assign-to-cook="assignOrderToCook"></orders-list>
+        <orders-list :orders="userOrders" :meta="userOrdersMeta" :links="userOrdersLinks" @refreshOrders="refreshUserOrders"></orders-list>
+        
+        <orders-list :orders="orders" :meta="ordersMeta" :links="ordersLinks" :user="currentUser" v-on:assign-to-cook="assignOrderToCook" @refreshOrders="refreshOrders"></orders-list>
             
         <div class="alert" :class="{'alert-success':showSuccess, 'alert-danger':showFailure}" v-if="showSuccess || showFailure">
             <button type="button" @click="showSuccess = false; showFailure = false;" class="close-btn" >&times;</button>
@@ -28,7 +29,11 @@
                 currentOrder: {},
                 currentUser: '52',
                 orders: [],
+                ordersMeta:[],
+                ordersLinks:[],
                 userOrders: [],
+                userOrdersMeta:[],
+                userOrdersLinks:[],
                 changingOrder: {}
             }
         }
@@ -66,6 +71,8 @@
                     .then((response) => {
                         // handle success
                         this.userOrders = response.data.data;
+                        this.userOrdersMeta = response.data.meta;
+                        this.userOrdersLinks = response.data.links;
                         console.log(response);
                     })
                     .catch(function (error) {
@@ -81,6 +88,8 @@
                     .then((response) => {
                         // handle success
                         this.orders = response.data.data;
+                        this.ordersMeta = response.data.meta;
+                        this.ordersLinks = response.data.links;
                         console.log(response);
                     })
                     .catch(function (error) {
@@ -91,6 +100,16 @@
                         // always executed
                     });
             },
+            refreshOrders(newOrders, newMeta, newLinks){
+                this.orders = newOrders;
+                this.ordersMeta = newMeta;
+                this.ordersLinks = newLinks;
+            },
+            refreshUserOrders(newUserOrders, newUserOrdersMeta, newUserOrdersLinks){
+                this.userOrders = newUserOrders;
+                this.userOrdersMeta = newUserOrdersMeta;
+                this.userOrdersLinks = newUserOrdersLinks;
+            }
         },
         mounted() {
             this.loadConfirmedOrders();
