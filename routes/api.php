@@ -53,3 +53,6 @@ Route::get('/orders/fromCook/{responsibleCookId}', 'OrderController@whereUser');
 
 // Patch order by order id
 Route::patch('/orders/{id}', 'OrderController@assignOrderToCook');
+
+// Get all pending invoices
+Route::get('/invoices/pending', 'InvoiceController@getPending');
