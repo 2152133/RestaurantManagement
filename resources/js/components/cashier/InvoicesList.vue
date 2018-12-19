@@ -1,7 +1,10 @@
 <template>
     <div>
         <edit-nif-name v-if="editingNifName" :invoice="currentInvoice" @declareAsPaid="endEditingSave" @cancelEditing="endEditingCancel"></edit-nif-name>
-        <div v-if="!editingNifName">
+        
+        <invoice-details v-if="viewingDetails" :invoice="currentInvoice" @endViewingDetails="endViewingDetails"></invoice-details>
+
+        <div v-if="!editingNifName && !viewingDetails">
             <pagination :objects="invoices" :meta="meta" :links="links" @refreshObjects="refreshInvoices"></pagination>
             <table class="table">
                 <thead>
@@ -32,7 +35,8 @@
                         <td>{{invoice.total_price}}</td>
                         <td>{{invoice.created_at.date}}</td>
                         <td>
-                            <button type="Submit" class="btn btn-danger btn-sm btn-block" @click="fillNifName(invoice, index)">Paid</button>
+                            <button class="btn btn-danger btn-sm btn-block" @click="fillNifName(invoice)">Paid</button>
+                            <button class="btn btn-danger btn-sm btn-block" @click="seeDetails(invoice)">Details</button>
                         </td>
                     </tr>
                 </tbody>
@@ -47,6 +51,7 @@
         data: function() {
             return {
                 editingNifName: false,
+                viewingDetails: false,
                 currentInvoice: {},
             }
         },
@@ -54,7 +59,7 @@
             refreshInvoices(invoices, meta, links){
                 this.$emit('refreshInvoices', invoices, meta, links);
             },
-            fillNifName(invoice, index){
+            fillNifName(invoice){
                 this.editingNifName = true;
                 this.currentInvoice = invoice;
             },
@@ -67,6 +72,14 @@
             },
             endEditingCancel(){
                 this.editingNifName = false;
+                this.currentInvoice = {};
+            },
+            seeDetails(invoice){
+                this.viewingDetails = true;
+                this.currentInvoice = invoice;
+            },
+            endViewingDetails(){
+                this.viewingDetails = false;
                 this.currentInvoice = {};
             }
         }

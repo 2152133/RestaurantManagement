@@ -1,6 +1,6 @@
 <template>
         <div>
-            <form @submit.prevent="declareInvoiceAsPaid()" class="mb-3">
+            <form @submit.prevent="" class="mb-3">
                 <div class="form-group">
                     <label>Nif:</label>
                     <input class="form-control" type="text" name="nif" v-model="invoice.nif">
@@ -11,7 +11,7 @@
                     <input class="form-control" type="text" name="name" v-model="invoice.name">
                 </div>
                 
-                <button type="submit" class="btn btn-success">Save</button>
+                <button class="btn btn-success" @click="declareInvoiceAsPaid()">Save</button>
                 <button class="btn btn-danger" @click="cancel()">Cancel</button>
             </form>
         </div>         

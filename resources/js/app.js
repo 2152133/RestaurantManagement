@@ -21,16 +21,17 @@ Vue.use(VueRouter);
  */
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
-const itemsComponent = Vue.component('items', require('./components/Items.vue'));
+const itemsComponent = Vue.component('items', require('./components/allUsers/Items.vue'));
 Vue.component('navbar', require('./components/Navbar.vue'));
-const ordersComponent = Vue.component('orders', require('./components/Orders.vue'));
-Vue.component('orders-list', require('./components/OrdersList.vue'));
+const ordersComponent = Vue.component('orders', require('./components/cook/Orders.vue'));
+Vue.component('orders-list', require('./components/cook/OrdersList.vue'));
 Vue.component('pagination', require('./components/pagination.vue'));
-const landing_page = Vue.component('landing_page', require('./components/LandingPage.vue')); 
-const notifications_page = Vue.component('notifications_page', require('./components/Notifications.vue'));
-const pendingInvoicesComponent = Vue.component('pending-invoices', require('./components/PendingInvoices.vue'));
-Vue.component('invoices-list', require('./components/InvoicesList.vue'));
-Vue.component('edit-nif-name', require('./components/PendingInvoicesNifName.vue'));
+const landing_page = Vue.component('landing_page', require('./components/restaurantWorker/LandingPage.vue')); 
+const notifications_page = Vue.component('notifications_page', require('./components/restaurantWorker/Notifications.vue'));
+const pendingInvoicesComponent = Vue.component('pending-invoices', require('./components/cashier/PendingInvoices.vue'));
+Vue.component('invoices-list', require('./components/cashier/InvoicesList.vue'));
+Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
+const invoiceDetailsComponent = Vue.component('invoice-details', require('./components/cashier/InvoiceDetails.vue'));
 
 const routes = [
     {path: '/', redirect: '/orders'},
