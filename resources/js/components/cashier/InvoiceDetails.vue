@@ -7,6 +7,9 @@
         <label>Responsible Waiter: {{invoice.responsible_waiter_name}}</label>
         <br/>
         <label>Items:</label>
+        <div v-for="item in invoice.items">
+            <label class="tab">{{item.name}} x {{item.price}}€</label>
+        </div>
         <br/>
         <label>Total: {{invoice.total_price}}</label>
 
@@ -29,3 +32,9 @@
         }
     }
 </script>
+
+<style>
+    .tab{
+        margin-left: 5em;
+    }
+</style>
