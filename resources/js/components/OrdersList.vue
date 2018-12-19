@@ -28,7 +28,6 @@
                     <td>
                         <div v-if="order.state == 'confirmed'">
                             <button type="Submit" class="btn btn-primary btn-sm btn-block" @click="assignOrderToCook(order, index)">Assign to me</button>
-                            <br></br>
                         </div>
                         <button type="Submit" class="btn btn-danger btn-sm btn-block" @click="declareOrderAsPrepared(order, index)">Prepared</button>
                     </td>
