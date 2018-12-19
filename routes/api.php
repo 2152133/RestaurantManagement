@@ -68,3 +68,5 @@ Route::get('/meals/{mealId}/confirmedOrders', 'OrderController@getConfirmedOrder
 
 //For a meal from a waiter, get it's orders
 Route::get('/meals/{mealId}/pendingOrders', 'OrderController@getPendingOrdersForMeal');
+// Declare a invoice as paid
+Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');

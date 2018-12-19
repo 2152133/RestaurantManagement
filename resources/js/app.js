@@ -32,6 +32,7 @@ const pendingInvoicesComponent = Vue.component('pending-invoices', require('./co
 Vue.component('invoices-list', require('./components/InvoicesList.vue'));
 const meals_of_waiter = Vue.component('waiterMeals', require('./components/Meals.vue'));
 Vue.component('meals-list', require('./components/MealsList.vue'));
+Vue.component('edit-nif-name', require('./components/PendingInvoicesNifName.vue'));
 
 const routes = [
     {path: '/', redirect: '/orders'},

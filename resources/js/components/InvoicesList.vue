@@ -1,34 +1,43 @@
 <template>
     <div>
-        <pagination :objects="invoices" :meta="meta" :links="links" @refreshObjects="refreshInvoices"></pagination>
-        <table class="table">
-            <thead>
-                <tr>
-                  <th>Id</th>
-                  <th>State</th>
-                  <th>Meal Id</th>
-                  <th>Table Number</th>
-                  <th>responsible_waiter_id</th>
-                  <th>responsible_waiter_name</th>
-                  <th>Total Price</th>
-                  <th>created_at</th>
-                  <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(invoice,index) in invoices" :key="invoice.id">
-                    <td>{{invoice.id}}</td>
-                    <td>{{invoice.state}}</td>
-                    <td>{{invoice.meal_id}}</td>
-                    <td>{{invoice.table_number}}</td>
-                    <td>{{invoice.responsible_waiter_id}}</td>
-                    <td>{{invoice.responsible_waiter_name}}</td>
-                    <td>{{invoice.total_price}}</td>
-                    <td>{{invoice.created_at.date}}</td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
+        <edit-nif-name v-if="editingNifName" :invoice="currentInvoice" @declareAsPaid="endEditingSave" @cancelEditing="endEditingCancel"></edit-nif-name>
+        <div v-if="!editingNifName">
+            <pagination :objects="invoices" :meta="meta" :links="links" @refreshObjects="refreshInvoices"></pagination>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>State</th>
+                        <th>Meal Id</th>
+                        <th>Table Number</th>
+                        <th>responsible_waiter_id</th>
+                        <th>responsible_waiter_name</th>
+                        <th>nif</th>
+                        <th>name</th>
+                        <th>Total Price</th>
+                        <th>created_at</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(invoice,index) in invoices" :key="invoice.id">
+                        <td>{{invoice.id}}</td>
+                        <td>{{invoice.state}}</td>
+                        <td>{{invoice.meal_id}}</td>
+                        <td>{{invoice.table_number}}</td>
+                        <td>{{invoice.responsible_waiter_id}}</td>
+                        <td>{{invoice.responsible_waiter_name}}</td>
+                        <td>{{invoice.nif}}</td>
+                        <td>{{invoice.name}}</td>
+                        <td>{{invoice.total_price}}</td>
+                        <td>{{invoice.created_at.date}}</td>
+                        <td>
+                            <button type="Submit" class="btn btn-danger btn-sm btn-block" @click="fillNifName(invoice, index)">Paid</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -37,12 +46,28 @@
         props: ["invoices", "meta", "links", "user"],
         data: function() {
             return {
-                
+                editingNifName: false,
+                currentInvoice: {},
             }
         },
         methods: {
             refreshInvoices(invoices, meta, links){
                 this.$emit('refreshInvoices', invoices, meta, links);
+            },
+            fillNifName(invoice, index){
+                this.editingNifName = true;
+                this.currentInvoice = invoice;
+            },
+            endEditingSave($pendingInvoices, $meta, $links){
+                this.invoices = $pendingInvoices;
+                this.meta = $meta;
+                this.links = $links;
+                this.editingNifName = false;
+                this.currentInvoice = {};
+            },
+            endEditingCancel(){
+                this.editingNifName = false;
+                this.currentInvoice = {};
             }
         }
     }
