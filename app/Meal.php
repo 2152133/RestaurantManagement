@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Item extends Model
+class Meal extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,6 @@ class Item extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'name', 'type', 'description', 'photo_url', 'price',
     ];
 
     /**
@@ -21,11 +20,26 @@ class Item extends Model
      * @var array
      */
     protected $hidden = [
-        'deleted_at', 'created_at', 'updated_at',
+        'created_at', 'updated_at',
     ];
 
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function responsible_waiter()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function table()
+    {
+        return $this->belongsTo(RestaurantTable::class);
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
     }
 }
