@@ -18,6 +18,10 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
+// Update an item
+Route::patch('/item/{id}', 'ItemController@update');
+
+
 Route::middleware('auth:api')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -26,24 +30,20 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', 'AuthController@logout');
 });
 
-Route::post('/login', 'AuthController@login');
-Route::post('/register', 'AuthController@register');
-
-
-// List all items
-Route::get('/items', 'ItemController@index');
+Route::post('/login', 'AuthController@login')->name('login');
+Route::post('/register', 'UserControllerAPI@store');
 
 // List one item
 Route::get('/item/{id}', 'ItemController@show');
 
+// Delete one item
+Route::delete('/item/{id}', 'ItemController@destroy');
+
 // Create an item
 Route::post('/item', 'ItemController@store');
 
-// Update an item
-Route::patch('/item/{id}', 'ItemController@store');
-
-// Delete one item
-Route::delete('/item/{id}', 'ItemController@destroy');
+// List all items
+Route::get('/items', 'ItemController@index');
 
 // List all orders
 Route::get('/orders/all', 'OrderController@all');
@@ -59,3 +59,13 @@ Route::get('/invoices/pending', 'InvoiceController@getPending');
 
 // Declare a invoice as paid
 Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
+
+
+Route::get('users', 'UserControllerAPI@index');
+Route::get('users/emailavailable', 'UserControllerAPI@emailAvailable');
+Route::middleware('auth:api')->get('users/me', 'UserControllerAPI@myProfile');
+
+Route::get('user/{id}', 'UserControllerAPI@show');
+Route::patch('user/{id}', 'UserControllerAPI@update');
+Route::delete('user/{id}', 'UserControllerAPI@destroy');
+Route::post('users', 'UserControllerAPI@store');

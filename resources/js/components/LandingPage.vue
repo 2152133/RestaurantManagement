@@ -1,37 +1,36 @@
 <template>
-  <div>
+<div>
     <br>
     <div>
-      <h2>{{ title }}</h2>
-      <button type="button" class="btn btn-warning" style="float:right">
-          <router-link :to="{name: 'notifications'}">
-            Notifications
-          </router-link>
-        <span class="badge badge-light">{{numberOfNotifications}}</span>
-        
-      </button>
+        <h2>{{ title }}</h2>
+        <button type="button" class="btn btn-warning" style="float:right">
+            <router-link :to="{name: 'notifications'}">Notifications</router-link>
+            <span class="badge badge-light">{{numberOfNotifications}}</span>
+        </button>
     </div>
     <br>
     <br>
+            <profile-edit></profile-edit>
+
     <div>
-      <div class="container" v-if="isShiftActive()">
-        <h3>Status:</h3>
-        {{isWorkingMessage}}
-        <br>
-        <h3>Service started at:</h3>
-        {{ user.last_shift_start }}
-        <br>
-        <h3>Time elapsed from service start:</h3>
-      </div>
-      <div class="container" v-else>
-        <h3>Status:</h3>
-        {{isWorkingMessage}}
-        <br>
-        <h3>Service finished at:</h3>
-        {{ user.last_shift_end }}
-        <br>
-        <h3>Time elapsed from service end:</h3>
-      </div>
+        <div class="container" v-if="isShiftActive()">
+            <h3>Status:</h3>
+            {{isWorkingMessage}}
+            <br>
+            <h3>Service started at:</h3>
+            {{ user.last_shift_start }}
+            <br>
+            <h3>Time elapsed from service start:</h3>
+        </div>
+        <div class="container" v-else>
+            <h3>Status:</h3>
+            {{isWorkingMessage}}
+            <br>
+            <h3>Service finished at:</h3>
+            {{ user.last_shift_end }}
+            <br>
+            <h3>Time elapsed from service end:</h3>
+        </div>
     </div>
     <br>
     <button v-on:click.prevent="startShift()" class="btn btn-success">Start Shift</button>

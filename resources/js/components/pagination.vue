@@ -24,7 +24,7 @@
         }
         ,
         methods: {
-            getObjects: function(url) {    
+            getObjects: function(url) {
                 axios.get(url)
                 .then(response => {
                     this.objects = response.data.data;
