@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 use App\Order;
 
 class Invoice extends JsonResource
@@ -15,7 +16,12 @@ class Invoice extends JsonResource
      */
     public function toArray($request)
     {
-        $items = Order::join('items', 'orders.item_id', '=', 'items.id')->where('meal_id', $this->meal->id)->orderby('items.name')->get();
+        $items = Order::join('items', 'orders.item_id', '=', 'items.id')
+                    ->select(DB::raw('items.name, items.price, count(items.id) as quantity'))
+                    ->where('orders.meal_id', $this->meal->id)
+                    ->groupBy('items.id')
+                    ->orderby('items.name')
+                    ->get();
 
         return [
             'id' => $this->id,
