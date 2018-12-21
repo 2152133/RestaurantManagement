@@ -17,6 +17,14 @@ class InvoiceController extends Controller
         return InvoiceResource::collection($invoices);
     }
 
+    public function getPaid(){
+        // Get pending invoices
+        $invoices = Invoice::where('state', 'paid')->orderBy('id', 'asc')->paginate(5);
+
+        // Return collection of invoices as a resource
+        return InvoiceResource::collection($invoices);
+    }
+
     public function declareInvoiceAsPaid(Request $request){
         try{
             $requestInvoice = json_decode($request->invoice);
