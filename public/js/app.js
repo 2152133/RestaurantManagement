@@ -14344,8 +14344,10 @@ var pendingInvoicesComponent = Vue.component('pending-invoices', __webpack_requi
 Vue.component('invoices-list', __webpack_require__(69));
 Vue.component('edit-nif-name', __webpack_require__(72));
 var invoiceDetailsComponent = Vue.component('invoice-details', __webpack_require__(75));
+var meals_of_waiter = Vue.component('waiterMeals', __webpack_require__(108));
+Vue.component('meals-list', __webpack_require__(111));
 
-var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/pendingInvoices', component: pendingInvoicesComponent }];
+var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/pendingInvoices', component: pendingInvoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }];
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
@@ -50858,6 +50860,17 @@ var render = function() {
                 ])
               ],
               1
+            ),
+            _vm._v(" "),
+            _c(
+              "a",
+              { staticClass: "nav-item nav-link" },
+              [
+                _c("router-link", { attrs: { to: "mealsOfWaiter" } }, [
+                  _vm._v("My Meals")
+                ])
+              ],
+              1
             )
           ])
         ]
@@ -51235,7 +51248,6 @@ module.exports = Component.exports
 //
 //
 //
-//
 
 module.exports = {
     props: ["orders", "meta", "links", "user"],
@@ -51307,10 +51319,7 @@ var render = function() {
                           }
                         },
                         [_vm._v("Assign to me")]
-                      ),
-                      _vm._v(" "),
-                      _c("br"),
-                      _c("br")
+                      )
                     ])
                   : _vm._e(),
                 _vm._v(" "),
@@ -53043,6 +53052,412 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */,
+/* 87 */,
+/* 88 */,
+/* 89 */,
+/* 90 */,
+/* 91 */,
+/* 92 */,
+/* 93 */,
+/* 94 */,
+/* 95 */,
+/* 96 */,
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */,
+/* 101 */,
+/* 102 */,
+/* 103 */,
+/* 104 */,
+/* 105 */,
+/* 106 */,
+/* 107 */,
+/* 108 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(109)
+/* template */
+var __vue_template__ = __webpack_require__(110)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/Meals.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-8d565496", Component.options)
+  } else {
+    hotAPI.reload("data-v-8d565496", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 109 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+  data: function data() {
+    return {
+      title: "My meals",
+      currentUser: 13,
+      usersMeals: [],
+      usersMealsMeta: [],
+      usersMealsLinks: [],
+      confirmedMealOrders: [],
+      confirmedOrdersMeta: [],
+      confirmedOrdersLinks: [],
+      pendingMealOrders: [],
+      pendingOrdersMeta: [],
+      pendingOrdersLinks: []
+    };
+  },
+
+  methods: {},
+
+  mounted: function mounted() {
+    var _this = this;
+
+    axios.get("/api/meals/waiterMeals/" + this.currentUser).then(function (response) {
+      _this.usersMeals = response.data.data;
+      _this.usersMealsMeta = response.data.meta;
+      _this.usersMealsLinks = response.data.links;
+
+      //CONFIRMED
+
+      _this.usersMeals.forEach(function (index) {
+        axios.get("/api/meals/" + index.id + "/confirmedOrders").then(function (response) {
+          _this.confirmedMealOrders = response.data.data;
+          _this.confirmedOrdersMeta = response.data.meta;
+          _this.confirmedOrdersLinks = response.data.links;
+        }).catch(function (error) {
+          console.log(error);
+        });
+      });
+
+      //PENDING
+      _this.usersMeals.forEach(function (index) {
+        axios.get("/api/meals/" + index.id + "/pendingOrders").then(function (response) {
+          _this.pendingMealOrders = response.data.data;
+          _this.pendingOrdersMeta = response.data.meta;
+          _this.pendingOrdersLinks = response.data.links;
+        }).catch(function (error) {
+          console.log(error);
+        });
+      });
+    }).catch(function (error) {
+      console.log(error);
+    });
+  }
+};
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "jumbotron" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.title))])
+      ]),
+      _vm._v(" "),
+      _c("meals-list", {
+        attrs: {
+          meals: _vm.usersMeals,
+          meta: _vm.usersMealsMeta,
+          links: _vm.usersMealsLinks
+        }
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        [
+          _c("h3", [_vm._v("Confirmed Orders")]),
+          _vm._v(" "),
+          _c("orders-list", {
+            attrs: {
+              orders: _vm.confirmedMealOrders,
+              meta: _vm.confirmedOrdersMeta,
+              links: _vm.confirmedOrdersLinks
+            }
+          }),
+          _vm._v(" "),
+          _c("h3", [_vm._v("Pending Orders")]),
+          _vm._v(" "),
+          _c("orders-list", {
+            attrs: {
+              orders: _vm.pendingMealOrders,
+              meta: _vm.pendingOrdersMeta,
+              links: _vm.pendingOrdersLinks
+            }
+          })
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-8d565496", module.exports)
+  }
+}
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(112)
+/* template */
+var __vue_template__ = __webpack_require__(113)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/MealsList.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-2d0b94f3", Component.options)
+  } else {
+    hotAPI.reload("data-v-2d0b94f3", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 112 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+  props: ["meals", "meta", "links", "user"],
+  data: function data() {
+    return {};
+  },
+  methods: {}
+};
+
+/***/ }),
+/* 113 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("pagination", {
+        attrs: { objects: _vm.meals, meta: _vm.meta, links: _vm.links }
+      }),
+      _vm._v(" "),
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.meals, function(meal) {
+            return _c("tr", { key: meal.id }, [
+              _c("td", [_vm._v(_vm._s(meal.id))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(meal.state))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(meal.table_number))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(meal.start))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(meal.end))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(meal.total_price_preview))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(meal.created_at))]),
+              _vm._v(" "),
+              _c("td"),
+              _vm._v(" "),
+              _vm._m(1, true)
+            ])
+          })
+        )
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Id")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("State")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Table Number")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Start")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("End")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Total Price Preview")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Created At")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Actions")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c(
+        "button",
+        { staticClass: "btn btn-outline-primary", attrs: { type: "button" } },
+        [_vm._v("See meal's details")]
+      )
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-2d0b94f3", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

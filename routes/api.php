@@ -62,3 +62,17 @@ Route::get('/invoices/paid', 'InvoiceController@getPaid');
 
 // Declare a invoice as paid
 Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
+
+//Get all meals
+Route::get('/meals/all', 'MealController@all');
+
+// Get all waiter's meals
+Route::get('/meals/waiterMeals/{responsibleWaiterId}', 'MealController@waiterMeals');
+
+//For a meal from a waiter, get it's orders
+Route::get('/meals/{mealId}/confirmedOrders', 'OrderController@getConfirmedOrdersForMeal');
+
+//For a meal from a waiter, get it's orders
+Route::get('/meals/{mealId}/pendingOrders', 'OrderController@getPendingOrdersForMeal');
+
+
