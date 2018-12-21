@@ -27,7 +27,8 @@
             getObjects: function(url) {
                 axios.get(url)
                 .then(response => {
-                    this.objects = response.data.data;
+                    //this.objects = response.data.data;
+                    Object.assign(this.objects, response.data.data);
                     this.makePagination(response.data.meta, response.data.links);
                     this.$emit('refreshObjects', this.objects, this.meta, this.links);
                 })

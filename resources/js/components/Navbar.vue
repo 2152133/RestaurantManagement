@@ -25,8 +25,8 @@
                     
                 </li>
                 <li class="navbar-item">
-                    <router-link class="nav-item nav-link" to="login" v-if="!this.$store.state.user">Login</router-link>
-                    <router-link class="nav-item nav-link" to="logout" v-if="this.$store.state.user">Logout</router-link>
+                    <router-link class="nav-item nav-link" to="login" v-if="!this.$store.getters.isAuthenticated">Login</router-link>
+                    <router-link class="nav-item nav-link" to="logout" v-if="this.$store.getters.isAuthenticated">Logout</router-link>
                 </li>
             </ul>
           </div>

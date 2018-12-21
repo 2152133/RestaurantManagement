@@ -39,17 +39,19 @@ class AuthController extends Controller
     {
         return $request->all();
     }
-    // public function logout()
-    // {
-    //     auth()->user()->tokens->each(function ($token, $key) {
-    //         $token->delete();
-    //     });
-    //     return response()->json('Logged out successfully', 200);
-    // }
     public function logout()
     {
-        \Auth::guard('api')->user()->token()->revoke();
-        \Auth::guard('api')->user()->token()->delete();
+        dd(auth());
+        auth()->user()->tokens->each(function ($token, $key) {
+            $token->delete();
+        });
+        //return response()->json('Logged out successfully', 200);
         return response()->json(['msg'=>'Token revoked'], 200);
     }
+    // public function logout()
+    // {
+    //     \Auth::guard('api')->user()->token()->revoke();
+    //     \Auth::guard('api')->user()->token()->delete();
+    //     return response()->json(['msg'=>'Token revoked'], 200);
+    // }
 }

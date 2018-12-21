@@ -2,7 +2,7 @@
     <div>
         <br>
         <div class="alert" :class="typeofmsg" v-if="showMessage">             
-            <button type="button" class="close-btn" v-on:click="showMessage=false"></button>
+            <button type="button" class="close-btn" v-on:click="showMessage=false">&times;</button>
             <strong>{{ message }}</strong>
         </div>
         <div class="jumbotron">
@@ -32,6 +32,9 @@
                         this.typeofmsg = "alert-success";
                         this.message = "User has logged out correctly";
                         this.showMessage = true;
+                        setTimeout(() => {
+                            this.$router.push("/items")
+                        }, 2000);
                     })
                     .catch(error => {
                         this.$store.commit('clearUserAndToken');
