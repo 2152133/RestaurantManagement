@@ -14346,7 +14346,7 @@ Vue.component('edit-nif-name', __webpack_require__(120));
 var invoiceDetailsComponent = Vue.component('invoice-details', __webpack_require__(75));
 var meals_of_waiter = Vue.component('waiterMeals', __webpack_require__(108));
 Vue.component('meals-list', __webpack_require__(111));
-Vue.component('edit-nif-name', __webpack_require__(72));
+Vue.component('edit-nif-name', __webpack_require__(120));
 var create_meal = Vue.component('create-meals', __webpack_require__(123));
 
 var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/invoices', component: invoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }, { path: '/createMeal', component: create_meal, name: 'create_meal' }];
@@ -52271,12 +52271,7 @@ if (false) {
 }
 
 /***/ }),
-/* 72 */
-/***/ (function(module, exports) {
-
-throw new Error("Module build failed: Error: ENOENT: no such file or directory, open 'C:\\Users\\Jose\\Google Drive\\Formacao\\IPL\\3_ano\\5_Semestre\\DAD\\2018-2019\\Projeto\\RestaurantManagement\\resources\\js\\components\\cashier\\PendingInvoicesNifName.vue'");
-
-/***/ }),
+/* 72 */,
 /* 73 */,
 /* 74 */,
 /* 75 */
