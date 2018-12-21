@@ -1,5 +1,14 @@
 <template>
   <div>
+    <button type="button" class="btn btn-outline-success" style="float:right">
+      <router-link :to="{name: 'create_meal'}">Create Meal</router-link>
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-warning"
+      style="float:right"
+      v-on:click.prevent="showUpdate()"
+    >Add order to meal</button>
     <pagination :objects="meals" :meta="meta" :links="links"></pagination>
     <table class="table">
       <thead>
@@ -25,7 +34,11 @@
           <td>{{meal.created_at}}</td>
           <td></td>
           <td>
-            <button type="button" class="btn btn-outline-primary">See meal's details</button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              v-on:click.prevent="showDiv()"
+            >See meal's details</button>
           </td>
         </tr>
       </tbody>
@@ -38,6 +51,13 @@ module.exports = {
   data: function() {
     return {};
   },
-  methods: {}
+  methods: {
+    showDiv: function() {
+      this.$emit("show-div");
+    },
+    showUpdate: function() {
+      this.$emit("show-update");
+    }
+  }
 };
 </script>

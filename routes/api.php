@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\RestaurantTableController;
 
 
 /*
@@ -32,6 +33,7 @@ Route::post('/register', 'AuthController@register');
 
 // List all items
 Route::get('/items', 'ItemController@index');
+Route::get('/items/all', 'ItemController@all');
 
 // List one item
 Route::get('/item/{id}', 'ItemController@show');
@@ -68,5 +70,18 @@ Route::get('/meals/{mealId}/confirmedOrders', 'OrderController@getConfirmedOrder
 
 //For a meal from a waiter, get it's orders
 Route::get('/meals/{mealId}/pendingOrders', 'OrderController@getPendingOrdersForMeal');
+
+//Get all restaurant tables
+Route::get('/restaurantTables/all', 'RestaurantTableController@all');
+
+//Get tables without active meals
+Route::get('/meals/tablesWithoutActiveMeals', 'MealController@getTablesWitoutActiveMeals');
+
+//Create meal
+Route::post('/meal/createMeal/{table_number}/{waiter_id}', 'MealController@createMeal');
+
+//Add an order to a meal (create order)
+Route::post('/meal/addOrder/{meal_id}/{item_id}', 'OrderController@addOrderToMeal');
+
 // Declare a invoice as paid
 Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
