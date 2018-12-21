@@ -57,6 +57,7 @@ class OrderController extends Controller
             ->join('meals', 'meals.id', '=', 'orders.meal_id')
             ->where('orders.meal_id', '=', $meal_id)
             ->where('orders.state', '=', 'pending')
+            ->select('orders.state', 'orders.id', 'orders.meal_id', 'orders.responsible_cook_id', 'orders.start', 'orders.end', 'orders.item_id', 'orders.created_at')
             ->paginate(10);
         return $pendingOrdersOfMeal;
     }
@@ -67,13 +68,13 @@ class OrderController extends Controller
             ->join('meals', 'meals.id', '=', 'orders.meal_id')
             ->where('orders.meal_id', '=', $meal_id)
             ->where('orders.state', '=', 'confirmed')
+            ->select('orders.state', 'orders.id', 'orders.meal_id', 'orders.responsible_cook_id', 'orders.start', 'orders.end', 'orders.item_id', 'orders.created_at')
             ->paginate(10);
         return $confirmedOrdersOfMeal;
     }
 
     public function addOrderToMeal($meal_number, $item_id)
     {
-
         Order::create([
             'state' => 'pending',
             'item_id' => $item_id,

@@ -41,8 +41,11 @@
         <option v-for="item in allItems" v-bind:key="item.id">{{item.id}}</option>
       </select>
       <br>
-      <button type="button" class="btn btn-outline-success"
-      v-on:click.prevent="addOrderToMeal(selectedOptionMeal, selectedOptionItem, currentUser)">Add order</button>
+      <button
+        type="button"
+        class="btn btn-outline-success"
+        v-on:click.prevent="addOrderToMeal(selectedOptionMeal, selectedOptionItem, currentUser)"
+      >Add order</button>
     </div>
   </div>
 </template>
@@ -75,14 +78,11 @@ module.exports = {
     showUpdate: function() {
       this.isUpdateToggled = true;
     },
-    addOrderToMeal:function(meal_number, item_number){
-      axios.post("/api/meal/addOrder/"+ meal_number+"/"+item_number)
-      .then(response=>{
-
-      })
-      .catch(error=>{
-
-      });
+    addOrderToMeal: function(meal_number, item_number) {
+      axios
+        .post("/api/meal/addOrder/" + meal_number + "/" + item_number)
+        .then(response => {})
+        .catch(error => {});
     }
   },
 
@@ -95,7 +95,6 @@ module.exports = {
         this.usersMealsLinks = response.data.links;
 
         //CONFIRMED
-
         this.usersMeals.forEach(index => {
           axios
             .get("/api/meals/" + index.id + "/confirmedOrders")
@@ -103,6 +102,7 @@ module.exports = {
               this.confirmedMealOrders = response.data.data;
               this.confirmedOrdersMeta = response.data.meta;
               this.confirmedOrdersLinks = response.data.links;
+              console.log(this.confirmedMealOrders);
             })
             .catch(function(error) {
               console.log(error);
@@ -117,6 +117,7 @@ module.exports = {
               this.pendingMealOrders = response.data.data;
               this.pendingOrdersMeta = response.data.meta;
               this.pendingOrdersLinks = response.data.links;
+              console.log(this.pendingMealOrders);
             })
             .catch(function(error) {
               console.log(error);
@@ -131,7 +132,6 @@ module.exports = {
       .get("/api/items/all")
       .then(response => {
         this.allItems = response.data;
-        console.log(this.allItems);
       })
       .catch(error => {});
   }
