@@ -65,115 +65,6 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file.
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -483,6 +374,115 @@ module.exports = {
 
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file.
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
@@ -516,7 +516,7 @@ module.exports = g;
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 var normalizeHeaderName = __webpack_require__(24);
 
 var DEFAULT_CONTENT_TYPE = {
@@ -13742,7 +13742,7 @@ process.umask = function() { return 0; };
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 var settle = __webpack_require__(25);
 var buildURL = __webpack_require__(27);
 var parseHeaders = __webpack_require__(28);
@@ -14300,7 +14300,7 @@ function applyToTag (styleElement, obj) {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(15);
-module.exports = __webpack_require__(89);
+module.exports = __webpack_require__(80);
 
 
 /***/ }),
@@ -14340,16 +14340,16 @@ Vue.component('orders-list', __webpack_require__(51));
 Vue.component('pagination', __webpack_require__(54));
 var landing_page = Vue.component('landing_page', __webpack_require__(57));
 var notifications_page = Vue.component('notifications_page', __webpack_require__(60));
-var pendingInvoicesComponent = Vue.component('pending-invoices', __webpack_require__(66));
+var invoicesComponent = Vue.component('pending-invoices', __webpack_require__(117));
 Vue.component('invoices-list', __webpack_require__(69));
-Vue.component('edit-nif-name', __webpack_require__(72));
+Vue.component('edit-nif-name', __webpack_require__(120));
 var invoiceDetailsComponent = Vue.component('invoice-details', __webpack_require__(75));
-var meals_of_waiter = Vue.component('waiterMeals', __webpack_require__(80));
-Vue.component('meals-list', __webpack_require__(83));
+var meals_of_waiter = Vue.component('waiterMeals', __webpack_require__(108));
+Vue.component('meals-list', __webpack_require__(111));
 Vue.component('edit-nif-name', __webpack_require__(72));
-var create_meal = Vue.component('create-meals', __webpack_require__(86));
+var create_meal = Vue.component('create-meals', __webpack_require__(123));
 
-var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/pendingInvoices', component: pendingInvoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }, { path: '/createMeal', component: create_meal, name: 'create_meal' }];
+var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/invoices', component: invoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }, { path: '/createMeal', component: create_meal, name: 'create_meal' }];
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
@@ -35536,7 +35536,7 @@ module.exports = __webpack_require__(21);
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 var bind = __webpack_require__(6);
 var Axios = __webpack_require__(23);
 var defaults = __webpack_require__(3);
@@ -35623,7 +35623,7 @@ function isSlowBuffer (obj) {
 
 
 var defaults = __webpack_require__(3);
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 var InterceptorManager = __webpack_require__(32);
 var dispatchRequest = __webpack_require__(33);
 
@@ -35708,7 +35708,7 @@ module.exports = Axios;
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -35788,7 +35788,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -35861,7 +35861,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 // Headers whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
@@ -35921,7 +35921,7 @@ module.exports = function parseHeaders(headers) {
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -36039,7 +36039,7 @@ module.exports = btoa;
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -36099,7 +36099,7 @@ module.exports = (
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -36158,7 +36158,7 @@ module.exports = InterceptorManager;
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 var transformData = __webpack_require__(34);
 var isCancel = __webpack_require__(10);
 var defaults = __webpack_require__(3);
@@ -36251,7 +36251,7 @@ module.exports = function dispatchRequest(config) {
 "use strict";
 
 
-var utils = __webpack_require__(1);
+var utils = __webpack_require__(0);
 
 /**
  * Transform the data for a request or a response
@@ -50270,7 +50270,7 @@ if (inBrowser && window.Vue) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(44)
 /* template */
@@ -50756,7 +50756,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = null
 /* template */
@@ -50857,8 +50857,8 @@ var render = function() {
               "a",
               { staticClass: "nav-item nav-link" },
               [
-                _c("router-link", { attrs: { to: "pendingInvoices" } }, [
-                  _vm._v("PendingInvoices")
+                _c("router-link", { attrs: { to: "Invoices" } }, [
+                  _vm._v("Invoices")
                 ])
               ],
               1
@@ -50916,7 +50916,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(49)
 /* template */
@@ -51165,7 +51165,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(52)
 /* template */
@@ -51389,7 +51389,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(55)
 /* template */
@@ -51555,7 +51555,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(58)
 /* template */
@@ -51815,7 +51815,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(61)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(64)
 /* template */
@@ -51868,7 +51868,7 @@ var content = __webpack_require__(62);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(13)("5bfbad83", content, false, {});
+var update = __webpack_require__(13)("fc46943a", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -52033,287 +52033,14 @@ if (false) {
 }
 
 /***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(67)
-/* template */
-var __vue_template__ = __webpack_require__(68)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/cashier/PendingInvoices.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cf37ed94", Component.options)
-  } else {
-    hotAPI.reload("data-v-cf37ed94", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 67 */
-/***/ (function(module, exports) {
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-module.exports = {
-    data: function data() {
-        return {
-            title: 'Pending Invoices',
-            showSuccess: false,
-            showFailure: false,
-            successMessage: '',
-            failMessage: '',
-            currentInvoice: {},
-            currentUser: '52',
-            pendingInvoices: [],
-            pendingInvoicesMeta: [],
-            pendingInvoicesLinks: [],
-            paidInvoices: [],
-            paidInvoicesMeta: [],
-            paidInvoicesLinks: [],
-            editingNifName: false,
-            viewingDetails: false
-        };
-    },
-
-    methods: {
-        loadPendingInvoices: function loadPendingInvoices() {
-            var _this = this;
-
-            axios.get('/api/invoices/pending/').then(function (response) {
-                // handle success
-                _this.pendingInvoices = response.data.data;
-                _this.pendingInvoicesMeta = response.data.meta;
-                _this.pendingInvoicesLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-            axios.get('/api/invoices/paid/').then(function (response) {
-                // handle success
-                _this.paidInvoices = response.data.data;
-                _this.paidInvoicesMeta = response.data.meta;
-                _this.paidInvoicesLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-        },
-        refreshPendingInvoices: function refreshPendingInvoices(newPendingInvoices, newMeta, newLinks) {
-            this.pendingInvoices = newPendingInvoices;
-            this.pendingInvoicesMeta = newMeta;
-            this.pendingInvoicesLinks = newLinks;
-        },
-        refreshPaidInvoices: function refreshPaidInvoices(newPendingInvoices, newMeta, newLinks) {
-            this.paidInvoices = newPendingInvoices;
-            this.paidInvoicesMeta = newMeta;
-            this.paidInvoicesLinks = newLinks;
-        },
-        fillNifName: function fillNifName(invoice) {
-            if (invoice.state == 'pending') {
-                this.editingNifName = true;
-                this.currentInvoice = invoice;
-            }
-        },
-        endEditingSave: function endEditingSave($pendingInvoices, $meta, $links) {
-            this.invoices = $pendingInvoices;
-            this.meta = $meta;
-            this.links = $links;
-            this.editingNifName = false;
-            this.currentInvoice = {};
-        },
-        endEditingCancel: function endEditingCancel() {
-            this.editingNifName = false;
-            this.currentInvoice = {};
-        },
-        seeDetails: function seeDetails(invoice) {
-            this.viewingDetails = true;
-            this.currentInvoice = invoice;
-        },
-        endViewingDetails: function endViewingDetails() {
-            this.viewingDetails = false;
-            this.currentInvoice = {};
-        }
-    },
-    mounted: function mounted() {
-        this.loadPendingInvoices();
-    }
-};
-
-/***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("div", { staticClass: "jumbotron" }, [
-        _c("h1", [_vm._v(_vm._s(_vm.title))])
-      ]),
-      _vm._v(" "),
-      _vm.editingNifName
-        ? _c("edit-nif-name", {
-            attrs: { invoice: _vm.currentInvoice },
-            on: {
-              declareAsPaid: _vm.endEditingSave,
-              cancelEditing: _vm.endEditingCancel
-            }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.viewingDetails
-        ? _c("invoice-details", {
-            attrs: { invoice: _vm.currentInvoice },
-            on: { endViewingDetails: _vm.endViewingDetails }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.editingNifName && !_vm.viewingDetails
-        ? _c(
-            "div",
-            [
-              _c("invoices-list", {
-                attrs: {
-                  invoices: _vm.pendingInvoices,
-                  meta: _vm.pendingInvoicesMeta,
-                  links: _vm.pendingInvoicesLinks
-                },
-                on: {
-                  refreshInvoices: _vm.refreshPendingInvoices,
-                  declareAsPaid: _vm.loadPendingInvoices,
-                  fillNifName: _vm.fillNifName,
-                  seeDetails: _vm.seeDetails
-                }
-              }),
-              _vm._v(" "),
-              _c("invoices-list", {
-                attrs: {
-                  invoices: _vm.paidInvoices,
-                  meta: _vm.paidInvoicesMeta,
-                  links: _vm.paidInvoicesLinks
-                },
-                on: {
-                  refreshInvoices: _vm.refreshPaidInvoices,
-                  seeDetails: _vm.seeDetails
-                }
-              }),
-              _vm._v(" "),
-              _vm.showSuccess || _vm.showFailure
-                ? _c(
-                    "div",
-                    {
-                      staticClass: "alert",
-                      class: {
-                        "alert-success": _vm.showSuccess,
-                        "alert-danger": _vm.showFailure
-                      }
-                    },
-                    [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "close-btn",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              _vm.showSuccess = false
-                              _vm.showFailure = false
-                            }
-                          }
-                        },
-                        [_vm._v("×")]
-                      ),
-                      _vm._v(" "),
-                      _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
-                      _vm._v(" "),
-                      _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
-                    ]
-                  )
-                : _vm._e()
-            ],
-            1
-          )
-        : _vm._e()
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-cf37ed94", module.exports)
-  }
-}
-
-/***/ }),
+/* 66 */,
+/* 67 */,
+/* 68 */,
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(70)
 /* template */
@@ -52545,228 +52272,13 @@ if (false) {
 
 /***/ }),
 /* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(73)
-/* template */
-var __vue_template__ = __webpack_require__(74)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/cashier/PendingInvoicesNifName.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-849ff360", Component.options)
-  } else {
-    hotAPI.reload("data-v-849ff360", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 73 */
 /***/ (function(module, exports) {
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-module.exports = {
-    props: ['invoice', 'index'],
-    data: function data() {
-        return {};
-    },
-
-    methods: {
-        declareInvoiceAsPaid: function declareInvoiceAsPaid() {
-            var _this = this;
-
-            if (!(this.invoice.name && this.invoice.nif)) {
-                alert("Nif and name required");
-                return;
-            }
-            axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.invoice), user: this.currentUser }).then(function (response) {
-                axios.get('/api/invoices/pending').then(function (response) {
-                    // handle success
-                    $invoices = response.data.data;
-                    $meta = response.data.meta;
-                    $links = response.data.links;
-                    _this.$emit('declareAsPaid', $invoices, $meta, $links);
-                    console.log(response);
-                }).catch(function (error) {
-                    // handle error
-                    console.log(error);
-                }).then(function () {
-                    // always executed
-                });
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-        },
-        cancel: function cancel() {
-            this.$emit('cancelEditing');
-        }
-    }
-};
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open 'C:\\Users\\Jose\\Google Drive\\Formacao\\IPL\\3_ano\\5_Semestre\\DAD\\2018-2019\\Projeto\\RestaurantManagement\\resources\\js\\components\\cashier\\PendingInvoicesNifName.vue'");
 
 /***/ }),
-/* 74 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "form",
-      {
-        staticClass: "mb-3",
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-          }
-        }
-      },
-      [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", [_vm._v("Nif:")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.invoice.nif,
-                expression: "invoice.nif"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { type: "text", name: "nif" },
-            domProps: { value: _vm.invoice.nif },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.invoice, "nif", $event.target.value)
-              }
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", [_vm._v("Name:")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.invoice.name,
-                expression: "invoice.name"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { type: "text", name: "name" },
-            domProps: { value: _vm.invoice.name },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.invoice, "name", $event.target.value)
-              }
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-success",
-            on: {
-              click: function($event) {
-                _vm.declareInvoiceAsPaid()
-              }
-            }
-          },
-          [_vm._v("Save")]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-danger",
-            on: {
-              click: function($event) {
-                _vm.cancel()
-              }
-            }
-          },
-          [_vm._v("Cancel")]
-        )
-      ]
-    )
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-849ff360", module.exports)
-  }
-}
-
-/***/ }),
+/* 73 */,
+/* 74 */,
 /* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -52775,7 +52287,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(76)
 }
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(78)
 /* template */
@@ -52828,7 +52340,7 @@ var content = __webpack_require__(77);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(13)("80d289ce", content, false, {});
+var update = __webpack_require__(13)("43c06ff3", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -53051,14 +52563,47 @@ if (false) {
 
 /***/ }),
 /* 80 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */,
+/* 87 */,
+/* 88 */,
+/* 89 */,
+/* 90 */,
+/* 91 */,
+/* 92 */,
+/* 93 */,
+/* 94 */,
+/* 95 */,
+/* 96 */,
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */,
+/* 101 */,
+/* 102 */,
+/* 103 */,
+/* 104 */,
+/* 105 */,
+/* 106 */,
+/* 107 */,
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(81)
+var __vue_script__ = __webpack_require__(109)
 /* template */
-var __vue_template__ = __webpack_require__(82)
+var __vue_template__ = __webpack_require__(110)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -53097,7 +52642,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 81 */
+/* 109 */
 /***/ (function(module, exports) {
 
 //
@@ -53228,7 +52773,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 82 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -53418,15 +52963,15 @@ if (false) {
 }
 
 /***/ }),
-/* 83 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(84)
+var __vue_script__ = __webpack_require__(112)
 /* template */
-var __vue_template__ = __webpack_require__(85)
+var __vue_template__ = __webpack_require__(113)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -53465,7 +53010,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 84 */
+/* 112 */
 /***/ (function(module, exports) {
 
 //
@@ -53533,7 +53078,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 85 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -53662,15 +53207,530 @@ if (false) {
 }
 
 /***/ }),
-/* 86 */
+/* 114 */,
+/* 115 */,
+/* 116 */,
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(0)
+var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(87)
+var __vue_script__ = __webpack_require__(118)
 /* template */
-var __vue_template__ = __webpack_require__(88)
+var __vue_template__ = __webpack_require__(119)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/cashier/Invoices.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-1a38e3c6", Component.options)
+  } else {
+    hotAPI.reload("data-v-1a38e3c6", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 118 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    data: function data() {
+        return {
+            title: 'Pending Invoices',
+            showSuccess: false,
+            showFailure: false,
+            successMessage: '',
+            failMessage: '',
+            currentInvoice: {},
+            currentUser: '52',
+            pendingInvoices: [],
+            pendingInvoicesMeta: [],
+            pendingInvoicesLinks: [],
+            paidInvoices: [],
+            paidInvoicesMeta: [],
+            paidInvoicesLinks: [],
+            editingNifName: false,
+            viewingDetails: false
+        };
+    },
+
+    methods: {
+        loadPendingInvoices: function loadPendingInvoices() {
+            var _this = this;
+
+            axios.get('/api/invoices/pending/').then(function (response) {
+                // handle success
+                _this.pendingInvoices = response.data.data;
+                _this.pendingInvoicesMeta = response.data.meta;
+                _this.pendingInvoicesLinks = response.data.links;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+            axios.get('/api/invoices/paid/').then(function (response) {
+                // handle success
+                _this.paidInvoices = response.data.data;
+                _this.paidInvoicesMeta = response.data.meta;
+                _this.paidInvoicesLinks = response.data.links;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        refreshPendingInvoices: function refreshPendingInvoices(newPendingInvoices, newMeta, newLinks) {
+            this.pendingInvoices = newPendingInvoices;
+            this.pendingInvoicesMeta = newMeta;
+            this.pendingInvoicesLinks = newLinks;
+        },
+        refreshPaidInvoices: function refreshPaidInvoices(newPendingInvoices, newMeta, newLinks) {
+            this.paidInvoices = newPendingInvoices;
+            this.paidInvoicesMeta = newMeta;
+            this.paidInvoicesLinks = newLinks;
+        },
+        fillNifName: function fillNifName(invoice) {
+            if (invoice.state == 'pending') {
+                this.editingNifName = true;
+                this.currentInvoice = invoice;
+            }
+        },
+        endEditingSave: function endEditingSave($pendingInvoices, $meta, $links) {
+            this.invoices = $pendingInvoices;
+            this.meta = $meta;
+            this.links = $links;
+            this.editingNifName = false;
+            this.currentInvoice = {};
+        },
+        endEditingCancel: function endEditingCancel() {
+            this.editingNifName = false;
+            this.currentInvoice = {};
+        },
+        seeDetails: function seeDetails(invoice) {
+            this.viewingDetails = true;
+            this.currentInvoice = invoice;
+        },
+        endViewingDetails: function endViewingDetails() {
+            this.viewingDetails = false;
+            this.currentInvoice = {};
+        }
+    },
+    mounted: function mounted() {
+        this.loadPendingInvoices();
+    }
+};
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "jumbotron" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.title))])
+      ]),
+      _vm._v(" "),
+      _vm.editingNifName
+        ? _c("edit-nif-name", {
+            attrs: { invoice: _vm.currentInvoice },
+            on: {
+              declareAsPaid: _vm.endEditingSave,
+              cancelEditing: _vm.endEditingCancel
+            }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.viewingDetails
+        ? _c("invoice-details", {
+            attrs: { invoice: _vm.currentInvoice },
+            on: { endViewingDetails: _vm.endViewingDetails }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      !_vm.editingNifName && !_vm.viewingDetails
+        ? _c(
+            "div",
+            [
+              _c("invoices-list", {
+                attrs: {
+                  invoices: _vm.pendingInvoices,
+                  meta: _vm.pendingInvoicesMeta,
+                  links: _vm.pendingInvoicesLinks
+                },
+                on: {
+                  refreshInvoices: _vm.refreshPendingInvoices,
+                  declareAsPaid: _vm.loadPendingInvoices,
+                  fillNifName: _vm.fillNifName,
+                  seeDetails: _vm.seeDetails
+                }
+              }),
+              _vm._v(" "),
+              _c("invoices-list", {
+                attrs: {
+                  invoices: _vm.paidInvoices,
+                  meta: _vm.paidInvoicesMeta,
+                  links: _vm.paidInvoicesLinks
+                },
+                on: {
+                  refreshInvoices: _vm.refreshPaidInvoices,
+                  seeDetails: _vm.seeDetails
+                }
+              }),
+              _vm._v(" "),
+              _vm.showSuccess || _vm.showFailure
+                ? _c(
+                    "div",
+                    {
+                      staticClass: "alert",
+                      class: {
+                        "alert-success": _vm.showSuccess,
+                        "alert-danger": _vm.showFailure
+                      }
+                    },
+                    [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "close-btn",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.showSuccess = false
+                              _vm.showFailure = false
+                            }
+                          }
+                        },
+                        [_vm._v("×")]
+                      ),
+                      _vm._v(" "),
+                      _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
+                      _vm._v(" "),
+                      _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
+                    ]
+                  )
+                : _vm._e()
+            ],
+            1
+          )
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-1a38e3c6", module.exports)
+  }
+}
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(121)
+/* template */
+var __vue_template__ = __webpack_require__(122)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/cashier/InvoicesNifName.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-3da37f89", Component.options)
+  } else {
+    hotAPI.reload("data-v-3da37f89", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    props: ['invoice', 'index'],
+    data: function data() {
+        return {};
+    },
+
+    methods: {
+        declareInvoiceAsPaid: function declareInvoiceAsPaid() {
+            var _this = this;
+
+            if (!(this.invoice.name && this.invoice.nif)) {
+                alert("Nif and name required");
+                return;
+            }
+            if (/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)) {
+                axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.invoice), user: this.currentUser }).then(function (response) {
+                    axios.get('/api/invoices/pending').then(function (response) {
+                        // handle success
+                        $invoices = response.data.data;
+                        $meta = response.data.meta;
+                        $links = response.data.links;
+                        _this.$emit('declareAsPaid', $invoices, $meta, $links);
+                        console.log(response);
+                    }).catch(function (error) {
+                        // handle error
+                        alert(error);
+                        console.log(error);
+                    }).then(function () {
+                        // always executed
+                    });
+                }).catch(function (error) {
+                    // handle error
+                    console.log(error);
+                }).then(function () {
+                    // always executed
+                });
+            }
+        },
+        cancel: function cancel() {
+            this.$emit('cancelEditing');
+        }
+    }
+};
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "form",
+      {
+        staticClass: "mb-3",
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+          }
+        }
+      },
+      [
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Nif:")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.invoice.nif,
+                expression: "invoice.nif"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: {
+              type: "text",
+              name: "nif",
+              pattern: "[0-9]{9}",
+              title: "9 numbers"
+            },
+            domProps: { value: _vm.invoice.nif },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.invoice, "nif", $event.target.value)
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Name:")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.invoice.name,
+                expression: "invoice.name"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: {
+              type: "text",
+              name: "name",
+              pattern: "[a-zA-Z\\s]*",
+              title: "Only letters and spaces"
+            },
+            domProps: { value: _vm.invoice.name },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.invoice, "name", $event.target.value)
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            on: {
+              click: function($event) {
+                _vm.declareInvoiceAsPaid()
+              }
+            }
+          },
+          [_vm._v("Save")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-danger",
+            on: {
+              click: function($event) {
+                _vm.cancel()
+              }
+            }
+          },
+          [_vm._v("Cancel")]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-3da37f89", module.exports)
+  }
+}
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(124)
+/* template */
+var __vue_template__ = __webpack_require__(125)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -53709,7 +53769,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 87 */
+/* 124 */
 /***/ (function(module, exports) {
 
 //
@@ -53785,7 +53845,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 88 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -53886,12 +53946,6 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-7a453259", module.exports)
   }
 }
-
-/***/ }),
-/* 89 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);
