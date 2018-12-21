@@ -10,7 +10,7 @@
                 <a class="nav-item nav-link"><router-link to="orders">Orders</router-link></a>
                 <a class="nav-item nav-link"><router-link to="items">Items</router-link></a>
                 <a class="nav-item nav-link"><router-link to="dashboard">Dashboard</router-link></a>
-                <a class="nav-item nav-link"><router-link to="pendingInvoices">PendingInvoices</router-link></a>
+                <a class="nav-item nav-link"><router-link to="Invoices">Invoices</router-link></a>
                 <a class="nav-item nav-link"><router-link to="mealsOfWaiter">My Meals</router-link></a>
 
               </div>
