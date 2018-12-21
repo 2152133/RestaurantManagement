@@ -14340,14 +14340,14 @@ Vue.component('orders-list', __webpack_require__(51));
 Vue.component('pagination', __webpack_require__(54));
 var landing_page = Vue.component('landing_page', __webpack_require__(57));
 var notifications_page = Vue.component('notifications_page', __webpack_require__(60));
-var pendingInvoicesComponent = Vue.component('pending-invoices', __webpack_require__(66));
+var invoicesComponent = Vue.component('pending-invoices', __webpack_require__(117));
 Vue.component('invoices-list', __webpack_require__(69));
-Vue.component('edit-nif-name', __webpack_require__(72));
+Vue.component('edit-nif-name', __webpack_require__(120));
 var invoiceDetailsComponent = Vue.component('invoice-details', __webpack_require__(75));
 var meals_of_waiter = Vue.component('waiterMeals', __webpack_require__(108));
 Vue.component('meals-list', __webpack_require__(111));
 
-var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/pendingInvoices', component: pendingInvoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }];
+var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/invoices', component: invoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }];
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
@@ -50855,8 +50855,8 @@ var render = function() {
               "a",
               { staticClass: "nav-item nav-link" },
               [
-                _c("router-link", { attrs: { to: "pendingInvoices" } }, [
-                  _vm._v("PendingInvoices")
+                _c("router-link", { attrs: { to: "Invoices" } }, [
+                  _vm._v("Invoices")
                 ])
               ],
               1
@@ -52031,282 +52031,9 @@ if (false) {
 }
 
 /***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(67)
-/* template */
-var __vue_template__ = __webpack_require__(68)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/cashier/PendingInvoices.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cf37ed94", Component.options)
-  } else {
-    hotAPI.reload("data-v-cf37ed94", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 67 */
-/***/ (function(module, exports) {
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-module.exports = {
-    data: function data() {
-        return {
-            title: 'Pending Invoices',
-            showSuccess: false,
-            showFailure: false,
-            successMessage: '',
-            failMessage: '',
-            currentInvoice: {},
-            currentUser: '52',
-            pendingInvoices: [],
-            pendingInvoicesMeta: [],
-            pendingInvoicesLinks: [],
-            paidInvoices: [],
-            paidInvoicesMeta: [],
-            paidInvoicesLinks: [],
-            editingNifName: false,
-            viewingDetails: false
-        };
-    },
-
-    methods: {
-        loadPendingInvoices: function loadPendingInvoices() {
-            var _this = this;
-
-            axios.get('/api/invoices/pending/').then(function (response) {
-                // handle success
-                _this.pendingInvoices = response.data.data;
-                _this.pendingInvoicesMeta = response.data.meta;
-                _this.pendingInvoicesLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-            axios.get('/api/invoices/paid/').then(function (response) {
-                // handle success
-                _this.paidInvoices = response.data.data;
-                _this.paidInvoicesMeta = response.data.meta;
-                _this.paidInvoicesLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-        },
-        refreshPendingInvoices: function refreshPendingInvoices(newPendingInvoices, newMeta, newLinks) {
-            this.pendingInvoices = newPendingInvoices;
-            this.pendingInvoicesMeta = newMeta;
-            this.pendingInvoicesLinks = newLinks;
-        },
-        refreshPaidInvoices: function refreshPaidInvoices(newPendingInvoices, newMeta, newLinks) {
-            this.paidInvoices = newPendingInvoices;
-            this.paidInvoicesMeta = newMeta;
-            this.paidInvoicesLinks = newLinks;
-        },
-        fillNifName: function fillNifName(invoice) {
-            if (invoice.state == 'pending') {
-                this.editingNifName = true;
-                this.currentInvoice = invoice;
-            }
-        },
-        endEditingSave: function endEditingSave($pendingInvoices, $meta, $links) {
-            this.invoices = $pendingInvoices;
-            this.meta = $meta;
-            this.links = $links;
-            this.editingNifName = false;
-            this.currentInvoice = {};
-        },
-        endEditingCancel: function endEditingCancel() {
-            this.editingNifName = false;
-            this.currentInvoice = {};
-        },
-        seeDetails: function seeDetails(invoice) {
-            this.viewingDetails = true;
-            this.currentInvoice = invoice;
-        },
-        endViewingDetails: function endViewingDetails() {
-            this.viewingDetails = false;
-            this.currentInvoice = {};
-        }
-    },
-    mounted: function mounted() {
-        this.loadPendingInvoices();
-    }
-};
-
-/***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("div", { staticClass: "jumbotron" }, [
-        _c("h1", [_vm._v(_vm._s(_vm.title))])
-      ]),
-      _vm._v(" "),
-      _vm.editingNifName
-        ? _c("edit-nif-name", {
-            attrs: { invoice: _vm.currentInvoice },
-            on: {
-              declareAsPaid: _vm.endEditingSave,
-              cancelEditing: _vm.endEditingCancel
-            }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.viewingDetails
-        ? _c("invoice-details", {
-            attrs: { invoice: _vm.currentInvoice },
-            on: { endViewingDetails: _vm.endViewingDetails }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.editingNifName && !_vm.viewingDetails
-        ? _c(
-            "div",
-            [
-              _c("invoices-list", {
-                attrs: {
-                  invoices: _vm.pendingInvoices,
-                  meta: _vm.pendingInvoicesMeta,
-                  links: _vm.pendingInvoicesLinks
-                },
-                on: {
-                  refreshInvoices: _vm.refreshPendingInvoices,
-                  declareAsPaid: _vm.loadPendingInvoices,
-                  fillNifName: _vm.fillNifName,
-                  seeDetails: _vm.seeDetails
-                }
-              }),
-              _vm._v(" "),
-              _c("invoices-list", {
-                attrs: {
-                  invoices: _vm.paidInvoices,
-                  meta: _vm.paidInvoicesMeta,
-                  links: _vm.paidInvoicesLinks
-                },
-                on: {
-                  refreshInvoices: _vm.refreshPaidInvoices,
-                  seeDetails: _vm.seeDetails
-                }
-              }),
-              _vm._v(" "),
-              _vm.showSuccess || _vm.showFailure
-                ? _c(
-                    "div",
-                    {
-                      staticClass: "alert",
-                      class: {
-                        "alert-success": _vm.showSuccess,
-                        "alert-danger": _vm.showFailure
-                      }
-                    },
-                    [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "close-btn",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              _vm.showSuccess = false
-                              _vm.showFailure = false
-                            }
-                          }
-                        },
-                        [_vm._v("×")]
-                      ),
-                      _vm._v(" "),
-                      _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
-                      _vm._v(" "),
-                      _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
-                    ]
-                  )
-                : _vm._e()
-            ],
-            1
-          )
-        : _vm._e()
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-cf37ed94", module.exports)
-  }
-}
-
-/***/ }),
+/* 66 */,
+/* 67 */,
+/* 68 */,
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -52542,229 +52269,9 @@ if (false) {
 }
 
 /***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(73)
-/* template */
-var __vue_template__ = __webpack_require__(74)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/cashier/PendingInvoicesNifName.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-849ff360", Component.options)
-  } else {
-    hotAPI.reload("data-v-849ff360", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 73 */
-/***/ (function(module, exports) {
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-module.exports = {
-    props: ['invoice', 'index'],
-    data: function data() {
-        return {};
-    },
-
-    methods: {
-        declareInvoiceAsPaid: function declareInvoiceAsPaid() {
-            var _this = this;
-
-            if (!(this.invoice.name && this.invoice.nif)) {
-                alert("Nif and name required");
-                return;
-            }
-            axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.invoice), user: this.currentUser }).then(function (response) {
-                axios.get('/api/invoices/pending').then(function (response) {
-                    // handle success
-                    $invoices = response.data.data;
-                    $meta = response.data.meta;
-                    $links = response.data.links;
-                    _this.$emit('declareAsPaid', $invoices, $meta, $links);
-                    console.log(response);
-                }).catch(function (error) {
-                    // handle error
-                    console.log(error);
-                }).then(function () {
-                    // always executed
-                });
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-        },
-        cancel: function cancel() {
-            this.$emit('cancelEditing');
-        }
-    }
-};
-
-/***/ }),
-/* 74 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "form",
-      {
-        staticClass: "mb-3",
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-          }
-        }
-      },
-      [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", [_vm._v("Nif:")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.invoice.nif,
-                expression: "invoice.nif"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { type: "text", name: "nif" },
-            domProps: { value: _vm.invoice.nif },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.invoice, "nif", $event.target.value)
-              }
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", [_vm._v("Name:")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.invoice.name,
-                expression: "invoice.name"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { type: "text", name: "name" },
-            domProps: { value: _vm.invoice.name },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.invoice, "name", $event.target.value)
-              }
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-success",
-            on: {
-              click: function($event) {
-                _vm.declareInvoiceAsPaid()
-              }
-            }
-          },
-          [_vm._v("Save")]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-danger",
-            on: {
-              click: function($event) {
-                _vm.cancel()
-              }
-            }
-          },
-          [_vm._v("Cancel")]
-        )
-      ]
-    )
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-849ff360", module.exports)
-  }
-}
-
-/***/ }),
+/* 72 */,
+/* 73 */,
+/* 74 */,
 /* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -53456,6 +52963,521 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-2d0b94f3", module.exports)
+  }
+}
+
+/***/ }),
+/* 114 */,
+/* 115 */,
+/* 116 */,
+/* 117 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(118)
+/* template */
+var __vue_template__ = __webpack_require__(119)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/cashier/Invoices.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-1a38e3c6", Component.options)
+  } else {
+    hotAPI.reload("data-v-1a38e3c6", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 118 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    data: function data() {
+        return {
+            title: 'Pending Invoices',
+            showSuccess: false,
+            showFailure: false,
+            successMessage: '',
+            failMessage: '',
+            currentInvoice: {},
+            currentUser: '52',
+            pendingInvoices: [],
+            pendingInvoicesMeta: [],
+            pendingInvoicesLinks: [],
+            paidInvoices: [],
+            paidInvoicesMeta: [],
+            paidInvoicesLinks: [],
+            editingNifName: false,
+            viewingDetails: false
+        };
+    },
+
+    methods: {
+        loadPendingInvoices: function loadPendingInvoices() {
+            var _this = this;
+
+            axios.get('/api/invoices/pending/').then(function (response) {
+                // handle success
+                _this.pendingInvoices = response.data.data;
+                _this.pendingInvoicesMeta = response.data.meta;
+                _this.pendingInvoicesLinks = response.data.links;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+            axios.get('/api/invoices/paid/').then(function (response) {
+                // handle success
+                _this.paidInvoices = response.data.data;
+                _this.paidInvoicesMeta = response.data.meta;
+                _this.paidInvoicesLinks = response.data.links;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        refreshPendingInvoices: function refreshPendingInvoices(newPendingInvoices, newMeta, newLinks) {
+            this.pendingInvoices = newPendingInvoices;
+            this.pendingInvoicesMeta = newMeta;
+            this.pendingInvoicesLinks = newLinks;
+        },
+        refreshPaidInvoices: function refreshPaidInvoices(newPendingInvoices, newMeta, newLinks) {
+            this.paidInvoices = newPendingInvoices;
+            this.paidInvoicesMeta = newMeta;
+            this.paidInvoicesLinks = newLinks;
+        },
+        fillNifName: function fillNifName(invoice) {
+            if (invoice.state == 'pending') {
+                this.editingNifName = true;
+                this.currentInvoice = invoice;
+            }
+        },
+        endEditingSave: function endEditingSave($pendingInvoices, $meta, $links) {
+            this.invoices = $pendingInvoices;
+            this.meta = $meta;
+            this.links = $links;
+            this.editingNifName = false;
+            this.currentInvoice = {};
+        },
+        endEditingCancel: function endEditingCancel() {
+            this.editingNifName = false;
+            this.currentInvoice = {};
+        },
+        seeDetails: function seeDetails(invoice) {
+            this.viewingDetails = true;
+            this.currentInvoice = invoice;
+        },
+        endViewingDetails: function endViewingDetails() {
+            this.viewingDetails = false;
+            this.currentInvoice = {};
+        }
+    },
+    mounted: function mounted() {
+        this.loadPendingInvoices();
+    }
+};
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "jumbotron" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.title))])
+      ]),
+      _vm._v(" "),
+      _vm.editingNifName
+        ? _c("edit-nif-name", {
+            attrs: { invoice: _vm.currentInvoice },
+            on: {
+              declareAsPaid: _vm.endEditingSave,
+              cancelEditing: _vm.endEditingCancel
+            }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.viewingDetails
+        ? _c("invoice-details", {
+            attrs: { invoice: _vm.currentInvoice },
+            on: { endViewingDetails: _vm.endViewingDetails }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      !_vm.editingNifName && !_vm.viewingDetails
+        ? _c(
+            "div",
+            [
+              _c("invoices-list", {
+                attrs: {
+                  invoices: _vm.pendingInvoices,
+                  meta: _vm.pendingInvoicesMeta,
+                  links: _vm.pendingInvoicesLinks
+                },
+                on: {
+                  refreshInvoices: _vm.refreshPendingInvoices,
+                  declareAsPaid: _vm.loadPendingInvoices,
+                  fillNifName: _vm.fillNifName,
+                  seeDetails: _vm.seeDetails
+                }
+              }),
+              _vm._v(" "),
+              _c("invoices-list", {
+                attrs: {
+                  invoices: _vm.paidInvoices,
+                  meta: _vm.paidInvoicesMeta,
+                  links: _vm.paidInvoicesLinks
+                },
+                on: {
+                  refreshInvoices: _vm.refreshPaidInvoices,
+                  seeDetails: _vm.seeDetails
+                }
+              }),
+              _vm._v(" "),
+              _vm.showSuccess || _vm.showFailure
+                ? _c(
+                    "div",
+                    {
+                      staticClass: "alert",
+                      class: {
+                        "alert-success": _vm.showSuccess,
+                        "alert-danger": _vm.showFailure
+                      }
+                    },
+                    [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "close-btn",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.showSuccess = false
+                              _vm.showFailure = false
+                            }
+                          }
+                        },
+                        [_vm._v("×")]
+                      ),
+                      _vm._v(" "),
+                      _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
+                      _vm._v(" "),
+                      _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
+                    ]
+                  )
+                : _vm._e()
+            ],
+            1
+          )
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-1a38e3c6", module.exports)
+  }
+}
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(121)
+/* template */
+var __vue_template__ = __webpack_require__(122)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/cashier/InvoicesNifName.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-3da37f89", Component.options)
+  } else {
+    hotAPI.reload("data-v-3da37f89", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    props: ['invoice', 'index'],
+    data: function data() {
+        return {};
+    },
+
+    methods: {
+        declareInvoiceAsPaid: function declareInvoiceAsPaid() {
+            var _this = this;
+
+            if (!(this.invoice.name && this.invoice.nif)) {
+                alert("Nif and name required");
+                return;
+            }
+            if (/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)) {
+                axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.invoice), user: this.currentUser }).then(function (response) {
+                    axios.get('/api/invoices/pending').then(function (response) {
+                        // handle success
+                        $invoices = response.data.data;
+                        $meta = response.data.meta;
+                        $links = response.data.links;
+                        _this.$emit('declareAsPaid', $invoices, $meta, $links);
+                        console.log(response);
+                    }).catch(function (error) {
+                        // handle error
+                        alert(error);
+                        console.log(error);
+                    }).then(function () {
+                        // always executed
+                    });
+                }).catch(function (error) {
+                    // handle error
+                    console.log(error);
+                }).then(function () {
+                    // always executed
+                });
+            }
+        },
+        cancel: function cancel() {
+            this.$emit('cancelEditing');
+        }
+    }
+};
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "form",
+      {
+        staticClass: "mb-3",
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+          }
+        }
+      },
+      [
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Nif:")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.invoice.nif,
+                expression: "invoice.nif"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: {
+              type: "text",
+              name: "nif",
+              pattern: "[0-9]{9}",
+              title: "9 numbers"
+            },
+            domProps: { value: _vm.invoice.nif },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.invoice, "nif", $event.target.value)
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Name:")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.invoice.name,
+                expression: "invoice.name"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: {
+              type: "text",
+              name: "name",
+              pattern: "[a-zA-Z\\s]*",
+              title: "Only letters and spaces"
+            },
+            domProps: { value: _vm.invoice.name },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.invoice, "name", $event.target.value)
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            on: {
+              click: function($event) {
+                _vm.declareInvoiceAsPaid()
+              }
+            }
+          },
+          [_vm._v("Save")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-danger",
+            on: {
+              click: function($event) {
+                _vm.cancel()
+              }
+            }
+          },
+          [_vm._v("Cancel")]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-3da37f89", module.exports)
   }
 }
 
