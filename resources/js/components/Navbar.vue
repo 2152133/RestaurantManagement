@@ -12,7 +12,6 @@
                 <a class="nav-item nav-link"><router-link to="dashboard">Dashboard</router-link></a>
                 <a class="nav-item nav-link"><router-link to="Invoices">Invoices</router-link></a>
                 <a class="nav-item nav-link"><router-link to="mealsOfWaiter">My Meals</router-link></a>
-
               </div>
             </div>
         </nav>

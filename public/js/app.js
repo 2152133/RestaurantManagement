@@ -14346,8 +14346,10 @@ Vue.component('edit-nif-name', __webpack_require__(120));
 var invoiceDetailsComponent = Vue.component('invoice-details', __webpack_require__(75));
 var meals_of_waiter = Vue.component('waiterMeals', __webpack_require__(108));
 Vue.component('meals-list', __webpack_require__(111));
+Vue.component('edit-nif-name', __webpack_require__(72));
+var create_meal = Vue.component('create-meals', __webpack_require__(123));
 
-var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/invoices', component: invoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }];
+var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/invoices', component: invoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }, { path: '/createMeal', component: create_meal, name: 'create_meal' }];
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
@@ -51302,7 +51304,7 @@ var render = function() {
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(order.end))]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.created_at.date))]),
+              _c("td", [_vm._v(_vm._s(order.created_at))]),
               _vm._v(" "),
               _c("td", [
                 order.state == "confirmed"
@@ -52269,7 +52271,12 @@ if (false) {
 }
 
 /***/ }),
-/* 72 */,
+/* 72 */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open 'C:\\Users\\Jose\\Google Drive\\Formacao\\IPL\\3_ano\\5_Semestre\\DAD\\2018-2019\\Projeto\\RestaurantManagement\\resources\\js\\components\\cashier\\PendingInvoicesNifName.vue'");
+
+/***/ }),
 /* 73 */,
 /* 74 */,
 /* 75 */
@@ -52660,6 +52667,35 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 module.exports = {
   data: function data() {
@@ -52674,11 +52710,26 @@ module.exports = {
       confirmedOrdersLinks: [],
       pendingMealOrders: [],
       pendingOrdersMeta: [],
-      pendingOrdersLinks: []
+      pendingOrdersLinks: [],
+      isToggled: false,
+      allItems: [],
+      selectedOptionItem: "Select an item",
+      selectedOptionMeal: "Select a meal",
+      isUpdateToggled: false
     };
   },
 
-  methods: {},
+  methods: {
+    showDiv: function showDiv() {
+      this.isToggled = true;
+    },
+    showUpdate: function showUpdate() {
+      this.isUpdateToggled = true;
+    },
+    addOrderToMeal: function addOrderToMeal(meal_number, item_number) {
+      axios.post("/api/meal/addOrder/" + meal_number + "/" + item_number).then(function (response) {}).catch(function (error) {});
+    }
+  },
 
   mounted: function mounted() {
     var _this = this;
@@ -52689,12 +52740,12 @@ module.exports = {
       _this.usersMealsLinks = response.data.links;
 
       //CONFIRMED
-
       _this.usersMeals.forEach(function (index) {
         axios.get("/api/meals/" + index.id + "/confirmedOrders").then(function (response) {
           _this.confirmedMealOrders = response.data.data;
           _this.confirmedOrdersMeta = response.data.meta;
           _this.confirmedOrdersLinks = response.data.links;
+          console.log(_this.confirmedMealOrders);
         }).catch(function (error) {
           console.log(error);
         });
@@ -52706,6 +52757,7 @@ module.exports = {
           _this.pendingMealOrders = response.data.data;
           _this.pendingOrdersMeta = response.data.meta;
           _this.pendingOrdersLinks = response.data.links;
+          console.log(_this.pendingMealOrders);
         }).catch(function (error) {
           console.log(error);
         });
@@ -52713,6 +52765,10 @@ module.exports = {
     }).catch(function (error) {
       console.log(error);
     });
+
+    axios.get("/api/items/all").then(function (response) {
+      _this.allItems = response.data;
+    }).catch(function (error) {});
   }
 };
 
@@ -52736,34 +52792,162 @@ var render = function() {
           meals: _vm.usersMeals,
           meta: _vm.usersMealsMeta,
           links: _vm.usersMealsLinks
-        }
+        },
+        on: { "show-div": _vm.showDiv, "show-update": _vm.showUpdate }
       }),
       _vm._v(" "),
-      _c(
-        "div",
-        [
-          _c("h3", [_vm._v("Confirmed Orders")]),
-          _vm._v(" "),
-          _c("orders-list", {
-            attrs: {
-              orders: _vm.confirmedMealOrders,
-              meta: _vm.confirmedOrdersMeta,
-              links: _vm.confirmedOrdersLinks
-            }
-          }),
-          _vm._v(" "),
-          _c("h3", [_vm._v("Pending Orders")]),
-          _vm._v(" "),
-          _c("orders-list", {
-            attrs: {
-              orders: _vm.pendingMealOrders,
-              meta: _vm.pendingOrdersMeta,
-              links: _vm.pendingOrdersLinks
-            }
-          })
-        ],
-        1
-      )
+      _vm.isToggled
+        ? _c(
+            "div",
+            [
+              _c("h3", [_vm._v("Confirmed Orders")]),
+              _vm._v(" "),
+              _c("orders-list", {
+                attrs: {
+                  orders: _vm.confirmedMealOrders,
+                  meta: _vm.confirmedOrdersMeta,
+                  links: _vm.confirmedOrdersLinks
+                }
+              })
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.isToggled
+        ? _c(
+            "div",
+            [
+              _c("h3", [_vm._v("Pending Orders")]),
+              _vm._v(" "),
+              _c("orders-list", {
+                attrs: {
+                  orders: _vm.pendingMealOrders,
+                  meta: _vm.pendingOrdersMeta,
+                  links: _vm.pendingOrdersLinks
+                }
+              })
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.isUpdateToggled
+        ? _c("div", [
+            _c("h2", [_vm._v("Add an order to a meal")]),
+            _vm._v(" "),
+            _c("label", { attrs: { for: "meals" } }, [
+              _vm._v("Active meals that I'm responsible for")
+            ]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.selectedOptionMeal,
+                    expression: "selectedOptionMeal"
+                  }
+                ],
+                staticClass: "custom-select",
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.selectedOptionMeal = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  }
+                }
+              },
+              [
+                _c("option", { attrs: { disabled: "", selected: "" } }, [
+                  _vm._v("-- Select an item --")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.usersMeals, function(meal) {
+                  return _c("option", { key: meal.id }, [
+                    _vm._v(_vm._s(meal.id))
+                  ])
+                })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c("label", { attrs: { for: "items" } }, [_vm._v("Items")]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.selectedOptionItem,
+                    expression: "selectedOptionItem"
+                  }
+                ],
+                staticClass: "custom-select",
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.selectedOptionItem = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  }
+                }
+              },
+              [
+                _c("option", { attrs: { disabled: "", selected: "" } }, [
+                  _vm._v("-- Select an item --")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.allItems, function(item) {
+                  return _c("option", { key: item.id }, [
+                    _vm._v(_vm._s(item.id))
+                  ])
+                })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-outline-success",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    _vm.addOrderToMeal(
+                      _vm.selectedOptionMeal,
+                      _vm.selectedOptionItem,
+                      _vm.currentUser
+                    )
+                  }
+                }
+              },
+              [_vm._v("Add order")]
+            )
+          ])
+        : _vm._e()
     ],
     1
   )
@@ -52863,13 +53047,34 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 module.exports = {
   props: ["meals", "meta", "links", "user"],
   data: function data() {
     return {};
   },
-  methods: {}
+  methods: {
+    showDiv: function showDiv() {
+      this.$emit("show-div");
+    },
+    showUpdate: function showUpdate() {
+      this.$emit("show-update");
+    }
+  }
 };
 
 /***/ }),
@@ -52883,6 +53088,53 @@ var render = function() {
   return _c(
     "div",
     [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-outline-success",
+          staticStyle: { float: "right" },
+          attrs: { type: "button" }
+        },
+        [
+          _c("router-link", { attrs: { to: { name: "create_meal" } } }, [
+            _vm._v("Create Meal")
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-outline-warning",
+          staticStyle: { float: "right" },
+          attrs: { type: "button" },
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              _vm.showUpdate()
+            }
+          }
+        },
+        [_vm._v("Add order to meal")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-outline-primary",
+          staticStyle: {},
+          attrs: { type: "button" },
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              _vm.showDiv()
+            }
+          }
+        },
+        [_vm._v("See meal's details")]
+      ),
+      _vm._v(" "),
       _c("pagination", {
         attrs: { objects: _vm.meals, meta: _vm.meta, links: _vm.links }
       }),
@@ -52910,7 +53162,7 @@ var render = function() {
               _vm._v(" "),
               _c("td"),
               _vm._v(" "),
-              _vm._m(1, true)
+              _c("td")
             ])
           })
         )
@@ -52942,18 +53194,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Actions")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c(
-        "button",
-        { staticClass: "btn btn-outline-primary", attrs: { type: "button" } },
-        [_vm._v("See meal's details")]
-      )
     ])
   }
 ]
@@ -53478,6 +53718,232 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-3da37f89", module.exports)
+  }
+}
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(124)
+/* template */
+var __vue_template__ = __webpack_require__(125)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/CreateMeals.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-7a453259", Component.options)
+  } else {
+    hotAPI.reload("data-v-7a453259", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 124 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+  data: function data() {
+    return {
+      title: "Create meal",
+      tablesWithoutActiveMealsAtTheMoment: [],
+      selectedOption: "",
+      selected: "Select an option",
+      loggedWaiter: "13",
+      successMessage: "",
+      failMessage: "",
+      showSuccess: false,
+      showFailure: false
+    };
+  },
+
+  methods: {
+    createMeal: function createMeal(table_number, responsible_waiter_id) {
+      var _this = this;
+
+      axios.post("/api/meal/createMeal/" + table_number + "/" + responsible_waiter_id).then(function (response) {
+        _this.successMessage = "Meal created successfully!";
+        _this.showSuccess = true;
+      }).catch(function (error) {
+        console.log(error);
+        this.failMessage = "Meal not created!";
+        this.showFailure = true;
+      });
+    }
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+
+    axios.get("/api/meals/tablesWithoutActiveMeals").then(function (response) {
+      _this2.tablesWithoutActiveMealsAtTheMoment = response.data;
+    }).catch(function (error) {
+      console.log(error);
+    });
+  }
+};
+
+/***/ }),
+/* 125 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { staticClass: "jumbotron" }, [
+      _c("h1", [_vm._v(_vm._s(_vm.title))])
+    ]),
+    _vm._v(" "),
+    _c("div", [
+      _c("label", { attrs: { for: "table_number" } }, [_vm._v("Table Number")]),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.selectedOption,
+              expression: "selectedOption"
+            }
+          ],
+          staticClass: "custom-select",
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.selectedOption = $event.target.multiple
+                ? $$selectedVal
+                : $$selectedVal[0]
+            }
+          }
+        },
+        [
+          _c("option", { attrs: { disabled: "", selected: "" } }, [
+            _vm._v("-- Select a table --")
+          ]),
+          _vm._v(" "),
+          _vm._l(_vm.tablesWithoutActiveMealsAtTheMoment, function(table) {
+            return _c("option", { key: table.table_number }, [
+              _vm._v(_vm._s(table.table_number))
+            ])
+          })
+        ],
+        2
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-outline-success",
+          attrs: { type: "button" },
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              _vm.createMeal(_vm.selectedOption, _vm.loggedWaiter)
+            }
+          }
+        },
+        [_vm._v("Create Meal")]
+      ),
+      _vm._v(" "),
+      _vm.showSuccess || _vm.showFailure
+        ? _c(
+            "div",
+            {
+              staticClass: "alert",
+              class: {
+                "alert-success": _vm.showSuccess,
+                "alert-danger": _vm.showFailure
+              }
+            },
+            [
+              _c("strong", [_vm._v(_vm._s(_vm.successMessage))]),
+              _vm._v(" "),
+              _c("strong", [_vm._v(_vm._s(_vm.failMessage))])
+            ]
+          )
+        : _vm._e()
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-7a453259", module.exports)
   }
 }
 

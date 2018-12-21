@@ -3,20 +3,49 @@
     <div class="jumbotron">
       <h1>{{title}}</h1>
     </div>
-    <meals-list :meals="usersMeals" :meta="usersMealsMeta" :links="usersMealsLinks"></meals-list>
-    <div>
+    <meals-list
+      :meals="usersMeals"
+      :meta="usersMealsMeta"
+      :links="usersMealsLinks"
+      v-on:show-div="showDiv"
+      v-on:show-update="showUpdate"
+    ></meals-list>
+    <div v-if="isToggled">
       <h3>Confirmed Orders</h3>
       <orders-list
         :orders="confirmedMealOrders"
         :meta="confirmedOrdersMeta"
         :links="confirmedOrdersLinks"
       ></orders-list>
+    </div>
+    <div v-if="isToggled">
       <h3>Pending Orders</h3>
       <orders-list
         :orders="pendingMealOrders"
         :meta="pendingOrdersMeta"
         :links="pendingOrdersLinks"
       ></orders-list>
+    </div>
+    <div v-if="isUpdateToggled">
+      <h2>Add an order to a meal</h2>
+
+      <label for="meals">Active meals that I'm responsible for</label>
+      <select class="custom-select" v-model="selectedOptionMeal">
+        <option disabled selected>-- Select an item --</option>
+        <option v-for="meal in usersMeals" v-bind:key="meal.id">{{meal.id}}</option>
+      </select>
+      
+      <label for="items">Items</label>
+      <select class="custom-select" v-model="selectedOptionItem">
+        <option disabled selected>-- Select an item --</option>
+        <option v-for="item in allItems" v-bind:key="item.id">{{item.id}}</option>
+      </select>
+      <br>
+      <button
+        type="button"
+        class="btn btn-outline-success"
+        v-on:click.prevent="addOrderToMeal(selectedOptionMeal, selectedOptionItem, currentUser)"
+      >Add order</button>
     </div>
   </div>
 </template>
@@ -34,10 +63,28 @@ module.exports = {
       confirmedOrdersLinks: [],
       pendingMealOrders: [],
       pendingOrdersMeta: [],
-      pendingOrdersLinks: []
+      pendingOrdersLinks: [],
+      isToggled: false,
+      allItems: [],
+      selectedOptionItem: "Select an item",
+      selectedOptionMeal: "Select a meal",
+      isUpdateToggled: false
     };
   },
-  methods: {},
+  methods: {
+    showDiv: function() {
+      this.isToggled = true;
+    },
+    showUpdate: function() {
+      this.isUpdateToggled = true;
+    },
+    addOrderToMeal: function(meal_number, item_number) {
+      axios
+        .post("/api/meal/addOrder/" + meal_number + "/" + item_number)
+        .then(response => {})
+        .catch(error => {});
+    }
+  },
 
   mounted() {
     axios
@@ -48,7 +95,6 @@ module.exports = {
         this.usersMealsLinks = response.data.links;
 
         //CONFIRMED
-
         this.usersMeals.forEach(index => {
           axios
             .get("/api/meals/" + index.id + "/confirmedOrders")
@@ -56,6 +102,7 @@ module.exports = {
               this.confirmedMealOrders = response.data.data;
               this.confirmedOrdersMeta = response.data.meta;
               this.confirmedOrdersLinks = response.data.links;
+              console.log(this.confirmedMealOrders);
             })
             .catch(function(error) {
               console.log(error);
@@ -70,6 +117,7 @@ module.exports = {
               this.pendingMealOrders = response.data.data;
               this.pendingOrdersMeta = response.data.meta;
               this.pendingOrdersLinks = response.data.links;
+              console.log(this.pendingMealOrders);
             })
             .catch(function(error) {
               console.log(error);
@@ -79,6 +127,13 @@ module.exports = {
       .catch(function(error) {
         console.log(error);
       });
+
+    axios
+      .get("/api/items/all")
+      .then(response => {
+        this.allItems = response.data;
+      })
+      .catch(error => {});
   }
 };
 </script>

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Item;
 use App\Http\Resources\Item as ItemResource;
+use App\Item;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
@@ -30,24 +31,30 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        /** 
+        /**
          * Method = put  -> get item
          * Method = post -> create new item
          * */
-        $item = $request->isMethod('patch') ? 
-            Item::findOrFail($request->id) : new Item;
-        
+        $item = $request->isMethod('patch') ?
+        Item::findOrFail($request->id) : new Item;
+
         $item->id = $request->input('id');
         $item->name = $request->input('name');
         $item->type = $request->input('type');
         $item->description = $request->input('description');
         $item->photo_url = $request->input('photo_url');
         $item->price = $request->input('price');
-        
-        if($item->save())
-        {
+
+        if ($item->save()) {
             return new ItemResource($item);
         }
+    }
+
+    public function all()
+    {
+        $allItems = DB::table('items')
+            ->get();
+        return $allItems;
     }
 
     /**
@@ -76,7 +83,7 @@ class ItemController extends Controller
         // Get item
         $item = Item::findOrFail($id);
 
-        // Method = delete -> return deleted item 
+        // Method = delete -> return deleted item
         if ($item->delete()) {
             return new ItemResource($item);
         }

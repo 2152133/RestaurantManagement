@@ -12,6 +12,7 @@ class Order extends Model
      * @var array
      */
     protected $fillable = [
+        'id', 'state', 'item_id', 'meal_id', 'responsible_coock_id', 'start', 'end', 'created_at',
     ];
 
     /**
@@ -20,7 +21,7 @@ class Order extends Model
      * @var array
      */
     protected $hidden = [
-        
+        'updated_at',
     ];
 
     public function item()
