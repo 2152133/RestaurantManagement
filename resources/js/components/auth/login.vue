@@ -48,8 +48,9 @@
                         let tokenType = response.data.token_type
                         let token = response.data.access_token
                         let expiration = response.data.expires_in + Date.now()
+                        this.$store.commit('setAuthUser', this.user)
                         this.$store.commit('setToken', {token, tokenType, expiration})
-                        //this.$store.commit('setUser', loginUser)
+                        this.$socket.emit('user_enter', this.$store.state.user);
                         this.typeofmsg = "alert-success";
                         this.message = "User authenticated correctly";
                         this.showMessage = true;

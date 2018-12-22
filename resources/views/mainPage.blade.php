@@ -13,6 +13,16 @@
         <div id="app">
             <navbar></navbar>
             <div class="container">
+                <hr>
+                <div>
+                    <label for="inputGlobal">Input message</label>
+                    <input type="text" id="inputGlobal" class="form-control inputchat" v-model="msgGlobalText" @keypress.enter="sendGlobalMsg">
+                </div>
+                <div>
+                    <label for="inputchat">Messages</label>
+                    <textarea id="textGlobal" class="form-control inputchat" v-model="msgGlobalTextArea" rows="5">Global Chat</textarea>
+                </div>
+                <hr>
                 <router-view></router-view>
             </div>
         </div>

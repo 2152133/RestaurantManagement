@@ -25401,41 +25401,35 @@ var app = new Vue({
     router: __WEBPACK_IMPORTED_MODULE_1__routes_routes__["a" /* default */],
     store: __WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */],
     data: {
-        player1: undefined,
-        player2: undefined,
         msgGlobalText: '',
-        msgGlobalTextArea: '',
-        msgDepText: '',
-        msgDepTextArea: ''
+        msgGlobalTextArea: ''
     },
     sockets: {
         // dispultado quando o socket e chamado
         connect: function connect() {
             console.log('Socket connect with ID: ' + this.$socket.id);
-            if (this.$store.state.user) {
-                this.$socket.emit('user_enter', this.$store.state.user);
+            if (__WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].state.user) {
+                this.$socket.emit('user_enter', __WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].state.user);
             }
         },
         msg_from_server: function msg_from_server(data) {
             this.msgGlobalTextArea = data + '\n' + this.msgGlobalTextArea;
-        },
-        msg_from_server_dep: function msg_from_server_dep(data) {
-            this.msgDepTextArea = data + '\n' + this.msgDepTextArea;
         }
     },
     methods: {
         sendGlobalMsg: function sendGlobalMsg() {
-            this.$socket.emit('msg_from_client', this.msgGlobalText);
-        },
-        sendDepMsg: function sendDepMsg() {
-            if (this.$store.state.user) {
-                this.$socket.emit('msg_from_client_dep', this.msgDepText, this.$store.state.user);
+            console.log('Sending to the server this message: "' + this.msgGlobalText + '"');
+            if (__WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].state.user === null) {
+                this.$socket.emit('msg_from_client', this.msgGlobalText);
+            } else {
+                this.$socket.emit('msg_from_client', this.msgGlobalText, __WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].state.user);
             }
+            this.msgGlobalText = "";
         }
     },
     created: function created() {
         console.log('-----');
-        console.log(this.$store.state.user);
+        console.log(__WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].state.user);
     }
 });
 
@@ -55990,8 +55984,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 var tokenType = response.data.token_type;
                 var token = response.data.access_token;
                 var expiration = response.data.expires_in + Date.now();
+                _this.$store.commit('setAuthUser', _this.user);
                 _this.$store.commit('setToken', { token: token, tokenType: tokenType, expiration: expiration });
-                //this.$store.commit('setUser', loginUser)
+                _this.$socket.emit('user_enter', _this.$store.state.user);
                 _this.typeofmsg = "alert-success";
                 _this.message = "User authenticated correctly";
                 _this.showMessage = true;
@@ -56209,6 +56204,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.showMessage = false;
             axios.post('api/logout').then(function (response) {
                 _this.$store.commit('clearUserAndToken');
+                _this.$socket.emit('user_exit', _this.$store.state.user);
                 _this.typeofmsg = "alert-success";
                 _this.message = "User has logged out correctly";
                 _this.showMessage = true;

@@ -67,40 +67,34 @@ const app = new Vue({
     router: router,
     store,
     data: {
-        player1:undefined,
-        player2: undefined,
         msgGlobalText: '',
         msgGlobalTextArea: '',
-        msgDepText: '',
-        msgDepTextArea: '',
     },
     sockets: {
         // dispultado quando o socket e chamado
         connect() {
             console.log(`Socket connect with ID: ${this.$socket.id}`);
-            if (this.$store.state.user) {
-                this.$socket.emit('user_enter', this.$store.state.user);
+            if (store.state.user) {
+                this.$socket.emit('user_enter', store.state.user);
             }
         },
         msg_from_server(data) {
             this.msgGlobalTextArea = data + '\n' + this.msgGlobalTextArea;
         },
-        msg_from_server_dep(data) {
-            this.msgDepTextArea = data + '\n' + this.msgDepTextArea;
-        },
     },
     methods: {
-        sendGlobalMsg() {
-            this.$socket.emit('msg_from_client', this.msgGlobalText);
-        },
-        sendDepMsg() {
-            if (this.$store.state.user) {
-                this.$socket.emit('msg_from_client_dep', this.msgDepText, this.$store.state.user);
+        sendGlobalMsg: function(){
+            console.log('Sending to the server this message: "' + this.msgGlobalText + '"');
+            if (store.state.user === null) {
+                this.$socket.emit('msg_from_client', this.msgGlobalText);
+            } else {
+                this.$socket.emit('msg_from_client', this.msgGlobalText, store.state.user);
             }
+            this.msgGlobalText = "";
         },
     },
     created() {
         console.log('-----');
-        console.log(this.$store.state.user);
+        console.log(store.state.user);
     }
 })

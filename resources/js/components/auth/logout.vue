@@ -29,6 +29,7 @@
                 axios.post('api/logout')
                     .then(response => {
                         this.$store.commit('clearUserAndToken');
+                        this.$socket.emit('user_exit', this.$store.state.user);
                         this.typeofmsg = "alert-success";
                         this.message = "User has logged out correctly";
                         this.showMessage = true;
