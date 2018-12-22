@@ -1,73 +1,61 @@
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
 require('./bootstrap');
 
 window.Vue = require('vue');
 
-import VueRouter from 'vue-router';
-Vue.use(VueRouter);
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
+import store from './store/store';
+import router from './routes/routes';
+import VueSocketio from 'vue-socket.io';
 
-// Vue.component('example-component', require('./components/ExampleComponent.vue'));
-const itemsComponent = Vue.component('items', require('./components/allUsers/Items.vue'));
-Vue.component('navbar', require('./components/Navbar.vue'));
-const ordersComponent = Vue.component('orders', require('./components/cook/Orders.vue'));
-Vue.component('orders-list', require('./components/cook/OrdersList.vue'));
-Vue.component('pagination', require('./components/pagination.vue'));
-const landing_page = Vue.component('landing_page', require('./components/restaurantWorker/LandingPage.vue')); 
-const notifications_page = Vue.component('notifications_page', require('./components/restaurantWorker/Notifications.vue'));
-const invoicesComponent = Vue.component('pending-invoices', require('./components/cashier/Invoices.vue'));
-Vue.component('invoices-list', require('./components/cashier/InvoicesList.vue'));
-Vue.component('edit-nif-name', require('./components/cashier/InvoicesNifName.vue'));
-const invoiceDetailsComponent = Vue.component('invoice-details', require('./components/cashier/InvoiceDetails.vue'));
-const meals_of_waiter = Vue.component('waiterMeals', require('./components/Meals.vue'));
-Vue.component('meals-list', require('./components/MealsList.vue'));
-Vue.component('edit-nif-name', require('./components/cashier/InvoicesNifName.vue'));
-const create_meal = Vue.component('create-meals', require('./components/CreateMeals.vue'));
-const managementDashboardComponent = Vue.component('management-dashboard', require('./components/manager/ManagerDashboard.vue'));
-Vue.component('tables-list', require('./components/manager/TablesList.vue'));
-Vue.component('add-edit-table', require('./components/manager/AddEditTable.vue'));
+Vue.use(new VueSocketio({
+    debug: true,
+    connection: 'http://192.168.10.10:8080'
+})); 
 
-const routes = [
-    {path: '/', redirect: '/orders'},
-    {path: '/orders', component: ordersComponent},
-    {path: '/items', component: itemsComponent},
-    {path: '/dashboard', component: landing_page, name: 'dashboard'},
-    {path: '/notifications', component: notifications_page, name: 'notifications'},
-    {path: '/invoices', component: invoicesComponent},
-    {path: '/mealsOfWaiter', component:meals_of_waiter},
-    {path: '/createMeal', component:create_meal, name:'create_meal'},
-    {path: '/management', component: managementDashboardComponent},
-];
+// Para manter o utilizador logado depois de refrescar a pagina
+store.state.user = store.getters.getAuthUser
+store.state.token = store.getters.getToken
+store.state.tokenType = store.getters.getTokenType
+store.state.getExpiration = store.getters.getExpiration
+axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
 
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
+// interceptors - pre and post request
+axios.interceptors.response.use(
+    (response) => {
+        //console.log(response)
+        return response;
+    }, 
+    (error) => {
+        console.log(error)
+        //alert(error)
+        // if (error.status == 404) {
+        // }
+        // else if (error.status == 500) {
+        // }
+    }
+);
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-const router = new VueRouter({
-    routes: routes
+// navigation ward <=> middlewares
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.forVisitors)) {
+        if (store.getters.isAuthenticated) {
+            next({
+                path: '/dashboard'
+            })
+        } else next()
+    }
+    else if (to.matched.some(record => record.meta.forAuth)) {
+        if (!store.getters.isAuthenticated) {
+            next({
+                path: '/login'
+            })
+        } else next()
+    } else next()
 });
 
 const app = new Vue({
     el: '#app',
     router: router,
-});
-
-
+    store
+})

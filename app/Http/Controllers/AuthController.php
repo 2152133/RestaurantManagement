@@ -17,7 +17,7 @@ class AuthController extends Controller
                     'grant_type' => 'password',
                     'client_id' => config('services.passport.client_id'),
                     'client_secret' => config('services.passport.client_secret'),
-                    'username' => $request->username,
+                    'username' => $request->email,
                     'password' => $request->password,
                 ]
             ]);
@@ -31,24 +31,23 @@ class AuthController extends Controller
             return response()->json('Something went wrong on the server.', $e->getCode());
         }
     }
-    public function register(Request $request)
+    public function postLogin(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:3',
-        ]);
-        return User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        return $request->all();
     }
     public function logout()
     {
+        dd(auth());
         auth()->user()->tokens->each(function ($token, $key) {
             $token->delete();
         });
-        return response()->json('Logged out successfully', 200);
+        //return response()->json('Logged out successfully', 200);
+        return response()->json(['msg'=>'Token revoked'], 200);
     }
+    // public function logout()
+    // {
+    //     \Auth::guard('api')->user()->token()->revoke();
+    //     \Auth::guard('api')->user()->token()->delete();
+    //     return response()->json(['msg'=>'Token revoked'], 200);
+    // }
 }
