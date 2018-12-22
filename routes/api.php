@@ -78,7 +78,10 @@ Route::get('/meals/{mealId}/confirmedOrders', 'OrderController@getConfirmedOrder
 Route::get('/meals/{mealId}/pendingOrders', 'OrderController@getPendingOrdersForMeal');
 
 //Get all restaurant tables
-Route::get('/restaurantTables/all', 'RestaurantTableController@all');
+Route::get('/tables/all', 'RestaurantTableController@all');
+
+//Delete restaurant table by id
+Route::delete('/tables/{id}', 'RestaurantTableController@delete');
 
 //Get tables without active meals
 Route::get('/meals/tablesWithoutActiveMeals', 'MealController@getTablesWitoutActiveMeals');

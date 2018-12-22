@@ -36,6 +36,8 @@ const meals_of_waiter = Vue.component('waiterMeals', require('./components/Meals
 Vue.component('meals-list', require('./components/MealsList.vue'));
 Vue.component('edit-nif-name', require('./components/cashier/InvoicesNifName.vue'));
 const create_meal = Vue.component('create-meals', require('./components/CreateMeals.vue'));
+const managementDashboardComponent = Vue.component('management-dashboard', require('./components/manager/ManagerDashboard.vue'));
+Vue.component('tables-list', require('./components/manager/TablesList.vue'));
 
 const routes = [
     {path: '/', redirect: '/orders'},
@@ -46,6 +48,7 @@ const routes = [
     {path: '/invoices', component: invoicesComponent},
     {path: '/mealsOfWaiter', component:meals_of_waiter},
     {path: '/createMeal', component:create_meal, name:'create_meal'},
+    {path: '/management', component: managementDashboardComponent},
 ];
 
 // const files = require.context('./', true, /\.vue$/i)

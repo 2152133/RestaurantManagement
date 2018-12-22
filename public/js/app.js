@@ -14348,8 +14348,10 @@ var meals_of_waiter = Vue.component('waiterMeals', __webpack_require__(108));
 Vue.component('meals-list', __webpack_require__(111));
 Vue.component('edit-nif-name', __webpack_require__(120));
 var create_meal = Vue.component('create-meals', __webpack_require__(123));
+var managementDashboardComponent = Vue.component('management-dashboard', __webpack_require__(126));
+Vue.component('tables-list', __webpack_require__(129));
 
-var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/invoices', component: invoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }, { path: '/createMeal', component: create_meal, name: 'create_meal' }];
+var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/invoices', component: invoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }, { path: '/createMeal', component: create_meal, name: 'create_meal' }, { path: '/management', component: managementDashboardComponent }];
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
@@ -50857,7 +50859,7 @@ var render = function() {
               "a",
               { staticClass: "nav-item nav-link" },
               [
-                _c("router-link", { attrs: { to: "Invoices" } }, [
+                _c("router-link", { attrs: { to: "invoices" } }, [
                   _vm._v("Invoices")
                 ])
               ],
@@ -50870,6 +50872,17 @@ var render = function() {
               [
                 _c("router-link", { attrs: { to: "mealsOfWaiter" } }, [
                   _vm._v("My Meals")
+                ])
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "a",
+              { staticClass: "nav-item nav-link" },
+              [
+                _c("router-link", { attrs: { to: "management" } }, [
+                  _vm._v("Management")
                 ])
               ],
               1
@@ -53939,6 +53952,403 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-7a453259", module.exports)
+  }
+}
+
+/***/ }),
+/* 126 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(127)
+/* template */
+var __vue_template__ = __webpack_require__(128)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/manager/ManagerDashboard.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-a86e1b18", Component.options)
+  } else {
+    hotAPI.reload("data-v-a86e1b18", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 127 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    data: function data() {
+        return {
+            title: 'Management dashboard',
+            showSuccess: false,
+            showFailure: false,
+            successMessage: '',
+            failMessage: '',
+            tables: [],
+            currentTable: {},
+            tablesMeta: {},
+            tablesLinks: {},
+            editingTable: false
+        };
+    },
+
+    methods: {
+        loadTables: function loadTables() {
+            var _this = this;
+
+            axios.get('/api/tables/all').then(function (response) {
+                // handle success
+                _this.tables = response.data.data;
+                _this.tablesMeta = response.data.meta;
+                _this.tablesLinks = response.data.links;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        editTable: function editTable(table) {
+            this.currentTable = table;
+            this.editingTable = true;
+        },
+        deleteTable: function deleteTable(table) {
+            var _this2 = this;
+
+            axios.delete('/api/tables/' + table.table_number).then(function (response) {
+                // handle success
+                _this2.tables = {};
+                _this2.loadTables();
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        refreshTables: function refreshTables(newTables, newMeta, newLinks) {
+            this.tables = newTables;
+            this.newMeta = newMeta;
+            this.newLinks = newLinks;
+        },
+        saveTable: function saveTable(table) {},
+        endEditingTable: function endEditingTable() {
+            this.editingTable = false;
+            this.currentTable = {};
+        }
+    },
+    mounted: function mounted() {
+        this.loadTables();
+    }
+};
+
+/***/ }),
+/* 128 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "jumbotron" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.title))])
+      ]),
+      _vm._v(" "),
+      _c("tables-list", {
+        attrs: {
+          tables: _vm.tables,
+          meta: _vm.tablesMeta,
+          links: _vm.tablesLinks
+        },
+        on: {
+          editTable: _vm.editTable,
+          deleteTable: _vm.deleteTable,
+          refreshTables: _vm.refreshTables
+        }
+      }),
+      _vm._v(" "),
+      _vm.editingTable
+        ? _c("edit-table", {
+            attrs: { table: _vm.currentTable },
+            on: { save: _vm.saveTable, cancel: _vm.endEditingTable }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.showSuccess || _vm.showFailure
+        ? _c(
+            "div",
+            {
+              staticClass: "alert",
+              class: {
+                "alert-success": _vm.showSuccess,
+                "alert-danger": _vm.showFailure
+              }
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "close-btn",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.showSuccess = false
+                      _vm.showFailure = false
+                    }
+                  }
+                },
+                [_vm._v("×")]
+              ),
+              _vm._v(" "),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
+              _vm._v(" "),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
+            ]
+          )
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-a86e1b18", module.exports)
+  }
+}
+
+/***/ }),
+/* 129 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(130)
+/* template */
+var __vue_template__ = __webpack_require__(131)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/manager/TablesList.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4c752b70", Component.options)
+  } else {
+    hotAPI.reload("data-v-4c752b70", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 130 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    props: ["tables", "meta", "links", "user"],
+    data: function data() {
+        return {};
+    },
+    methods: {
+        editTable: function editTable(table) {
+            this.$emit('editTable', table);
+        },
+        deleteTable: function deleteTable(table) {
+            this.$emit('deleteTable', table);
+        },
+        refreshTables: function refreshTables(tables, meta, links) {
+            this.$emit('refreshTables', tables, meta, links);
+        }
+    }
+};
+
+/***/ }),
+/* 131 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("pagination", {
+        attrs: { objects: _vm.tables, meta: _vm.meta, links: _vm.links },
+        on: { refreshObjects: _vm.refreshTables }
+      }),
+      _vm._v(" "),
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.tables, function(table, index) {
+            return _c("tr", { key: table.table_number }, [
+              _c("td", [_vm._v(_vm._s(table.table_number))]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary btn-sm btn-block",
+                    attrs: { type: "Submit" },
+                    on: {
+                      click: function($event) {
+                        _vm.editTable(table, index)
+                      }
+                    }
+                  },
+                  [_vm._v("Edit")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger btn-sm btn-block",
+                    attrs: { type: "Submit" },
+                    on: {
+                      click: function($event) {
+                        _vm.deleteTable(table, index)
+                      }
+                    }
+                  },
+                  [_vm._v("Delete")]
+                )
+              ])
+            ])
+          })
+        )
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Table Number")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Actions")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4c752b70", module.exports)
   }
 }
 
