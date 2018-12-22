@@ -38,6 +38,7 @@ Vue.component('edit-nif-name', require('./components/cashier/InvoicesNifName.vue
 const create_meal = Vue.component('create-meals', require('./components/CreateMeals.vue'));
 const managementDashboardComponent = Vue.component('management-dashboard', require('./components/manager/ManagerDashboard.vue'));
 Vue.component('tables-list', require('./components/manager/TablesList.vue'));
+Vue.component('add-edit-table', require('./components/manager/AddEditTable.vue'));
 
 const routes = [
     {path: '/', redirect: '/orders'},

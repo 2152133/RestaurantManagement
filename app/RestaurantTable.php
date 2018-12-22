@@ -33,6 +33,11 @@ class RestaurantTable extends Model
      * @var array
      */
     protected $hidden = [
-        'created_at', 'updated_at',
+        'deleted_at','created_at', 'updated_at',
     ];
+
+    public function meals()
+    {
+        return $this->hasMany(Meal::class);
+    }
 }

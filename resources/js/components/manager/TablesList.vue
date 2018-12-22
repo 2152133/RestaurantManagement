@@ -17,6 +17,7 @@
                         </td>
                     </tr>
                 </tbody>
+                <button class="btn btn-success" @click="create()">New Table</button>
             </table>
         </div>
     </template>
@@ -30,6 +31,9 @@
                 }
             },
             methods: {
+                create(){
+                    this.$emit('createTable');
+                },
                 editTable(table){
                     this.$emit('editTable', table);
                 },

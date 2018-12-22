@@ -80,6 +80,12 @@ Route::get('/meals/{mealId}/pendingOrders', 'OrderController@getPendingOrdersFor
 //Get all restaurant tables
 Route::get('/tables/all', 'RestaurantTableController@all');
 
+//Create a new restaurant table
+Route::post('/tables/{id}', 'RestaurantTableController@create');
+
+//Update a restaurant table
+Route::patch('/tables/{id}', 'RestaurantTableController@update');
+
 //Delete restaurant table by id
 Route::delete('/tables/{id}', 'RestaurantTableController@delete');
 

@@ -3,7 +3,7 @@
             <form @submit.prevent="" class="mb-3">
                 <div class="form-group">
                     <label>Table Number:</label>
-                    <input class="form-control" type="text" name="tableNumber" v-model="table.table_number">
+                    <input id="newTableNumber" class="form-control" type="text" name="tableNumber" :value="table.table_number">
                 </div>
                 
                 <button class="btn btn-success" @click="save()">Save</button>
@@ -17,13 +17,15 @@
             props:['table'],
             data: function() {
                 return {
-                    
+                    newTableNumber: -1,
                 }
             }
             ,
             methods: {
                 save(){
-                    this.$emit('save', this.table);
+                    this.newTableNumber = document.getElementById("newTableNumber").value;
+                    console.log(this.newTableNumber);
+                    this.$emit('save', this.table, this.newTableNumber);
                 },
                 cancel(){
                     this.$emit('cancel', this.table);
