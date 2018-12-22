@@ -20,8 +20,9 @@
         "vue": "^2.5.17"
     },
     "dependencies": {
+        "jspdf": "^1.5.2",
         "vue-router": "^3.0.2",
-        "vuex": "^3.0.1",
-        "jspdf": "^1.5.2"
+        "vue-socket.io": "^3.0.4",
+        "vuex": "^3.0.1"
     }
 }

@@ -5,6 +5,12 @@ window.Vue = require('vue');
 
 import store from './store/store';
 import router from './routes/routes'
+import VueSocketio from 'vue-socket.io';
+
+Vue.use(new VueSocketio({
+    debug: true,
+    connection: 'http://192.168.10.10:8080'
+})); 
 
 // Para manter o utilizador logado depois de refrescar a pagina
 store.state.user = store.getters.getAuthUser
