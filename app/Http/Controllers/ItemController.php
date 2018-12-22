@@ -17,38 +17,89 @@ class ItemController extends Controller
     public function index()
     {
         // Get items
-        $items = Item::orderBy('type', 'asc')->paginate(5);
+        // $items = Item::orderBy('type', 'asc')->paginate(5);
+        $items = Item::orderBy('created_at', 'desc')->paginate(5);
 
         // Return collection of items as a resource
         return ItemResource::collection($items);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        /**
-         * Method = put  -> get item
-         * Method = post -> create new item
-         * */
-        $item = $request->isMethod('patch') ?
-        Item::findOrFail($request->id) : new Item;
+        //dd($request->all());
+        $request->validate([
+            'name' => 'required|string|max:50|unique:items,name',
+            'type'=> 'required|in:dish,drink',
+            'description' => 'required|string|max:200',
+            'photo_url' => 'nullable',
+            'price' => 'required|between:0,99.99'
+        ]);
 
-        $item->id = $request->input('id');
-        $item->name = $request->input('name');
-        $item->type = $request->input('type');
-        $item->description = $request->input('description');
-        $item->photo_url = $request->input('photo_url');
-        $item->price = $request->input('price');
+        if (strpos($request->input('photo_url'), 'data:image/') !== false) {
+            $exploded = explode(',', $request->photo_url);
+            $decoded = base64_decode($exploded[1]);
+            if (str_contains($exploded[0], 'jpeg') || str_contains($exploded[0], 'jpg')) {
+                $extention = 'jpg';
+            } else {
+                $extention = 'png';
+            }
 
-        if ($item->save()) {
-            return new ItemResource($item);
+            $fileName = str_random().'.'.$extention;
+
+
+            $path = storage_path('app/public/items/').$fileName;
+            file_put_contents($path, $decoded);
+            
+            $item = new Item();
+            $item->fill($request->except('photo_url') + [
+                'photo_url' => $fileName,
+            ]);
+        } else {
+            $item->fill($request->all());
         }
+        $item->save();
+        return response()->json(new ItemResource($item), 201);
     }
+    
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:50|unique:items,name,'.$id,
+            'type'=> 'required|in:dish,drink',
+            'description' => 'required|string|max:200',
+            'photo_url' => 'nullable',
+            'price' => 'required|between:0,99.99'
+        ]);
+        $item = Item::findOrFail($id);
+        if (strpos($request->input('photo_url'), 'data:image/') !== false) {
+
+            $exploded = explode(',', $request->photo_url);
+            $decoded = base64_decode($exploded[1]);
+            if (str_contains($exploded[0], 'jpeg') || str_contains($exploded[0], 'jpg')) {
+                $extention = 'jpg';
+            } else {
+                $extention = 'png';
+            }
+
+            $fileName = str_random().'.'.$extention;
+
+
+            $path = storage_path('app/public/items/').$fileName;
+            file_put_contents($path, $decoded);
+
+            //dd(Storage::disk('local')->putFileAs('items/'.$fileName));
+
+            // mostra os items com patch
+            //dd($request->getContent());dd(/'.$fileName);
+            $item->update($request->except('photo_url') + [
+                'photo_url' => $fileName,
+            ]);
+        } else {
+            $item->update($request->all());
+        }
+        return new ItemResource($item);
+    }
+
 
     public function all()
     {
@@ -57,27 +108,12 @@ class ItemController extends Controller
         return $allItems;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        // Get item
         $item = Item::findOrFail($id);
-
-        // Return item as a resource
         return new ItemResource($item);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         // Get item
@@ -86,6 +122,8 @@ class ItemController extends Controller
         // Method = delete -> return deleted item
         if ($item->delete()) {
             return new ItemResource($item);
+            //204
+            //500
         }
     }
 }
