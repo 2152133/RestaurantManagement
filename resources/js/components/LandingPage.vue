@@ -1,8 +1,9 @@
 <template>
 <div>
-    <br>
     <div>
-        <h2>{{ title }}</h2>
+        <div class="jumbotron">
+            <h1>{{title}}</h1>
+        </div>
         <button type="button" class="btn btn-warning" style="float:right">
             <router-link :to="{name: 'notifications'}">Notifications</router-link>
             <span class="badge badge-light">{{numberOfNotifications}}</span>

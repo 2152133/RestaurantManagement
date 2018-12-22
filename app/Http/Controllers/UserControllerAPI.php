@@ -11,9 +11,16 @@ use Illuminate\Support\Facades\DB;
 use App\User;
 use App\StoreUserRequest;
 use Hash;
+use App\Http\Controllers\VerifyController;
 
 class UserControllerAPI extends Controller
 {
+    protected $verifyEmail;
+    public function __construct(VerifyController $verifyEmail)
+    {
+        $this->verifyEmail = $verifyEmail;
+    }
+
     public function index(Request $request)
     {
         return UserResource::collection(User::paginate(5));
@@ -38,11 +45,42 @@ class UserControllerAPI extends Controller
             'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
             'username'=> 'required|string|max:50|unique:users,username',
             'email' => 'required|email|unique:users,email',
+            //'photo_url' => 'nullable',
+            //'password' => 'required|same:password',
+            //'password_confirmation' => 'required|same:password',   
         ]);
         $user = new User();
-        $user->fill($request->all());
+        if (strpos($request->input('photo_url'), 'data:image/') !== false) {
+            $exploded = explode(',', $request->photo_url);
+            $decoded = base64_decode($exploded[1]);
+            if (str_contains($exploded[0], 'jpeg') || str_contains($exploded[0], 'jpg')) {
+                $extention = 'jpg';
+            } else {
+                $extention = 'png';
+            }
+
+            $fileName = str_random().'.'.$extention;
+
+
+            $path = storage_path('app/public/profiles/').$fileName;
+            file_put_contents($path, $decoded);
+            
+            $user->update($request->except('photo_url') + [
+                'photo_url' => $fileName,
+            ]);
+        } else {
+
+            //$user->fill($request->all());
+            $user->fill($request->all() + ['remember_token' => str_random(10)]);
+
+        }
+
         $user->password = Hash::make($user->password);
+
         $user->save();
+
+        $user->sendVerificationEmail();
+
         return response()->json(new UserResource($user), 201);
     }
 
@@ -52,9 +90,35 @@ class UserControllerAPI extends Controller
             'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
             'username'=> 'required|string|max:50|unique:users,username,'.$id,
             'email' => 'required|email|unique:users,email,'.$id,
+            'photo_url' => 'nullable',
+            'password' => 'required|min:3|confirmed',
+            'password_confirmation' => 'required|min:3'
         ]);
         $user = User::findOrFail($id);
-        $user->update($request->all());
+        $request->merge(['password' => Hash::make($request->get('password'))]);
+        if (strpos($request->input('photo_url'), 'data:image/') !== false) {
+            $exploded = explode(',', $request->photo_url);
+            $decoded = base64_decode($exploded[1]);
+            if (str_contains($exploded[0], 'jpeg') || str_contains($exploded[0], 'jpg')) {
+                $extention = 'jpg';
+            } else {
+                $extention = 'png';
+            }
+
+            $fileName = str_random().'.'.$extention;
+
+
+            $path = storage_path('app/public/profiles/').$fileName;
+            file_put_contents($path, $decoded);
+            
+            $user->update($request->except('photo_url') + [
+                'photo_url' => $fileName,
+            ]);
+        } else {
+            //dd($request->all());
+            $user->fill($request->all());
+        }
+        //dd(new UserResource($user));
         return new UserResource($user);
     }
 
@@ -80,4 +144,56 @@ class UserControllerAPI extends Controller
     {
         return new UserResource($request->user());
     }
+
+    // public function setPassword(Request $request)
+    // {
+    //     $user = Auth::user();
+
+    //     $curPassword = $request->input['curPassword'];
+    //     $newPassword = $request->input['newPassword'];
+
+    //     if (Hash::check($curPassword, $user->password)) {
+    //         $user_id = $user->id;
+    //         $obj_user = User::find($user_id)->first();
+    //         $obj_user->password = Hash::make($newPassword);
+    //         $obj_user->save();
+
+    //         return response()->json(["result"=>true]);
+    //     }
+    //     else
+    //     {
+    //         return response()->json(["result"=>false]);
+    //     }
+    // }
+
+    public function setNewPassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:3|confirmed',
+            'password_confirmation' => 'required|min:3'
+        ]);
+        
+        $prevUrl = $request->headers->get('referer');
+        
+        $exploded = explode('/', $prevUrl);
+        
+        $remember_token = $exploded[4];
+
+        $user = User::where('remember_token', $remember_token)->firstOrFail();
+
+
+        //dd($request->all());
+
+        $this->verifyEmail->verify($remember_token);
+        
+        //$data = $request->validated();
+        $data = $request->all();
+        $data['password'] = Hash::make($request->password);
+        $user->fill($data);
+        //dd($user);
+        $user->save();
+        //return new UserResource($user);
+        return redirect()->route('mainPage');
+    }
+
 }

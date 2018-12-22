@@ -11,13 +11,13 @@
                     <a><router-link class="nav-item nav-link" to="items">Items</router-link></a>
                 </li>
                 <li class="nav-item">
-                    <a><router-link class="nav-item nav-link" to="orders">Orders</router-link></a>
+                    <a><router-link class="nav-item nav-link" to="orders" v-if="this.$store.getters.isAuthenticated">Orders</router-link></a>
                 </li>
                 <li class="nav-item">
-                    <a><router-link class="nav-item nav-link" to="pendingInvoices">PendingInvoices</router-link></a>
+                    <a><router-link class="nav-item nav-link" to="pendingInvoices" v-if="this.$store.getters.isAuthenticated">PendingInvoices</router-link></a>
                 </li>
                 <li class="nav-item">
-                    <a><router-link class="nav-item nav-link" to="dashboard">Dashboard</router-link></a>
+                    <a><router-link class="nav-item nav-link" to="dashboard" v-if="this.$store.getters.isAuthenticated">Dashboard</router-link></a>
                 </li>
             </ul>
             <ul class="navbar-nav">

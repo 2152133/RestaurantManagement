@@ -1,32 +1,53 @@
 export default {
     getToken(state) {
-        let token = localStorage.getItem('token')
-        let expiration = localStorage.getItem('expiration')
+        let token = localStorage.getItem('access_token')
+        let tokenType = localStorage.getItem('token_type')
+        let expiration = localStorage.getItem('expiration_time')
 
-        if (!token || !expiration) {
+        if (!token || !tokenType || !expiration) {
             return null;
         }
 
         if (Date.now() > parseInt(expiration)) {
             state.token = "";
-            localStorage.removeItem('token')
-            localStorage.removeItem('expiration')
+            state.tokenType = "";
+            localStorage.removeItem('token_type')
+            localStorage.removeItem('access_token')
+            localStorage.removeItem('expiration_time')
             axios.defaults.headers.common.Authorization = undefined;
             return null;
         }
 
         return token;
     },
-    getUser(state) {
+    getTokenType(state) {
+        let tokenType = localStorage.getItem('token_type')
+        
+        if (!tokenType) {
+            return null;
+        }
+
+        return tokenType;
+    },
+    getExpiration(state) {
+        let expiration = localStorage.getItem('expiration_time')
+        
+        if (!expiration) {
+            return null;
+        }
+
+        return expiration;
+    },
+    getAuthUser(state) {
         let user = localStorage.getItem('user')
 
         if (!user) {
             return null;
         }
 
-        return user;
+        return JSON.parse(user);;
     },
     isAuthenticated(state) {
-        return state.token && state.user ? true:false;
+        return state.token && state.tokenType ? true:false;
     },
 }

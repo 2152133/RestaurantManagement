@@ -68,7 +68,6 @@ export default {
                     Object.assign(this.items, response.data.data);
                     this.makePagination(response.data.meta, response.data.links)
                 })
-                .catch(error => console.log(error))
         },
         makePagination(meta, links) {
             let pagination = {

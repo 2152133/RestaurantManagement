@@ -32,7 +32,7 @@
 	    </div>
         <div>
             <input class="form-data" type="file" accept="image/*"
-                @change="onImageSelected">
+                @change="imageChanged">
         </div>
         <br>
 	    <div class="form-group">
@@ -45,9 +45,7 @@
 
 <script>
 export default {
-    props: [
-        'item'
-    ],
+    props: ['item'],
     methods: {
         saveItem(){
             axios.patch('api/item/'+this.item.id, this.item)
@@ -62,8 +60,13 @@ export default {
                     Object.assign(this.item, response.data.data);
                     this.$emit('item-canceled', this.item);
                 });
-        },onImageSelected(event) {
-            this.item.photo_url = String(event.target.files[0].name)
+        },
+        imageChanged(event) {
+            let fileReader = new FileReader()
+            fileReader.readAsDataURL(event.target.files[0])
+            fileReader.onload = (event) => {
+                this.item.photo_url = event.target.result
+            }
         },
 
     },

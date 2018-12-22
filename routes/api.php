@@ -23,15 +23,22 @@ Route::patch('/item/{id}', 'ItemController@update');
 
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    // get auth user
+    Route::get('/user', function (Request $request) {return $request->user();});
+
+
+    
+
+
 
     Route::post('/logout', 'AuthController@logout');
 });
+Route::post('/register', 'UserControllerAPI@store');
+
+// List all items
+Route::get('/items', 'ItemController@index');
 
 Route::post('/login', 'AuthController@login')->name('login');
-Route::post('/register', 'UserControllerAPI@store');
 
 // List one item
 Route::get('/item/{id}', 'ItemController@show');
@@ -41,9 +48,6 @@ Route::delete('/item/{id}', 'ItemController@destroy');
 
 // Create an item
 Route::post('/item', 'ItemController@store');
-
-// List all items
-Route::get('/items', 'ItemController@index');
 
 // List all orders
 Route::get('/orders/all', 'OrderController@all');

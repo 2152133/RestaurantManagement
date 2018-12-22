@@ -6,10 +6,6 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-define('YOUR_SERVER_URL', config('services.passport.login_endpoint'));
-define('CLIENT_ID', config('services.passport.client_id'));
-define('CLIENT_SECRET', config('services.passport.client_secret'));
-
 class AuthController extends Controller
 {
     public function login(Request $request)

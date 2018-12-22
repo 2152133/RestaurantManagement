@@ -34,7 +34,7 @@
                         this.showMessage = true;
                         setTimeout(() => {
                             this.$router.push("/items")
-                        }, 2000);
+                        }, 1000);
                     })
                     .catch(error => {
                         this.$store.commit('clearUserAndToken');

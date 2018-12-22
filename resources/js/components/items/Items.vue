@@ -33,7 +33,6 @@ export default {
             .then(response => {
                 this.getItems();
             })
-            .catch(error => console.log(error))
         },
         savedItem: function(){
             this.currentItem = null;
