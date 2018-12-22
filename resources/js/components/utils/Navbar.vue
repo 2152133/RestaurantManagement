@@ -14,7 +14,10 @@
                     <a><router-link class="nav-item nav-link" to="orders" v-if="this.$store.getters.isAuthenticated">Orders</router-link></a>
                 </li>
                 <li class="nav-item">
-                    <a><router-link class="nav-item nav-link" to="pendingInvoices" v-if="this.$store.getters.isAuthenticated">PendingInvoices</router-link></a>
+                    <a><router-link class="nav-item nav-link" to="invoices" v-if="this.$store.getters.isAuthenticated">Invoices</router-link></a>
+                </li>
+                <li class="nav-item">
+                    <a><router-link class="nav-item nav-link" to="mealsOfWaiter" v-if="this.$store.getters.isAuthenticated">MyMeals</router-link></a>
                 </li>
                 <li class="nav-item">
                     <a><router-link class="nav-item nav-link" to="dashboard" v-if="this.$store.getters.isAuthenticated">Dashboard</router-link></a>

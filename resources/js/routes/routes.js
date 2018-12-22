@@ -5,20 +5,20 @@ Vue.use(VueRouter);
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 const itemsComponent = Vue.component('items', require('../components/items/Items.vue'));
-Vue.component('navbar', require('../components/Navbar.vue'));
+Vue.component('navbar', require('../components/utils/Navbar.vue'));
 const ordersComponent = Vue.component('orders', require('../components/cook/Orders.vue'));
 Vue.component('orders-list', require('../components/cook/OrdersList.vue'));
-Vue.component('pagination', require('../components/pagination.vue'));
+Vue.component('pagination', require('../components/utils/Pagination.vue'));
 const landing_page = Vue.component('landing_page', require('../components/restaurantWorker/LandingPage.vue')); 
 const notifications_page = Vue.component('notifications_page', require('../components/restaurantWorker/Notifications.vue'));
 const invoicesComponent = Vue.component('pending-invoices', require('../components/cashier/Invoices.vue'));
 Vue.component('invoices-list', require('../components/cashier/InvoicesList.vue'));
 Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
-const invoiceDetailsComponent = Vue.component('invoice-details', require('../components/cashier/InvoiceDetails.vue'));
+Vue.component('invoice-details', require('../components/cashier/InvoiceDetails.vue'));
 const meals_of_waiter = Vue.component('waiterMeals', require('../components/Meals.vue'));
 Vue.component('meals-list', require('../components/MealsList.vue'));
 Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
-
+const create_meal = Vue.component('create-meal', require('../components/CreateMeals.vue'));
 Vue.component('itemsList', require('../components/items/ItemsList.vue'));
 Vue.component('profileEdit', require('../components/user/ProfileEdit.vue'));
 Vue.component('ItemEdit', require('../components/items/ItemEdit.vue'));
