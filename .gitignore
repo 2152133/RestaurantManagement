@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/public/js/app.js
 /storage/*.key
 /vendor
 /.idea
@@ -15,3 +16,4 @@ yarn-error.log
 .phpunit.result.cache
 .jshintrc
 github.md
+/public/js/app.js

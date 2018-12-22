@@ -3,7 +3,6 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-
 import store from './store/store';
 import router from './routes/routes'
 
@@ -53,5 +52,3 @@ const app = new Vue({
     router: router,
     store
 })
-
-

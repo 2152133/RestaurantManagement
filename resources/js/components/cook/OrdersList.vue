@@ -24,11 +24,10 @@
                     <td>{{order.responsible_cook_id}}</td>
                     <td>{{order.start}}</td>
                     <td>{{order.end}}</td>
-                    <td>{{order.created_at.date}}</td>
+                    <td>{{order.created_at}}</td>
                     <td>
                         <div v-if="order.state == 'confirmed'">
                             <button type="Submit" class="btn btn-primary btn-sm btn-block" @click="assignOrderToCook(order, index)">Assign to me</button>
-                            <br></br>
                         </div>
                         <button type="Submit" class="btn btn-danger btn-sm btn-block" @click="declareOrderAsPrepared(order, index)">Prepared</button>
                     </td>

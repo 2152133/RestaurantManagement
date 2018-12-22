@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\RestaurantTableController;
 
 
 /*
@@ -37,6 +38,7 @@ Route::post('/register', 'UserControllerAPI@store');
 
 // List all items
 Route::get('/items', 'ItemController@index');
+Route::get('/items/all', 'ItemController@all');
 
 Route::post('/login', 'AuthController@login')->name('login');
 
@@ -61,10 +63,37 @@ Route::patch('/orders/{id}', 'OrderController@assignOrderToCook');
 // Get all pending invoices
 Route::get('/invoices/pending', 'InvoiceController@getPending');
 
+// Get all paid invoices
+Route::get('/invoices/paid', 'InvoiceController@getPaid');
+
 // Declare a invoice as paid
 Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
 
+//Get all meals
+Route::get('/meals/all', 'MealController@all');
 
+// Get all waiter's meals
+Route::get('/meals/waiterMeals/{responsibleWaiterId}', 'MealController@waiterMeals');
+
+//For a meal from a waiter, get it's orders
+Route::get('/meals/{mealId}/confirmedOrders', 'OrderController@getConfirmedOrdersForMeal');
+
+//For a meal from a waiter, get it's orders
+Route::get('/meals/{mealId}/pendingOrders', 'OrderController@getPendingOrdersForMeal');
+
+//Get all restaurant tables
+Route::get('/restaurantTables/all', 'RestaurantTableController@all');
+
+//Get tables without active meals
+Route::get('/meals/tablesWithoutActiveMeals', 'MealController@getTablesWitoutActiveMeals');
+
+//Create meal
+Route::post('/meal/createMeal/{table_number}/{waiter_id}', 'MealController@createMeal');
+
+//Add an order to a meal (create order)
+Route::post('/meal/addOrder/{meal_id}/{item_id}', 'OrderController@addOrderToMeal');
+
+// Declare a invoice as paid
 Route::get('users', 'UserControllerAPI@index');
 Route::get('users/emailavailable', 'UserControllerAPI@emailAvailable');
 Route::middleware('auth:api')->get('users/me', 'UserControllerAPI@myProfile');

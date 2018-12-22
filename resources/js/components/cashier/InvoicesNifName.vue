@@ -1,17 +1,17 @@
 <template>
         <div>
-            <form @submit.prevent="declareInvoiceAsPaid()" class="mb-3">
+            <form @submit.prevent="" class="mb-3">
                 <div class="form-group">
                     <label>Nif:</label>
-                    <input class="form-control" type="text" name="nif" v-model="invoice.nif">
+                    <input class="form-control" type="text" name="nif" pattern="[0-9]{9}" title="9 numbers" v-model="invoice.nif">
                 </div>
                 
                 <div class="form-group">
                     <label>Name:</label>
-                    <input class="form-control" type="text" name="name" v-model="invoice.name">
+                    <input class="form-control" type="text" name="name" pattern="[a-zA-Z\s]*" title="Only letters and spaces" v-model="invoice.name">
                 </div>
                 
-                <button type="submit" class="btn btn-success">Save</button>
+                <button class="btn btn-success" @click="declareInvoiceAsPaid()">Save</button>
                 <button class="btn btn-danger" @click="cancel()">Cancel</button>
             </form>
         </div>         
@@ -32,7 +32,8 @@
                         alert("Nif and name required");
                         return;
                     }
-                    axios.patch('/api/invoice/declarePaid', {invoice: JSON.stringify(this.invoice), user: this.currentUser})
+                    if(/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)){
+                        axios.patch('/api/invoice/declarePaid', {invoice: JSON.stringify(this.invoice), user: this.currentUser})
                         .then((response) => {
                             axios.get('/api/invoices/pending')
                                 .then((response) => {
@@ -45,6 +46,7 @@
                                 })
                                 .catch(function (error) {
                                     // handle error
+                                    alert(error);
                                     console.log(error);
                                 })
                                 .then(function () {
@@ -59,6 +61,9 @@
                         .then(function () {
                             // always executed
                         });
+                    }
+                    
+                    
                 },
                 cancel(){
                     this.$emit('cancelEditing');

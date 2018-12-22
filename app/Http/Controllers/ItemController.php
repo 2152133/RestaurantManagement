@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Item;
 use App\Http\Resources\Item as ItemResource;
+use App\Item;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
@@ -59,7 +60,7 @@ class ItemController extends Controller
         $item->save();
         return response()->json(new ItemResource($item), 201);
     }
-
+    
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -99,6 +100,14 @@ class ItemController extends Controller
         return new ItemResource($item);
     }
 
+
+    public function all()
+    {
+        $allItems = DB::table('items')
+            ->get();
+        return $allItems;
+    }
+
     public function show($id)
     {
         $item = Item::findOrFail($id);
@@ -110,7 +119,7 @@ class ItemController extends Controller
         // Get item
         $item = Item::findOrFail($id);
 
-        // Method = delete -> return deleted item 
+        // Method = delete -> return deleted item
         if ($item->delete()) {
             return new ItemResource($item);
             //204
