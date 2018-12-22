@@ -54040,8 +54040,8 @@ module.exports = {
         },
         refreshTables: function refreshTables(newTables, newMeta, newLinks) {
             this.tables = newTables;
-            this.newMeta = newMeta;
-            this.newLinks = newLinks;
+            this.tablesMeta = newMeta;
+            this.tablesLinks = newLinks;
         },
         saveTable: function saveTable(table, newTableNumber) {
             var _this3 = this;

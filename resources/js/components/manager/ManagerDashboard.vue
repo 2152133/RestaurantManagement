@@ -75,8 +75,8 @@
                 },
                 refreshTables(newTables, newMeta, newLinks){
                     this.tables = newTables;
-                    this.newMeta = newMeta;
-                    this.newLinks = newLinks;
+                    this.tablesMeta = newMeta;
+                    this.tablesLinks = newLinks;
                 },
                 saveTable(table, newTableNumber){
                     axios.patch('/api/tables/' + table.table_number, {table: JSON.stringify(table), newTableNumber: newTableNumber, user: this.currentUser})
