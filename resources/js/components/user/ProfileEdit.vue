@@ -51,9 +51,6 @@ export default {
                 .then(response=>{
                     this.$store.dispatch('setAuthUser', this.autenticatedUser)
                 })
-                .catch(error => {
-                    console.log(error);
-                })
         },
         imageChanged(event) {
             let fileReader = new FileReader()

@@ -6,11 +6,20 @@ window.Vue = require('vue');
 import store from './store/store';
 import router from './routes/routes'
 import VueSocketio from 'vue-socket.io';
+import Toasted from 'vue-toasted';
+ 
+Vue.use(Toasted, {
+  position: 'bottom-center',
+  duration: 5000,
+  type: 'info',
+});
 
 Vue.use(new VueSocketio({
     debug: true,
     connection: 'http://192.168.10.10:8080'
 })); 
+
+
 
 // Para manter o utilizador logado depois de refrescar a pagina
 store.state.user = store.getters.getAuthUser
@@ -56,5 +65,42 @@ router.beforeEach((to, from, next) => {
 const app = new Vue({
     el: '#app',
     router: router,
-    store
+    store,
+    data: {
+        player1:undefined,
+        player2: undefined,
+        msgGlobalText: '',
+        msgGlobalTextArea: '',
+        msgDepText: '',
+        msgDepTextArea: '',
+    },
+    sockets: {
+        // dispultado quando o socket e chamado
+        connect() {
+            console.log(`Socket connect with ID: ${this.$socket.id}`);
+            if (this.$store.state.user) {
+                this.$socket.emit('user_enter', this.$store.state.user);
+            }
+        },
+        msg_from_server(data) {
+            this.msgGlobalTextArea = data + '\n' + this.msgGlobalTextArea;
+        },
+        msg_from_server_dep(data) {
+            this.msgDepTextArea = data + '\n' + this.msgDepTextArea;
+        },
+    },
+    methods: {
+        sendGlobalMsg() {
+            this.$socket.emit('msg_from_client', this.msgGlobalText);
+        },
+        sendDepMsg() {
+            if (this.$store.state.user) {
+                this.$socket.emit('msg_from_client_dep', this.msgDepText, this.$store.state.user);
+            }
+        },
+    },
+    created() {
+        console.log('-----');
+        console.log(this.$store.state.user);
+    }
 })
