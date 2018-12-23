@@ -1,5 +1,6 @@
 <template>
         <div>
+            <h3>Tables</h3>
             <pagination :objects="tables" :meta="meta" :links="links" @refreshObjects="refreshTables"></pagination>
             <table class="table">
                 <thead>
@@ -19,6 +20,9 @@
                 </tbody>
                 <button class="btn btn-success" @click="create()">New Table</button>
             </table>
+            <br/>
+            <br/>
+            <br/>
         </div>
     </template>
     

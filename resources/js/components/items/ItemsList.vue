@@ -1,5 +1,6 @@
 <template>
 <div>
+    <h3>Items</h3>
     <nav aria-label="Page navigation example">
         <ul class="pagination">
             <li v-bind:class="[{disabled: !pagination.prev_page_url}]" 
@@ -34,6 +35,9 @@
             </td>
         </tbody>
     </table>
+    <br/>
+    <br/>
+    <br/>
 </div>
 </template>
 

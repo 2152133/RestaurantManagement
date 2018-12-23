@@ -55024,6 +55024,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['items'],
@@ -55082,6 +55086,8 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _c("h3", [_vm._v("Items")]),
+    _vm._v(" "),
     _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
       _c("ul", { staticClass: "pagination" }, [
         _c(
@@ -55202,7 +55208,13 @@ var render = function() {
         })
       ],
       2
-    )
+    ),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br")
   ])
 }
 var staticRenderFns = [
@@ -56364,6 +56376,7 @@ module.exports = Component.exports
 //
 //
 //
+//
 
 module.exports = {
     data: function data() {
@@ -56378,7 +56391,9 @@ module.exports = {
             tablesMeta: {},
             tablesLinks: {},
             editingTable: false,
-            creatingTable: false
+            creatingTable: false,
+            currentItem: null,
+            items: []
         };
     },
 
@@ -56464,10 +56479,45 @@ module.exports = {
         },
         endCreatingTable: function endCreatingTable() {
             this.creatingTable = false;
+        },
+        editItem: function editItem(item) {
+            this.currentItem = item;
+            this.showSuccess = false;
+        },
+        deleteItem: function deleteItem(item) {
+            var _this5 = this;
+
+            axios.delete('api/item/' + item.id).then(function (response) {
+                _this5.getItems();
+            });
+        },
+
+        savedItem: function savedItem() {
+            this.currentItem = null;
+            this.$refs.itemsListRef.editingitem = null;
+            this.showSuccess = true;
+            this.successMessage = 'Item Saved';
+        },
+        cancelEdit: function cancelEdit() {
+            this.currentItem = null;
+            this.$refs.itemsListRef.editingitem = null;
+            this.showSuccess = false;
+        },
+        getItems: function getItems() {
+            var _this6 = this;
+
+            axios.get('api/items').then(function (response) {
+                _this6.items = response.data.data;
+            });
+        },
+        childMessage: function childMessage(message) {
+            this.showSuccess = true;
+            this.successMessage = message;
         }
     },
     mounted: function mounted() {
         this.loadTables();
+        this.getItems();
     }
 };
 
@@ -56515,6 +56565,16 @@ var render = function() {
             on: { save: _vm.createTable, cancel: _vm.endCreatingTable }
           })
         : _vm._e(),
+      _vm._v(" "),
+      _c("items-list", {
+        ref: "itemsListRef",
+        attrs: { items: _vm.items },
+        on: {
+          "edit-click": _vm.editItem,
+          "delete-click": _vm.deleteItem,
+          message: _vm.childMessage
+        }
+      }),
       _vm._v(" "),
       _vm.showSuccess || _vm.showFailure
         ? _c(
@@ -56637,6 +56697,10 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
+//
 
 module.exports = {
     props: ["tables", "meta", "links", "user"],
@@ -56670,6 +56734,8 @@ var render = function() {
   return _c(
     "div",
     [
+      _c("h3", [_vm._v("Tables")]),
+      _vm._v(" "),
       _c("pagination", {
         attrs: { objects: _vm.tables, meta: _vm.meta, links: _vm.links },
         on: { refreshObjects: _vm.refreshTables }
@@ -56729,7 +56795,13 @@ var render = function() {
           },
           [_vm._v("New Table")]
         )
-      ])
+      ]),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br")
     ],
     1
   )

@@ -8,6 +8,7 @@
             <add-edit-table v-if="editingTable" :table="currentTable" @save="saveTable" @cancel="endEditingTable"></add-edit-table> 
             <add-edit-table v-if="creatingTable" :table="currentTable" @save="createTable" @cancel="endCreatingTable"></add-edit-table>
             
+            <items-list :items="items" @edit-click="editItem" @delete-click="deleteItem" @message="childMessage" ref="itemsListRef"></items-list>
             <div class="alert" :class="{'alert-success':showSuccess, 'alert-danger':showFailure}" v-if="showSuccess || showFailure">
                 <button type="button" @click="showSuccess = false; showFailure = false;" class="close-btn" >&times;</button>
                 <strong>@{{successMessage}}</strong>
@@ -31,7 +32,9 @@
                     tablesMeta:{},
                     tablesLinks:{},
                     editingTable: false,
-                    creatingTable: false
+                    creatingTable: false,
+                    currentItem: null,
+                    items: [],
                 }
             }
             ,
@@ -121,10 +124,42 @@
                 },
                 endCreatingTable(){
                     this.creatingTable = false;
-                }
+                },
+                editItem(item){
+	            this.currentItem = item;
+	            this.showSuccess = false;
+	        },
+            deleteItem(item){
+                axios.delete('api/item/' + item.id)
+                .then(response => {
+                    this.getItems();
+                })
+            },
+            savedItem: function(){
+                this.currentItem = null;
+                this.$refs.itemsListRef.editingitem = null;
+                this.showSuccess = true;
+                this.successMessage = 'Item Saved';
+            },
+            cancelEdit: function(){
+                this.currentItem = null;
+                this.$refs.itemsListRef.editingitem = null;
+                this.showSuccess = false;
+            },
+            getItems: function(){
+                axios.get('api/items')
+                .then(response=>{
+                    this.items = response.data.data; 
+                });
+            },
+            childMessage: function(message){
+                this.showSuccess = true;
+                this.successMessage = message;
+            } 
             },
             mounted(){
                 this.loadTables();
+                this.getItems();
             }
         };
     </script>
