@@ -22,6 +22,9 @@ const create_meal = Vue.component('create-meal', require('../components/CreateMe
 Vue.component('itemsList', require('../components/items/ItemsList.vue'));
 Vue.component('profileEdit', require('../components/user/ProfileEdit.vue'));
 Vue.component('ItemEdit', require('../components/items/ItemEdit.vue'));
+const managementComponent = Vue.component('management-dashboard', require('../components/manager/ManagerDashboard.vue'));
+Vue.component('tables-list', require('../components/manager/TablesList.vue'));
+Vue.component('add-edit-table', require('../components/manager/AddEditTable.vue'));
 const login = Vue.component('login', require('../components/auth/login.vue'));
 const logout = Vue.component('logout', require('../components/auth/logout.vue'));
 
@@ -81,6 +84,13 @@ const routes = [
         path: '/createMeal', 
         component: create_meal,
         name: 'create_meal',
+        meta: {
+            forAuth: true
+        }
+    },
+    {
+        path: '/management', 
+        component: managementComponent,
         meta: {
             forAuth: true
         }

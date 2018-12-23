@@ -48823,6 +48823,9 @@ var create_meal = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('create-
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemsList', __webpack_require__(95));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('profileEdit', __webpack_require__(98));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('ItemEdit', __webpack_require__(101));
+var managementComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('management-dashboard', __webpack_require__(115));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('tables-list', __webpack_require__(118));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('add-edit-table', __webpack_require__(121));
 var login = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('login', __webpack_require__(104));
 var logout = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('logout', __webpack_require__(107));
 
@@ -48872,6 +48875,12 @@ var routes = [{
     path: '/createMeal',
     component: create_meal,
     name: 'create_meal',
+    meta: {
+        forAuth: true
+    }
+}, {
+    path: '/management',
+    component: managementComponent,
     meta: {
         forAuth: true
     }
@@ -51863,6 +51872,25 @@ var render = function() {
                           attrs: { to: "dashboard" }
                         },
                         [_vm._v("Dashboard")]
+                      )
+                    : _vm._e()
+                ],
+                1
+              )
+            ]),
+            _vm._v(" "),
+            _c("li", { staticClass: "nav-item" }, [
+              _c(
+                "a",
+                [
+                  this.$store.getters.isAuthenticated
+                    ? _c(
+                        "router-link",
+                        {
+                          staticClass: "nav-item nav-link",
+                          attrs: { to: "management" }
+                        },
+                        [_vm._v("Management")]
                       )
                     : _vm._e()
                 ],
@@ -56262,6 +56290,627 @@ var n=r(34),o=r(35),i=r(36);function s(){return c.TYPED_ARRAY_SUPPORT?2147483647
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 112 */,
+/* 113 */,
+/* 114 */,
+/* 115 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(116)
+/* template */
+var __vue_template__ = __webpack_require__(117)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/manager/ManagerDashboard.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-a86e1b18", Component.options)
+  } else {
+    hotAPI.reload("data-v-a86e1b18", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 116 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    data: function data() {
+        return {
+            title: 'Management dashboard',
+            showSuccess: false,
+            showFailure: false,
+            successMessage: '',
+            failMessage: '',
+            tables: [],
+            currentTable: {},
+            tablesMeta: {},
+            tablesLinks: {},
+            editingTable: false,
+            creatingTable: false
+        };
+    },
+
+    methods: {
+        loadTables: function loadTables() {
+            var _this = this;
+
+            axios.get('/api/tables/all').then(function (response) {
+                // handle success
+                _this.tables = response.data.data;
+                _this.tablesMeta = response.data.meta;
+                _this.tablesLinks = response.data.links;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        editTable: function editTable(table) {
+            this.currentTable = table;
+            this.editingTable = true;
+        },
+        deleteTable: function deleteTable(table) {
+            var _this2 = this;
+
+            axios.delete('/api/tables/' + table.table_number).then(function (response) {
+                // handle success
+                _this2.tables = {};
+                _this2.loadTables();
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        refreshTables: function refreshTables(newTables, newMeta, newLinks) {
+            this.tables = newTables;
+            this.tablesMeta = newMeta;
+            this.tablesLinks = newLinks;
+        },
+        saveTable: function saveTable(table, newTableNumber) {
+            var _this3 = this;
+
+            axios.patch('/api/tables/' + table.table_number, { table: JSON.stringify(table), newTableNumber: newTableNumber, user: this.currentUser }).then(function (response) {
+                // handle success
+                _this3.tables = {};
+                _this3.loadTables();
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+            endEditingTable();
+        },
+        endEditingTable: function endEditingTable() {
+            this.editingTable = false;
+            this.currentTable = {};
+        },
+        openCreateTable: function openCreateTable() {
+            this.creatingTable = true;
+        },
+        createTable: function createTable(table, newTableNumber) {
+            var _this4 = this;
+
+            axios.post('/api/tables/' + newTableNumber).then(function (response) {
+                // handle success
+                _this4.tables = {};
+                _this4.loadTables();
+                _this4.creatingTable = false;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        endCreatingTable: function endCreatingTable() {
+            this.creatingTable = false;
+        }
+    },
+    mounted: function mounted() {
+        this.loadTables();
+    }
+};
+
+/***/ }),
+/* 117 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "jumbotron" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.title))])
+      ]),
+      _vm._v(" "),
+      !_vm.editingTable && !_vm.creatingTable
+        ? _c("tables-list", {
+            attrs: {
+              tables: _vm.tables,
+              meta: _vm.tablesMeta,
+              links: _vm.tablesLinks
+            },
+            on: {
+              createTable: _vm.openCreateTable,
+              editTable: _vm.editTable,
+              deleteTable: _vm.deleteTable,
+              refreshTables: _vm.refreshTables
+            }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.editingTable
+        ? _c("add-edit-table", {
+            attrs: { table: _vm.currentTable },
+            on: { save: _vm.saveTable, cancel: _vm.endEditingTable }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.creatingTable
+        ? _c("add-edit-table", {
+            attrs: { table: _vm.currentTable },
+            on: { save: _vm.createTable, cancel: _vm.endCreatingTable }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.showSuccess || _vm.showFailure
+        ? _c(
+            "div",
+            {
+              staticClass: "alert",
+              class: {
+                "alert-success": _vm.showSuccess,
+                "alert-danger": _vm.showFailure
+              }
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "close-btn",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.showSuccess = false
+                      _vm.showFailure = false
+                    }
+                  }
+                },
+                [_vm._v("×")]
+              ),
+              _vm._v(" "),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
+              _vm._v(" "),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
+            ]
+          )
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-a86e1b18", module.exports)
+  }
+}
+
+/***/ }),
+/* 118 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(119)
+/* template */
+var __vue_template__ = __webpack_require__(120)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/manager/TablesList.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4c752b70", Component.options)
+  } else {
+    hotAPI.reload("data-v-4c752b70", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    props: ["tables", "meta", "links", "user"],
+    data: function data() {
+        return {};
+    },
+    methods: {
+        create: function create() {
+            this.$emit('createTable');
+        },
+        editTable: function editTable(table) {
+            this.$emit('editTable', table);
+        },
+        deleteTable: function deleteTable(table) {
+            this.$emit('deleteTable', table);
+        },
+        refreshTables: function refreshTables(tables, meta, links) {
+            this.$emit('refreshTables', tables, meta, links);
+        }
+    }
+};
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("pagination", {
+        attrs: { objects: _vm.tables, meta: _vm.meta, links: _vm.links },
+        on: { refreshObjects: _vm.refreshTables }
+      }),
+      _vm._v(" "),
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.tables, function(table, index) {
+            return _c("tr", { key: table.table_number }, [
+              _c("td", [_vm._v(_vm._s(table.table_number))]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary btn-sm btn-block",
+                    attrs: { type: "Submit" },
+                    on: {
+                      click: function($event) {
+                        _vm.editTable(table, index)
+                      }
+                    }
+                  },
+                  [_vm._v("Edit")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger btn-sm btn-block",
+                    attrs: { type: "Submit" },
+                    on: {
+                      click: function($event) {
+                        _vm.deleteTable(table, index)
+                      }
+                    }
+                  },
+                  [_vm._v("Delete")]
+                )
+              ])
+            ])
+          })
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            on: {
+              click: function($event) {
+                _vm.create()
+              }
+            }
+          },
+          [_vm._v("New Table")]
+        )
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Table Number")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Actions")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4c752b70", module.exports)
+  }
+}
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(122)
+/* template */
+var __vue_template__ = __webpack_require__(123)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/manager/AddEditTable.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4d4ff9d0", Component.options)
+  } else {
+    hotAPI.reload("data-v-4d4ff9d0", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    props: ['table'],
+    data: function data() {
+        return {
+            newTableNumber: -1
+        };
+    },
+
+    methods: {
+        save: function save() {
+            this.newTableNumber = document.getElementById("newTableNumber").value;
+            console.log(this.newTableNumber);
+            this.$emit('save', this.table, this.newTableNumber);
+        },
+        cancel: function cancel() {
+            this.$emit('cancel', this.table);
+        }
+    }
+};
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "form",
+      {
+        staticClass: "mb-3",
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+          }
+        }
+      },
+      [
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Table Number:")]),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-control",
+            attrs: { id: "newTableNumber", type: "text", name: "tableNumber" },
+            domProps: { value: _vm.table.table_number }
+          })
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            on: {
+              click: function($event) {
+                _vm.save()
+              }
+            }
+          },
+          [_vm._v("Save")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-danger",
+            on: {
+              click: function($event) {
+                _vm.cancel()
+              }
+            }
+          },
+          [_vm._v("Cancel")]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4d4ff9d0", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

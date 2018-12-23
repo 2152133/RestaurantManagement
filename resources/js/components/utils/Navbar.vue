@@ -22,6 +22,9 @@
                 <li class="nav-item">
                     <a><router-link class="nav-item nav-link" to="dashboard" v-if="this.$store.getters.isAuthenticated">Dashboard</router-link></a>
                 </li>
+                <li class="nav-item">
+                    <a><router-link class="nav-item nav-link" to="management" v-if="this.$store.getters.isAuthenticated">Management</router-link></a>
+                </li>
             </ul>
             <ul class="navbar-nav">
                 <li class="navbar-item">
