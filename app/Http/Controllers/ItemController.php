@@ -118,7 +118,7 @@ class ItemController extends Controller
     public function destroy($id)
     {
         $item = Item::findOrFail($id);
-        $item->delete()
+        $item->delete();
         return new ItemResource($item);
     }
 }
