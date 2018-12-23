@@ -25404,18 +25404,6 @@ var app = new Vue({
         msgGlobalText: '',
         msgGlobalTextArea: ''
     },
-    sockets: {
-        // dispultado quando o socket e chamado
-        connect: function connect() {
-            console.log('Socket connect with ID: ' + this.$socket.id);
-            if (__WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].state.user) {
-                this.$socket.emit('user_enter', __WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].state.user);
-            }
-        },
-        msg_from_server: function msg_from_server(data) {
-            this.msgGlobalTextArea = data + '\n' + this.msgGlobalTextArea;
-        }
-    },
     methods: {
         sendGlobalMsg: function sendGlobalMsg() {
             console.log('Sending to the server this message: "' + this.msgGlobalText + '"');
@@ -25427,9 +25415,32 @@ var app = new Vue({
             this.msgGlobalText = "";
         }
     },
+    sockets: {
+        // dispultado quando o socket e chamado
+        connect: function connect() {
+            console.log('Socket connect with ID: ' + this.$socket.id);
+            if (__WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].state.user) {
+                this.$socket.emit('user_enter', __WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].state.user);
+            }
+        },
+        msg_from_server: function msg_from_server(data) {
+            this.msgGlobalTextArea = data + '\n' + this.msgGlobalTextArea;
+        },
+
+        // privateMessage(dataFromServer){
+        //     let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
+        //     this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"');        
+        // },
+        privateMessage_unavailable: function privateMessage_unavailable(destUser) {
+            this.$toasted.error('User "' + destUser.name + '" is not available');
+        },
+        privateMessage_sent: function privateMessage_sent(dataFromServer) {
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        }
+    },
     created: function created() {
-        console.log('-----');
-        console.log(__WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].state.user);
+        //console.log('-----');
+        //console.log(store.state.user);
     }
 });
 
@@ -51753,7 +51764,7 @@ if (false) {
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = null
+var __vue_script__ = __webpack_require__(116)
 /* template */
 var __vue_template__ = __webpack_require__(54)
 /* template functional */
@@ -51838,7 +51849,7 @@ var render = function() {
               _c(
                 "a",
                 [
-                  this.$store.getters.isAuthenticated
+                  _vm.isAuthenticated
                     ? _c(
                         "router-link",
                         {
@@ -51857,7 +51868,7 @@ var render = function() {
               _c(
                 "a",
                 [
-                  this.$store.getters.isAuthenticated
+                  _vm.isAuthenticated
                     ? _c(
                         "router-link",
                         {
@@ -51876,7 +51887,7 @@ var render = function() {
               _c(
                 "a",
                 [
-                  this.$store.getters.isAuthenticated
+                  _vm.isAuthenticated
                     ? _c(
                         "router-link",
                         {
@@ -51895,7 +51906,7 @@ var render = function() {
               _c(
                 "a",
                 [
-                  this.$store.getters.isAuthenticated
+                  _vm.isAuthenticated
                     ? _c(
                         "router-link",
                         {
@@ -51912,13 +51923,17 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("ul", { staticClass: "navbar-nav" }, [
-            _c("li", { staticClass: "navbar-item" }),
+            _c("li", { staticClass: "navbar-item" }, [
+              _c("a", { staticClass: "nav-item nav-link" }, [
+                _vm._v("Status: " + _vm._s(_vm.shiftStatus))
+              ])
+            ]),
             _vm._v(" "),
             _c(
               "li",
               { staticClass: "navbar-item" },
               [
-                !this.$store.getters.isAuthenticated
+                !_vm.isAuthenticated
                   ? _c(
                       "router-link",
                       {
@@ -51927,10 +51942,7 @@ var render = function() {
                       },
                       [_vm._v("Login")]
                     )
-                  : _vm._e(),
-                _vm._v(" "),
-                this.$store.getters.isAuthenticated
-                  ? _c(
+                  : _c(
                       "router-link",
                       {
                         staticClass: "nav-item nav-link",
@@ -51938,7 +51950,6 @@ var render = function() {
                       },
                       [_vm._v("Logout")]
                     )
-                  : _vm._e()
               ],
               1
             )
@@ -52668,14 +52679,10 @@ module.exports = Component.exports
 
 /***/ }),
 /* 65 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-//
-//
-//
-//
-//
-//
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
@@ -52712,59 +52719,109 @@ module.exports = Component.exports
 //
 //
 
-module.exports = {
-  data: function data() {
-    return {
-      title: "Dashboard",
-      numberOfNotifications: 0,
-      userLogged: false,
-      shift_started: false,
-      isWorkingMessage: "",
-      diferenceBetweenEndServiceAndNow: "",
-      diferenceBetweenShiftBeginAndNow: "",
-      user: {
-        id: "",
-        name: "",
-        username: "",
-        email: "",
-        email_verified_at: "",
-        type: "",
-        blocked: "",
-        photo_url: "",
-        last_shift_start: "",
-        last_shift_end: "",
-        shift_active: ""
-      }
-    };
-  },
-  methods: {
-    startShift: function startShift() {
-      if (!isShiftActive()) {
-        this.user.shift_active = 1;
-        this.user.last_shift_start = Date.getUTCFullYear() + "/" + (Date.getUTCMonth() + 1) + "/" + Date.getUTCDate() + " " + Date.getUTCHours() + ":" + Date.getUTCMinutes() + ":" + Date.getUTCSeconds();
-        //Update times
-        this.isWorkingMessage = "Working";
-      }
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            title: "Dashboard",
+            numberOfNotifications: 0,
+            managers: []
+        };
     },
-    endShift: function endShift() {
-      if (isShiftActive()) {
-        this.user.shift_active = 0;
-        this.user.last_shift_end = Date.getUTCFullYear() + "/" + (Date.getUTCMonth() + 1) + "/" + Date.getUTCDate() + " " + Date.getUTCHours() + ":" + Date.getUTCMinutes() + ":" + Date.getUTCSeconds();
-        //Update Times
-        this.isWorkingMessage = "Not Working";
-      }
+
+    methods: {
+        startShift: function startShift() {
+            var _this = this;
+
+            this.getAutenticatedUser.shift_active = 1;
+            var currentDate = new Date();
+            currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
+            this.getAutenticatedUser.last_shift_start = currentDate;
+            axios.patch('api/shift/' + this.getAutenticatedUser.id, this.getAutenticatedUser).then(function (response) {
+                _this.timeElapsed(_this.getAutenticatedUser.last_shift_start);
+                _this.$store.dispatch('setAuthUser', _this.getAutenticatedUser);
+                _this.getAutenticatedUser;
+            });
+        },
+        endShift: function endShift() {
+            var _this2 = this;
+
+            this.getAutenticatedUser.shift_active = 0;
+            var currentDate = new Date();
+            currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
+            this.getAutenticatedUser.last_shift_end = currentDate;
+            axios.patch('api/shift/' + this.getAutenticatedUser.id, this.getAutenticatedUser).then(function (response) {
+                _this2.timeElapsed(_this2.getAutenticatedUser.last_shift_end);
+                _this2.$store.dispatch('setAuthUser', _this2.getAutenticatedUser);
+                _this2.getAutenticatedUser;
+            });
+        },
+        sendMessageToActiveManagers: function sendMessageToActiveManagers() {
+            var _this3 = this;
+
+            var msg = window.prompt('What do you want to say to the managers?');
+            this.managers.forEach(function (manager) {
+                console.log('Sending Message "' + msg + '" to "' + manager.name + '"');
+                _this3.$socket.emit('privateMessage', msg, _this3.$store.state.user, manager);
+            });
+        },
+        getActiveManagers: function getActiveManagers() {
+            var _this4 = this;
+
+            axios.get("/api/managers").then(function (response) {
+                response.data.forEach(function (manager) {
+                    if (_this4.getAutenticatedUser.id != manager.id && manager.shift_active) {
+                        _this4.managers.push(manager);
+                    }
+                });
+            });
+        },
+        timeElapsed: function timeElapsed(date) {
+            var currentDate = new Date();
+            //currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
+            var compareDate = new Date(date);
+            //endShiftDate = endShiftDate.getUTCFullYear() + "-" + (endShiftDate.getUTCMonth() + 1) + "-" + endShiftDate.getUTCDate() + " " + endShiftDate.getUTCHours() + ":" + endShiftDate.getUTCMinutes() + ":" + endShiftDate.getUTCSeconds();
+            //let diff = Math.floor(currentDate.getTime() - compareDate.getTime());
+            //let day = 1000 * 60 * 60 * 24;
+            //let days = Math.floor(diff/day);
+            //let months = Math.floor(days/31);
+            //let years = Math.floor(months/12);
+            var difference = Math.abs(currentDate - compareDate);
+            var minutes = Math.floor(difference / 1000 / 60);
+            var h = Math.floor(minutes / 60);
+            var m = minutes % 60;
+            var message = ""; //endShiftDate.toDateString();
+            // message += " was "
+            //message += years + " years " 
+            //message += months + " months "
+            //message += days + " days "
+            message += h + " hours ";
+            message += m + " minutes";
+            //return (hour + " hours " + minuts + " minutes")
+            //return minutes
+            return message;
+        }
     },
-    isShiftActive: function isShiftActive() {
-      if (this.user.shift_active == 1) {
-        this.shift_started = true;
-      } else {
-        this.shift_started = false;
-      }
+    computed: {
+        getAutenticatedUser: function getAutenticatedUser() {
+            return this.$store.getters.getAuthUser;
+        },
+        isShiftActive: function isShiftActive() {
+            return this.$store.getters.getAuthUser.shift_active;
+        },
+        shiftStatus: function shiftStatus() {
+            return this.isShiftActive ? 'working' : 'not working';
+        },
+        lastShiftEndTime: function lastShiftEndTime() {
+            return this.$store.getters.getAuthUser.last_shift_end;
+        },
+        lastShiftStartTime: function lastShiftStartTime() {
+            return this.$store.getters.getAuthUser.last_shift_start;
+        }
     },
-    getDuration: function getDuration(date1, date2) {}
-  },
-  mounted: function mounted() {}
-};
+    mounted: function mounted() {
+        this.getActiveManagers();
+    }
+});
 
 /***/ }),
 /* 66 */
@@ -52785,17 +52842,23 @@ var render = function() {
         _c(
           "button",
           {
-            staticClass: "btn btn-warning",
-            staticStyle: { float: "right" },
-            attrs: { type: "button" }
+            staticClass: "btn btn-success",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.sendMessageToActiveManagers($event)
+              }
+            }
           },
+          [_vm._v("Send Manager message")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          { staticClass: "btn btn-warning" },
           [
-            _c("router-link", { attrs: { to: { name: "notifications" } } }, [
-              _vm._v("Notifications")
-            ]),
-            _vm._v(" "),
-            _c("span", { staticClass: "badge badge-light" }, [
-              _vm._v(_vm._s(_vm.numberOfNotifications))
+            _c("router-link", { attrs: { to: "notifications" } }, [
+              _vm._v("Notifications: " + _vm._s(_vm.numberOfNotifications))
             ])
           ],
           1
@@ -52809,65 +52872,62 @@ var render = function() {
       _c("profile-edit"),
       _vm._v(" "),
       _c("div", [
-        _vm.isShiftActive()
+        _vm.isShiftActive
           ? _c("div", { staticClass: "container" }, [
-              _c("h3", [_vm._v("Status:")]),
-              _vm._v(
-                "\n            " +
-                  _vm._s(_vm.isWorkingMessage) +
-                  "\n            "
-              ),
+              _c("h3", [_vm._v("Status: " + _vm._s(_vm.shiftStatus))]),
+              _vm._v(" "),
               _c("br"),
               _vm._v(" "),
-              _c("h3", [_vm._v("Service started at:")]),
-              _vm._v(
-                "\n            " +
-                  _vm._s(_vm.user.last_shift_start) +
-                  "\n            "
-              ),
+              _c("h3", [
+                _vm._v("Service started at: " + _vm._s(_vm.lastShiftStartTime))
+              ]),
+              _vm._v(" "),
               _c("br"),
               _vm._v(" "),
-              _c("h3", [_vm._v("Time elapsed from service start:")])
+              _c("h3", [
+                _vm._v(
+                  "Time elapsed from service start: " +
+                    _vm._s(_vm.timeElapsed(_vm.lastShiftStartTime))
+                )
+              ])
             ])
           : _c("div", { staticClass: "container" }, [
-              _c("h3", [_vm._v("Status:")]),
-              _vm._v(
-                "\n            " +
-                  _vm._s(_vm.isWorkingMessage) +
-                  "\n            "
-              ),
+              _c("h3", [_vm._v("Status: " + _vm._s(_vm.shiftStatus))]),
+              _vm._v(" "),
               _c("br"),
               _vm._v(" "),
-              _c("h3", [_vm._v("Service finished at:")]),
-              _vm._v(
-                "\n            " +
-                  _vm._s(_vm.user.last_shift_end) +
-                  "\n            "
-              ),
+              _c("h3", [
+                _vm._v("Service finished at: " + _vm._s(_vm.lastShiftEndTime))
+              ]),
+              _vm._v(" "),
               _c("br"),
               _vm._v(" "),
-              _c("h3", [_vm._v("Time elapsed from service end:")])
+              _c("h3", [
+                _vm._v(
+                  "Time elapsed from service end: " +
+                    _vm._s(_vm.timeElapsed(_vm.lastShiftEndTime))
+                )
+              ])
             ])
       ]),
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-success",
-          on: {
-            click: function($event) {
-              $event.preventDefault()
-              _vm.startShift()
-            }
-          }
-        },
-        [_vm._v("Start Shift")]
-      ),
-      _vm._v(" "),
-      _vm.shift_started
+      !_vm.isShiftActive
         ? _c(
+            "button",
+            {
+              staticClass: "btn btn-success",
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  _vm.startShift()
+                }
+              }
+            },
+            [_vm._v("Start Shift")]
+          )
+        : _c(
             "button",
             {
               staticClass: "btn btn-danger",
@@ -52879,8 +52939,7 @@ var render = function() {
               }
             },
             [_vm._v("End Shift")]
-          )
-        : _vm._e(),
+          ),
       _vm._v(" "),
       _c("br")
     ],
@@ -52902,10 +52961,6 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(68)
-}
 var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(71)
@@ -52914,7 +52969,7 @@ var __vue_template__ = __webpack_require__(72)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = injectStyle
+var __vue_styles__ = null
 /* scopeId */
 var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
@@ -52949,46 +53004,8 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(69);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(15)("5bfbad83", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-cd78f442\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Notifications.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-cd78f442\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Notifications.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 69 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(14)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\na {\n  color: #FFF;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
+/* 68 */,
+/* 69 */,
 /* 70 */
 /***/ (function(module, exports) {
 
@@ -53023,10 +53040,10 @@ module.exports = function listToStyles (parentId, list) {
 
 /***/ }),
 /* 71 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-//
-//
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
@@ -53051,13 +53068,14 @@ module.exports = function listToStyles (parentId, list) {
 //
 //
 
-module.exports = {
-  data: function data() {
-    return {};
-  },
-  methods: {},
-  mounted: function mounted() {}
-};
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {};
+    },
+
+    methods: {},
+    mounted: function mounted() {}
+});
 
 /***/ }),
 /* 72 */
@@ -53074,7 +53092,7 @@ var render = function() {
       "button",
       { staticClass: "btn btn-danger" },
       [
-        _c("router-link", { attrs: { to: { name: "dashboard" } } }, [
+        _c("router-link", { attrs: { to: "dashboard" } }, [
           _vm._v("Back to Dashboard")
         ])
       ],
@@ -56308,6 +56326,65 @@ var n=r(34),o=r(35),i=r(36);function s(){return c.TYPED_ARRAY_SUPPORT?2147483647
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 113 */,
+/* 114 */,
+/* 115 */,
+/* 116 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    computed: {
+        shiftStatus: function shiftStatus() {
+            return this.$store.getters.getAuthUser.shift_active ? 'Working' : 'Not working';
+        },
+        isAuthenticated: function isAuthenticated() {
+            return this.$store.getters.isAuthenticated;
+        }
+    }
+});
 
 /***/ })
 /******/ ]);

@@ -102,3 +102,6 @@ Route::get('user/{id}', 'UserControllerAPI@show');
 Route::patch('user/{id}', 'UserControllerAPI@update');
 Route::delete('user/{id}', 'UserControllerAPI@destroy');
 Route::post('users', 'UserControllerAPI@store');
+Route::get('managers', 'UserControllerAPI@getManagers');
+
+Route::patch('shift/{id}', 'UserControllerAPI@startEndShift');

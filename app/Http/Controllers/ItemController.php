@@ -55,6 +55,7 @@ class ItemController extends Controller
                 'photo_url' => $fileName,
             ]);
         } else {
+            $item = new Item();
             $item->fill($request->all());
         }
         $item->save();

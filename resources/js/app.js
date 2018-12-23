@@ -9,9 +9,9 @@ import VueSocketio from 'vue-socket.io';
 import Toasted from 'vue-toasted';
  
 Vue.use(Toasted, {
-  position: 'bottom-center',
-  duration: 5000,
-  type: 'info',
+    position: 'bottom-center',
+    duration: 5000,
+    type: 'info',
 });
 
 Vue.use(new VueSocketio({
@@ -70,6 +70,17 @@ const app = new Vue({
         msgGlobalText: '',
         msgGlobalTextArea: '',
     },
+    methods: {
+        sendGlobalMsg(){
+            console.log('Sending to the server this message: "' + this.msgGlobalText + '"');
+            if (store.state.user === null) {
+                this.$socket.emit('msg_from_client', this.msgGlobalText);
+            } else {
+                this.$socket.emit('msg_from_client', this.msgGlobalText, store.state.user);
+            }
+            this.msgGlobalText = "";
+        },
+    },
     sockets: {
         // dispultado quando o socket e chamado
         connect() {
@@ -81,20 +92,19 @@ const app = new Vue({
         msg_from_server(data) {
             this.msgGlobalTextArea = data + '\n' + this.msgGlobalTextArea;
         },
-    },
-    methods: {
-        sendGlobalMsg: function(){
-            console.log('Sending to the server this message: "' + this.msgGlobalText + '"');
-            if (store.state.user === null) {
-                this.$socket.emit('msg_from_client', this.msgGlobalText);
-            } else {
-                this.$socket.emit('msg_from_client', this.msgGlobalText, store.state.user);
-            }
-            this.msgGlobalText = "";
+        // privateMessage(dataFromServer){
+        //     let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
+        //     this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"');        
+        // },
+        privateMessage_unavailable(destUser){
+            this.$toasted.error('User "' + destUser.name + '" is not available');       
+        },
+        privateMessage_sent(dataFromServer){
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
         },
     },
     created() {
-        console.log('-----');
-        console.log(store.state.user);
+        //console.log('-----');
+        //console.log(store.state.user);
     }
 })

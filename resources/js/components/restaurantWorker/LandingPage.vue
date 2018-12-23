@@ -4,118 +4,133 @@
         <div class="jumbotron">
             <h1>{{title}}</h1>
         </div>
-        <button type="button" class="btn btn-warning" style="float:right">
-            <router-link :to="{name: 'notifications'}">Notifications</router-link>
-            <span class="badge badge-light">{{numberOfNotifications}}</span>
-        </button>
+        <button class="btn btn-success" @click.prevent="sendMessageToActiveManagers">Send Manager message</button>
+        <button class="btn btn-warning"><router-link to="notifications">Notifications: {{numberOfNotifications}}</router-link></button>
     </div>
     <br>
     <br>
             <profile-edit></profile-edit>
 
     <div>
-        <div class="container" v-if="isShiftActive()">
-            <h3>Status:</h3>
-            {{isWorkingMessage}}
+        <div class="container" v-if="isShiftActive">
+            <h3>Status: {{ shiftStatus }}</h3>
             <br>
-            <h3>Service started at:</h3>
-            {{ user.last_shift_start }}
+            <h3>Service started at: {{ lastShiftStartTime }}</h3>
             <br>
-            <h3>Time elapsed from service start:</h3>
+            <h3>Time elapsed from service start: {{ timeElapsed(lastShiftStartTime) }}</h3>
         </div>
         <div class="container" v-else>
-            <h3>Status:</h3>
-            {{isWorkingMessage}}
+            <h3>Status: {{ shiftStatus }}</h3>
             <br>
-            <h3>Service finished at:</h3>
-            {{ user.last_shift_end }}
+            <h3>Service finished at: {{ lastShiftEndTime }}</h3>
             <br>
-            <h3>Time elapsed from service end:</h3>
+            <h3>Time elapsed from service end: {{ timeElapsed(lastShiftEndTime) }}</h3>
         </div>
     </div>
     <br>
-    <button v-on:click.prevent="startShift()" class="btn btn-success">Start Shift</button>
-    <button v-if="shift_started" v-on:click.prevent="endShift()" class="btn btn-danger">End Shift</button>
+    <button v-if="!isShiftActive" @click.prevent="startShift()" class="btn btn-success">Start Shift</button>
+    <button v-else @click.prevent="endShift()" class="btn btn-danger">End Shift</button>
     <br>
   </div>
 </template>
 <script>
-module.exports = {
-  data: function() {
-    return {
-      title: "Dashboard",
-      numberOfNotifications: 0,
-      userLogged: false,
-      shift_started: false,
-      isWorkingMessage: "",
-      diferenceBetweenEndServiceAndNow: "",
-      diferenceBetweenShiftBeginAndNow: "",
-      user: {
-        id: "",
-        name: "",
-        username: "",
-        email: "",
-        email_verified_at: "",
-        type: "",
-        blocked: "",
-        photo_url: "",
-        last_shift_start: "",
-        last_shift_end: "",
-        shift_active: ""
-      }
-    };
-  },
-  methods: {
-    startShift: function() {
-      if (!isShiftActive()) {
-        this.user.shift_active = 1;
-        this.user.last_shift_start =
-          Date.getUTCFullYear() +
-          "/" +
-          (Date.getUTCMonth() + 1) +
-          "/" +
-          Date.getUTCDate() +
-          " " +
-          Date.getUTCHours() +
-          ":" +
-          Date.getUTCMinutes() +
-          ":" +
-          Date.getUTCSeconds();
-        //Update times
-        this.isWorkingMessage = "Working";
-      }
+export default {
+    data() {
+        return {
+            title: "Dashboard",
+            numberOfNotifications: 0,
+            managers: [],
+        };
     },
-    endShift: function() {
-      if (isShiftActive()) {
-        this.user.shift_active = 0;
-        this.user.last_shift_end =
-          Date.getUTCFullYear() +
-          "/" +
-          (Date.getUTCMonth() + 1) +
-          "/" +
-          Date.getUTCDate() +
-          " " +
-          Date.getUTCHours() +
-          ":" +
-          Date.getUTCMinutes() +
-          ":" +
-          Date.getUTCSeconds();
-        //Update Times
-        this.isWorkingMessage = "Not Working";
-      }
+    methods: {
+        startShift() {
+            this.getAutenticatedUser.shift_active = 1
+            let currentDate = new Date()
+            currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
+            this.getAutenticatedUser.last_shift_start = currentDate
+            axios.patch('api/shift/'+this.getAutenticatedUser.id, this.getAutenticatedUser)
+                .then(response=>{
+                    this.timeElapsed(this.getAutenticatedUser.last_shift_start)
+                    this.$store.dispatch('setAuthUser', this.getAutenticatedUser)
+                    this.getAutenticatedUser
+                })
+            
+        },
+        endShift() {
+            this.getAutenticatedUser.shift_active = 0
+            let currentDate = new Date()
+            currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
+            this.getAutenticatedUser.last_shift_end = currentDate
+            axios.patch('api/shift/'+this.getAutenticatedUser.id, this.getAutenticatedUser)
+                .then(response=>{
+                    this.timeElapsed(this.getAutenticatedUser.last_shift_end)
+                    this.$store.dispatch('setAuthUser', this.getAutenticatedUser)
+                    this.getAutenticatedUser
+                })
+        },
+        sendMessageToActiveManagers(){
+            let msg = window.prompt('What do you want to say to the managers?');
+            this.managers.forEach(manager => {
+                console.log('Sending Message "' + msg + '" to "' + manager.name + '"');
+                this.$socket.emit('privateMessage', msg, this.$store.state.user, manager);
+            });
+        },
+        getActiveManagers() {
+             axios.get("/api/managers")
+                .then(response => {
+                    response.data.forEach(manager => {
+                        if (this.getAutenticatedUser.id != manager.id && manager.shift_active) {
+                            this.managers.push(manager)
+                        }
+                    })
+            })
+        },
+        timeElapsed(date) {
+            let currentDate = new Date()
+            //currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
+            let compareDate = new Date(date)
+            //endShiftDate = endShiftDate.getUTCFullYear() + "-" + (endShiftDate.getUTCMonth() + 1) + "-" + endShiftDate.getUTCDate() + " " + endShiftDate.getUTCHours() + ":" + endShiftDate.getUTCMinutes() + ":" + endShiftDate.getUTCSeconds();
+            //let diff = Math.floor(currentDate.getTime() - compareDate.getTime());
+            //let day = 1000 * 60 * 60 * 24;
+            //let days = Math.floor(diff/day);
+            //let months = Math.floor(days/31);
+            //let years = Math.floor(months/12);
+            let difference = Math.abs(currentDate - compareDate);
+            let minutes = Math.floor((difference/1000)/60);
+            let h = Math.floor(minutes/60)
+            let m = minutes%60
+            let message = ""//endShiftDate.toDateString();
+            // message += " was "
+            //message += years + " years " 
+            //message += months + " months "
+            //message += days + " days "
+            message += h + " hours "
+            message += m + " minutes"
+            //return (hour + " hours " + minuts + " minutes")
+            //return minutes
+            return message
+        },
     },
-    isShiftActive: function() {
-      if (this.user.shift_active == 1) {
-        this.shift_started = true;
-      } else {
-        this.shift_started = false;
-      }
+    computed: {
+        getAutenticatedUser() {
+            return this.$store.getters.getAuthUser
+        },
+        isShiftActive() {
+            return this.$store.getters.getAuthUser.shift_active
+        },
+        shiftStatus() {
+            return this.isShiftActive ? 'working' : 'not working'
+        },
+        lastShiftEndTime() {
+            return this.$store.getters.getAuthUser.last_shift_end
+        },
+        lastShiftStartTime() {
+            return this.$store.getters.getAuthUser.last_shift_start
+        },
+        
     },
-    getDuration: function(date1, date2) {}
-  },
-  mounted() {}
-};
+    mounted() {
+        this.getActiveManagers()
+    },
+}
 </script>
-
-
-

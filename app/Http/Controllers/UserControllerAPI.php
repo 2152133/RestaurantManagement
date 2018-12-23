@@ -195,5 +195,20 @@ class UserControllerAPI extends Controller
         //return new UserResource($user);
         return redirect()->route('mainPage');
     }
+    public function getManagers(Request $request) {
+        $managers = DB::table('users')
+            ->where('users.type', '=', 'manager')
+            ->get();
+        return $managers;
+    }
 
+    public function startEndShift(Request $request, $id)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:users,email,'.$id,
+        ]);
+        $user = User::findOrFail($id);
+        $user->fill($request->all());
+        return new UserResource($user);
+    }
 }
