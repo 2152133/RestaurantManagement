@@ -1,36 +1,37 @@
 <template>
 <div>
     <nav aria-label="Page navigation example">
+        
         <ul class="pagination">
             <li v-bind:class="[{disabled: !pagination.prev_page_url}]" 
             class="page-item"><a class="page-link" href="#"
-            @click="getItems(pagination.prev_page_url)">Previous</a></li>
+            @click="getusers(pagination.prev_page_url)">Previous</a></li>
             
             <li class="page-item disabled"><a class="page-link" href="#">Page {{ pagination.current_page }} of {{ pagination.last_page }}</a></li>
 
             <li v-bind:class="[{disabled: !pagination.next_page_url}]" 
             class="page-item"><a class="page-link" href="#"
-            @click="getItems(pagination.next_page_url)">Next</a></li>
+            @click="getusers(pagination.next_page_url)">Next</a></li>
         </ul>
     </nav>
     <table class="table">
         <thead>
             <tr>
-                <th>Product</th>
+                <th>Photo</th>
                 <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
+                <th>username</th>
+                <th>Email</th>
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody v-for="item in items" v-bind:key="item.id">
-            <td><img v-bind:src="itemImageURL(item.photo_url)" height="80" width="100"></td>
-            <td>{{ item.name }}</td>
-            <td>{{ compactDescription(item.description) }}</td>
-            <td>{{ item.price }} €</td>
+        <tbody v-for="user in users" v-bind:key="user.id">
+            <td><img v-bind:src="userImageURL(user.photo_url)" height="80" width="100"></td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
             <td> 
-                <a @click.prevent="editItem(item)" class="btn btn-sm btn-primary">Edit</a>
-                <a @click.prevent="deleteItem(item)" class="btn btn-sm btn-danger">Delete</a>
+                <a @click.prevent="edituser(user)" class="btn btn-sm btn-primary">Edit</a>
+                <a @click.prevent="deleteuser(user)" class="btn btn-sm btn-danger">Delete</a>
             </td>
         </tbody>
     </table>
@@ -39,33 +40,33 @@
 
 <script>
 export default {
-    props: ['items'],
+    props: ['users'],
     data() {
         return {
-            editingItem: null,
+            editinguser: null,
             pagination: {},
         }
     },
     methods: {
-        editItem(item){
-            this.editingItem = item;
-            this.$emit('edit-click', item);
+        edituser(user){
+            this.editinguser = user;
+            this.$emit('edit-click', user);
         },		
-        deleteItem(item){
-            this.editingItem = null;
-            this.$emit('delete-click', item);
+        deleteuser(user){
+            this.editinguser = null;
+            this.$emit('delete-click', user);
         },
-        itemImageURL(photo) {
-            return "storage/items/" + String(photo);
+        userImageURL(photo) {
+            return "storage/profiles/" + String(photo);
         },
         compactDescription(text) {
-            return text.length > 100 ? text.substr( 0, 70 )+'...' : text;
+            return text.length > 100 ? text.substr( 0, 98 )+'...' : text;
         },
-         getItems(url) {    
-            let page_url = url || '/api/items'
+         getusers(url) {    
+            let page_url = url || '/api/users'
             axios.get(page_url)
                 .then(response => {
-                    Object.assign(this.items, response.data.data);
+                    Object.assign(this.users, response.data.data);
                     this.makePagination(response.data.meta, response.data.links)
                 })
         },
@@ -80,7 +81,7 @@ export default {
         },
     },
     mounted() {
-        this.getItems()
+        this.getusers()
     },
 }
 </script>

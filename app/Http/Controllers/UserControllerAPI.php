@@ -23,6 +23,7 @@ class UserControllerAPI extends Controller
 
     public function index(Request $request)
     {
+        return UserResource::collection(User::orderBy('created_at', 'desc')->paginate(5));
         return UserResource::collection(User::paginate(5));
         
 
@@ -45,42 +46,14 @@ class UserControllerAPI extends Controller
             'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
             'username'=> 'required|string|max:50|unique:users,username',
             'email' => 'required|email|unique:users,email',
-            //'photo_url' => 'nullable',
-            //'password' => 'required|same:password',
-            //'password_confirmation' => 'required|same:password',   
+            'type' => 'required|in:cook,waiter,cashier,manager'
         ]);
+
         $user = new User();
-        if (strpos($request->input('photo_url'), 'data:image/') !== false) {
-            $exploded = explode(',', $request->photo_url);
-            $decoded = base64_decode($exploded[1]);
-            if (str_contains($exploded[0], 'jpeg') || str_contains($exploded[0], 'jpg')) {
-                $extention = 'jpg';
-            } else {
-                $extention = 'png';
-            }
-
-            $fileName = str_random().'.'.$extention;
-
-
-            $path = storage_path('app/public/profiles/').$fileName;
-            file_put_contents($path, $decoded);
-            
-            $user->update($request->except('photo_url') + [
-                'photo_url' => $fileName,
-            ]);
-        } else {
-
-            //$user->fill($request->all());
-            $user->fill($request->all() + ['remember_token' => str_random(10)]);
-
-        }
-
+        $user->fill($request->all() + ['remember_token' => str_random(10)]);
         $user->password = Hash::make($user->password);
-
         $user->save();
-
         $user->sendVerificationEmail();
-
         return response()->json(new UserResource($user), 201);
     }
 
@@ -118,6 +91,22 @@ class UserControllerAPI extends Controller
             //dd($request->all());
             $user->fill($request->all());
         }
+        $user->save();
+        //dd(new UserResource($user));
+        return new UserResource($user);
+    }
+
+    public function updateAsManager(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
+            'username'=> 'required|string|max:50|unique:users,username,'.$id,
+            'email' => 'required|email|unique:users,email,'.$id,
+            'type' => 'required|in:cook,waiter,cashier,manager'
+        ]);
+        
+        $user = User::findOrFail($id);
+        $user->fill($request->all());
         $user->save();
         //dd(new UserResource($user));
         return new UserResource($user);

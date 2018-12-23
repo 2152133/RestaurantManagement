@@ -21,9 +21,15 @@ Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vu
 const create_meal = Vue.component('create-meal', require('../components/CreateMeals.vue'));
 Vue.component('itemsList', require('../components/items/ItemsList.vue'));
 const profileEdit = Vue.component('profileEdit', require('../components/restaurantWorker/ProfileEdit.vue'));
-Vue.component('ItemEdit', require('../components/items/ItemEdit.vue'));
+Vue.component('itemEdit', require('../components/items/ItemEdit.vue'));
 const login = Vue.component('login', require('../components/auth/login.vue'));
 const logout = Vue.component('logout', require('../components/auth/logout.vue'));
+const usersComponent = Vue.component('users', require('../components/manager/Users.vue'));
+Vue.component('userEdit', require('../components/manager/UserEdit.vue'));
+Vue.component('usersList', require('../components/manager/UsersList.vue'));
+const userAddComponent = Vue.component('userAdd', require('../components/manager/UserAdd.vue'));
+const itemAddComponent = Vue.component('itemAdd', require('../components/items/ItemAdd.vue'));
+
 
 
 
@@ -47,6 +53,27 @@ const routes = [
     {
         path: '/items', 
         component: itemsComponent
+    },
+    {
+        path: '/newUser', 
+        component: userAddComponent,
+        meta: {
+            forAuth: true
+        }
+    },
+    {
+        path: '/newItem', 
+        component: itemAddComponent,
+        meta: {
+            forAuth: true
+        }
+    },
+    {
+        path: '/users', 
+        component: usersComponent,
+        meta: {
+            forAuth: true
+        }
     },
     {
         path: '/profileEdit', 

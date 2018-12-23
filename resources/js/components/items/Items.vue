@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="jumbotron">
-            <h1>{{title}}</h1>
+            <h1>{{title}} <button class="btn btn-warning"><router-link to="newItem">Add new Item</router-link></button></h1>
         </div>
         <div class="alert alert-success" v-if="showSuccess">			 
 			<button type="button" class="close-btn" v-on:click="showSuccess=false">&times;</button>
