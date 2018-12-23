@@ -34,7 +34,8 @@ class ItemController extends Controller
             'photo_url' => 'nullable',
             'price' => 'required|between:0,99.99'
         ]);
-
+        
+        $item = new Item();
         if (strpos($request->input('photo_url'), 'data:image/') !== false) {
             $exploded = explode(',', $request->photo_url);
             $decoded = base64_decode($exploded[1]);
@@ -50,12 +51,10 @@ class ItemController extends Controller
             $path = storage_path('app/public/items/').$fileName;
             file_put_contents($path, $decoded);
             
-            $item = new Item();
             $item->fill($request->except('photo_url') + [
                 'photo_url' => $fileName,
             ]);
         } else {
-            $item = new Item();
             $item->fill($request->all());
         }
         $item->save();
@@ -98,6 +97,7 @@ class ItemController extends Controller
         } else {
             $item->update($request->all());
         }
+        $item->save();
         return new ItemResource($item);
     }
 
@@ -117,14 +117,8 @@ class ItemController extends Controller
 
     public function destroy($id)
     {
-        // Get item
         $item = Item::findOrFail($id);
-
-        // Method = delete -> return deleted item
-        if ($item->delete()) {
-            return new ItemResource($item);
-            //204
-            //500
-        }
+        $item->delete()
+        return new ItemResource($item);
     }
 }

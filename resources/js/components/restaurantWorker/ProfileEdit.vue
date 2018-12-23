@@ -33,7 +33,8 @@
         </div>
         <br>
 	    <div class="form-group">
-	        <a class="btn btn-primary" v-on:click.prevent="saveUser()">Save</a>
+	        <a class="btn btn-primary" @click.prevent="saveUser()">Save</a>
+	        <a class="btn btn-light" @click.prevent="cancelEdit()">Cancel</a>
 	    </div>
 	</div>
 </template>
@@ -50,7 +51,15 @@ export default {
             axios.patch('api/user/'+this.autenticatedUser.id, this.autenticatedUser)
                 .then(response=>{
                     this.$store.dispatch('setAuthUser', this.autenticatedUser)
+                    this.$router.push("/dashboard")
                 })
+        },
+        cancelEdit(){
+            axios.get('api/user/'+this.autenticatedUser.id)
+                .then(response=>{
+                    this.$store.dispatch('setAuthUser', this.autenticatedUser)
+                    this.$router.push("/dashboard")
+                });
         },
         imageChanged(event) {
             let fileReader = new FileReader()

@@ -5,12 +5,10 @@
             <h1>{{title}}</h1>
         </div>
         <button class="btn btn-success" @click.prevent="sendMessageToActiveManagers">Send Manager message</button>
+        <button class="btn btn-warning"><router-link to="profileEdit">Edit Profile</router-link></button>
         <button class="btn btn-warning"><router-link to="notifications">Notifications: {{numberOfNotifications}}</router-link></button>
     </div>
     <br>
-    <br>
-            <profile-edit></profile-edit>
-
     <div>
         <div class="container" v-if="isShiftActive">
             <h3>Status: {{ shiftStatus }}</h3>

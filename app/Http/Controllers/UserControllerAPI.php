@@ -118,6 +118,7 @@ class UserControllerAPI extends Controller
             //dd($request->all());
             $user->fill($request->all());
         }
+        $user->save();
         //dd(new UserResource($user));
         return new UserResource($user);
     }
@@ -209,6 +210,7 @@ class UserControllerAPI extends Controller
         ]);
         $user = User::findOrFail($id);
         $user->fill($request->all());
+        $user->save();
         return new UserResource($user);
     }
 }

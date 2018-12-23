@@ -20,7 +20,7 @@ Vue.component('meals-list', require('../components/MealsList.vue'));
 Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
 const create_meal = Vue.component('create-meal', require('../components/CreateMeals.vue'));
 Vue.component('itemsList', require('../components/items/ItemsList.vue'));
-Vue.component('profileEdit', require('../components/user/ProfileEdit.vue'));
+const profileEdit = Vue.component('profileEdit', require('../components/restaurantWorker/ProfileEdit.vue'));
 Vue.component('ItemEdit', require('../components/items/ItemEdit.vue'));
 const login = Vue.component('login', require('../components/auth/login.vue'));
 const logout = Vue.component('logout', require('../components/auth/logout.vue'));
@@ -46,7 +46,15 @@ const routes = [
     },
     {
         path: '/items', 
-        component: itemsComponent},
+        component: itemsComponent
+    },
+    {
+        path: '/profileEdit', 
+        component: profileEdit,
+        meta: {
+            forAuth: true
+        }
+    },
     {
         path: '/dashboard', 
         component: landing_page, 

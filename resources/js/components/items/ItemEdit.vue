@@ -36,8 +36,8 @@
         </div>
         <br>
 	    <div class="form-group">
-	        <a class="btn btn-primary" v-on:click.prevent="saveItem()">Save</a>
-	        <a class="btn btn-light" v-on:click.prevent="cancelEdit()">Cancel</a>
+	        <a class="btn btn-primary" @click.prevent="saveItem()">Save</a>
+	        <a class="btn btn-light" @click.prevent="cancelEdit()">Cancel</a>
 	    </div>
 	</div>
 </div>
