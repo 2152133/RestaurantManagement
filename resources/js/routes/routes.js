@@ -58,21 +58,24 @@ const routes = [
         path: '/newUser', 
         component: userAddComponent,
         meta: {
-            forAuth: true
+            forAuth: true,
+            forManager: true
         }
     },
     {
         path: '/newItem', 
         component: itemAddComponent,
         meta: {
-            forAuth: true
+            forAuth: true,
+            forManager: true
         }
     },
     {
         path: '/users', 
         component: usersComponent,
         meta: {
-            forAuth: true
+            forAuth: true,
+            forManager: true
         }
     },
     {

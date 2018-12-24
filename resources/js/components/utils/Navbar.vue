@@ -25,7 +25,7 @@
             </ul>
             <ul class="navbar-nav">
                 <li class="navbar-item">
-                    <a class="nav-item nav-link">Status: {{shiftStatus}}</a>
+                    <a v-if="isAuthenticated" class="nav-item nav-link">Status: {{shiftStatus}}</a>
                 </li>
                 <li class="navbar-item">
                     <router-link class="nav-item nav-link" to="login" v-if="!isAuthenticated">Login</router-link>

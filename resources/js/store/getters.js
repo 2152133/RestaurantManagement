@@ -45,9 +45,14 @@ export default {
             return null;
         }
 
-        return JSON.parse(user);;
+        return JSON.parse(user);
     },
     isAuthenticated(state) {
         return state.token && state.tokenType ? true:false;
+    },
+    isManager(state) {
+        if(state.user)
+            return state.user.type == "manager" ? true : false;
+        return false    
     },
 }

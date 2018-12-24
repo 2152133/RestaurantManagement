@@ -2,7 +2,6 @@
     <div>
         <br>
         <div class="alert" :class="typeofmsg" v-if="showMessage">             
-            <button type="button" class="close-btn" v-on:click="showMessage=false">&times;</button>
             <strong>{{ message }}</strong>
         </div>
         <div class="jumbotron">

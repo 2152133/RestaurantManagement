@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Support\Jsonable;
-
 use App\Http\Resources\User as UserResource;
 use Illuminate\Support\Facades\DB;
-
 use App\User;
 use App\StoreUserRequest;
 use Hash;
 use App\Http\Controllers\VerifyController;
+use Carbon\Carbon;
 
 class UserControllerAPI extends Controller
 {
@@ -54,7 +53,7 @@ class UserControllerAPI extends Controller
         $user->password = Hash::make($user->password);
         $user->save();
         $user->sendVerificationEmail();
-        return response()->json(new UserResource($user), 201);
+        return (new UserResource($user))->response()->setStatusCode(201);
     }
 
     public function update(Request $request, $id)
@@ -93,7 +92,7 @@ class UserControllerAPI extends Controller
         }
         $user->save();
         //dd(new UserResource($user));
-        return new UserResource($user);
+        return (new UserResource($user))->response()->setStatusCode(200);
     }
 
     public function updateAsManager(Request $request, $id)
@@ -109,14 +108,14 @@ class UserControllerAPI extends Controller
         $user->fill($request->all());
         $user->save();
         //dd(new UserResource($user));
-        return new UserResource($user);
+        return (new UserResource($user))->response()->setStatusCode(200);
     }
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return response()->json(null, 204);
+        return (new UserResource($user))->response()->setStatusCode(204);
     }
 
     public function emailAvailable(Request $request)
@@ -127,34 +126,13 @@ class UserControllerAPI extends Controller
         } else if ($request->has('email')) {
             $totalEmail = DB::table('users')->where('email', '=', $request->email)->count();
         }
-        return response()->json($totalEmail == 0);
+        return response()->json($totalEmail == 0, 200);
     }
 
     public function myProfile(Request $request)
     {
-        return new UserResource($request->user());
+        return (new UserResource($request->user()))->response()->setStatusCode(200);
     }
-
-    // public function setPassword(Request $request)
-    // {
-    //     $user = Auth::user();
-
-    //     $curPassword = $request->input['curPassword'];
-    //     $newPassword = $request->input['newPassword'];
-
-    //     if (Hash::check($curPassword, $user->password)) {
-    //         $user_id = $user->id;
-    //         $obj_user = User::find($user_id)->first();
-    //         $obj_user->password = Hash::make($newPassword);
-    //         $obj_user->save();
-
-    //         return response()->json(["result"=>true]);
-    //     }
-    //     else
-    //     {
-    //         return response()->json(["result"=>false]);
-    //     }
-    // }
 
     public function setNewPassword(Request $request)
     {
@@ -164,26 +142,16 @@ class UserControllerAPI extends Controller
         ]);
         
         $prevUrl = $request->headers->get('referer');
-        
         $exploded = explode('/', $prevUrl);
-        
         $remember_token = $exploded[4];
-
         $user = User::where('remember_token', $remember_token)->firstOrFail();
-
-
-        //dd($request->all());
-
         $this->verifyEmail->verify($remember_token);
-        
-        //$data = $request->validated();
         $data = $request->all();
         $data['password'] = Hash::make($request->password);
         $user->fill($data);
-        //dd($user);
         $user->save();
-        //return new UserResource($user);
-        return redirect()->route('mainPage');
+
+        return redirect()->route('mainPage')->setStatusCode(200);
     }
     public function getManagers(Request $request) {
         $managers = DB::table('users')
@@ -200,6 +168,6 @@ class UserControllerAPI extends Controller
         $user = User::findOrFail($id);
         $user->fill($request->all());
         $user->save();
-        return new UserResource($user);
+        return (new UserResource($user))->response()->setStatusCode(200);
     }
 }

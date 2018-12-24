@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <script> window.Laravel = { csrfToken: "{{ csrf_token() }}" }</script>
         <link rel="stylesheet" href="{{ URL::asset('css/app.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
         <title>Restaurant Management</title>
 
     </head>
@@ -13,16 +14,16 @@
         <div id="app">
             <navbar></navbar>
             <div class="container">
-                <hr>
+                <!-- <hr>
                 <div>
                     <label for="inputGlobal">Input message</label>
                     <input type="text" id="inputGlobal" class="form-control inputchat" v-model="msgGlobalText" @keypress.enter="sendGlobalMsg">
-                </div>
+                </div> 
                 <div>
                     <label for="inputchat">Messages</label>
                     <textarea id="textGlobal" class="form-control inputchat" v-model="msgGlobalTextArea" rows="5">Global Chat</textarea>
                 </div>
-                <hr>
+                <hr> -->
                 <router-view></router-view>
             </div>
         </div>
