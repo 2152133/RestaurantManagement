@@ -7,7 +7,7 @@
 			<button type="button" class="close-btn" v-on:click="showSuccess=false">&times;</button>
 			<strong>{{ successMessage }}</strong>
 		</div>
-        <users-list :users="users" @edit-click="editUser" @delete-click="deleteUser" @message="childMessage" ref="usersListRef"></users-list>
+        <users-list @edit-click="editUser" @message="childMessage" ref="usersListRef"></users-list>
         <user-edit :user="currentUser" @user-saved="savedUser" @user-canceled="cancelEdit" v-if="currentUser"></user-edit>
     </div>
 </template>
@@ -16,11 +16,12 @@
 export default {
     data: function() {
         return {
+            status: 0,
             title: 'Users',
             showSuccess: false,
             successMessage: '',
             currentUser: null,
-            users: [],
+            //users: [],
         }
     },
     methods: {
@@ -28,12 +29,12 @@ export default {
 	            this.currentUser = user;
 	            this.showSuccess = false;
 	        },
-        deleteUser(user){
-            axios.delete('api/user/' + user.id)
-            .then(response => {
-                this.getUsers();
-            })
-        },
+        // deleteUser(user){
+        //     axios.delete('api/user/' + user.id)
+        //     .then(response => {
+        //         this.getUsers();
+        //     })
+        // },
         savedUser(){
             this.currentUser = null;
             this.$refs.usersListRef.editingUser = null;
@@ -45,19 +46,22 @@ export default {
             this.$refs.usersListRef.editingUser = null;
             this.showSuccess = false;
         },
-        getUsers(){
-            axios.get('api/users')
-            .then(response=>{
-                this.users = response.data.data; 
-            });
-        },
+        // getUsers(){
+        //     axios.get('api/users')
+        //     .then(response=>{
+        //         this.users = response.data.data; 
+        //         //console.log(this.users)
+
+        //     });
+        // },
+        
         childMessage(message){
             this.showSuccess = true;
             this.successMessage = message;
         }        
     },
     mounted() {
-        this.getUsers()
+        //this.getUsers()
     },
 }
 </script>

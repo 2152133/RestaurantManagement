@@ -56682,11 +56682,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            status: 0,
             title: 'Users',
             showSuccess: false,
             successMessage: '',
-            currentUser: null,
-            users: []
+            currentUser: null
+            //users: [],
         };
     },
     methods: {
@@ -56694,13 +56695,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.currentUser = user;
             this.showSuccess = false;
         },
-        deleteUser: function deleteUser(user) {
-            var _this = this;
 
-            axios.delete('api/user/' + user.id).then(function (response) {
-                _this.getUsers();
-            });
-        },
+        // deleteUser(user){
+        //     axios.delete('api/user/' + user.id)
+        //     .then(response => {
+        //         this.getUsers();
+        //     })
+        // },
         savedUser: function savedUser() {
             this.currentUser = null;
             this.$refs.usersListRef.editingUser = null;
@@ -56712,20 +56713,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$refs.usersListRef.editingUser = null;
             this.showSuccess = false;
         },
-        getUsers: function getUsers() {
-            var _this2 = this;
 
-            axios.get('api/users').then(function (response) {
-                _this2.users = response.data.data;
-            });
-        },
+        // getUsers(){
+        //     axios.get('api/users')
+        //     .then(response=>{
+        //         this.users = response.data.data; 
+        //         //console.log(this.users)
+
+        //     });
+        // },
+
         childMessage: function childMessage(message) {
             this.showSuccess = true;
             this.successMessage = message;
         }
     },
     mounted: function mounted() {
-        this.getUsers();
+        //this.getUsers()
     }
 });
 
@@ -56778,12 +56782,7 @@ var render = function() {
       _vm._v(" "),
       _c("users-list", {
         ref: "usersListRef",
-        attrs: { users: _vm.users },
-        on: {
-          "edit-click": _vm.editUser,
-          "delete-click": _vm.deleteUser,
-          message: _vm.childMessage
-        }
+        on: { "edit-click": _vm.editUser, message: _vm.childMessage }
       }),
       _vm._v(" "),
       _vm.currentUser
@@ -57382,11 +57381,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['users'],
+    //props: ['users'],
     data: function data() {
         return {
+            users: {},
             editinguser: null,
             pagination: {}
         };
@@ -57397,9 +57418,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.editinguser = user;
             this.$emit('edit-click', user);
         },
-        deleteuser: function deleteuser(user) {
+        deleteUser: function deleteUser(user) {
+            var _this = this;
+
             this.editinguser = null;
-            this.$emit('delete-click', user);
+            axios.delete('api/user/' + user.id).then(function (response) {
+                _this.getUsers();
+            });
+            //this.$emit('delete-click', user);
         },
         userImageURL: function userImageURL(photo) {
             return "storage/profiles/" + String(photo);
@@ -57407,13 +57433,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         compactDescription: function compactDescription(text) {
             return text.length > 100 ? text.substr(0, 98) + '...' : text;
         },
-        getusers: function getusers(url) {
-            var _this = this;
+        getUsers: function getUsers(url) {
+            var _this2 = this;
 
             var page_url = url || '/api/users';
             axios.get(page_url).then(function (response) {
-                Object.assign(_this.users, response.data.data);
-                _this.makePagination(response.data.meta, response.data.links);
+                Object.assign(_this2.users, response.data.data);
+                _this2.makePagination(response.data.meta, response.data.links);
+            });
+        },
+        getBlocked: function getBlocked(status) {
+            var _this3 = this;
+
+            axios.get('api/users/blocked/' + status).then(function (response) {
+                Object.assign(_this3.users, response.data.data);
+                _this3.makePagination(response.data.meta, response.data.links);
+            });
+        },
+        getDeleted: function getDeleted(status) {
+            var _this4 = this;
+
+            axios.get('api/users/deleted/' + status).then(function (response) {
+                Object.assign(_this4.users, response.data.data);
+                _this4.makePagination(response.data.meta, response.data.links);
             });
         },
         makePagination: function makePagination(meta, links) {
@@ -57424,10 +57466,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 prev_page_url: links.prev
             };
             this.pagination = pagination;
+        },
+        isAuthUser: function isAuthUser(user) {
+            return user.email == this.$store.getters.getAuthUser.email ? true : false;
+        },
+        blockUser: function blockUser(user) {
+            var _this5 = this;
+
+            this.editinguser = null;
+            axios.patch('api/user/block/' + user.id).then(function (response) {
+                _this5.getUsers();
+            });
+        },
+        unblockUser: function unblockUser(user) {
+            var _this6 = this;
+
+            this.editinguser = null;
+            axios.patch('api/user/unblock/' + user.id).then(function (response) {
+                _this6.getUsers();
+            });
         }
     },
     mounted: function mounted() {
-        this.getusers();
+        this.getUsers();
     }
 });
 
@@ -57441,6 +57502,80 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
+      _c("div", [
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-primary",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.getUsers()
+              }
+            }
+          },
+          [_vm._v("All")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-primary",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.getBlocked(1)
+              }
+            }
+          },
+          [_vm._v("Blocked")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-primary",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.getBlocked(0)
+              }
+            }
+          },
+          [_vm._v("Not Blocked")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-primary",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.getDeleted(1)
+              }
+            }
+          },
+          [_vm._v("Deleted")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-primary",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.getDeleted(0)
+              }
+            }
+          },
+          [_vm._v("Not Deleted")]
+        )
+      ]),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
       _c("ul", { staticClass: "pagination" }, [
         _c(
           "li",
@@ -57456,7 +57591,7 @@ var render = function() {
                 attrs: { href: "#" },
                 on: {
                   click: function($event) {
-                    _vm.getusers(_vm.pagination.prev_page_url)
+                    _vm.getUsers(_vm.pagination.prev_page_url)
                   }
                 }
               },
@@ -57490,7 +57625,7 @@ var render = function() {
                 attrs: { href: "#" },
                 on: {
                   click: function($event) {
-                    _vm.getusers(_vm.pagination.next_page_url)
+                    _vm.getUsers(_vm.pagination.next_page_url)
                   }
                 }
               },
@@ -57525,35 +57660,113 @@ var render = function() {
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(user.email))]),
             _vm._v(" "),
-            _c("td", [
-              _c(
-                "a",
-                {
-                  staticClass: "btn btn-sm btn-primary",
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.edituser(user)
-                    }
-                  }
-                },
-                [_vm._v("Edit")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  staticClass: "btn btn-sm btn-danger",
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.deleteuser(user)
-                    }
-                  }
-                },
-                [_vm._v("Delete")]
-              )
-            ])
+            _c("td", [_vm._v(_vm._s(user.type))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(user.deleted_at ? "Yes" : "No"))]),
+            _vm._v(" "),
+            !user.deleted_at
+              ? _c("td", [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-primary",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.edituser(user)
+                        }
+                      }
+                    },
+                    [_vm._v("Edit")]
+                  ),
+                  _vm._v(" "),
+                  !_vm.isAuthUser(user)
+                    ? _c("div", [
+                        _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-sm btn-danger",
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                _vm.deleteUser(user)
+                              }
+                            }
+                          },
+                          [_vm._v("Delete")]
+                        ),
+                        _vm._v(" "),
+                        !user.blocked
+                          ? _c(
+                              "a",
+                              {
+                                staticClass: "btn btn-sm btn-danger",
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    _vm.blockUser(user)
+                                  }
+                                }
+                              },
+                              [_vm._v("Block")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        user.blocked
+                          ? _c(
+                              "a",
+                              {
+                                staticClass: "btn btn-sm btn-danger",
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    _vm.unblockUser(user)
+                                  }
+                                }
+                              },
+                              [_vm._v("Unblock")]
+                            )
+                          : _vm._e()
+                      ])
+                    : _vm._e()
+                ])
+              : _c("td", [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-primary",
+                      attrs: { disabled: "" }
+                    },
+                    [_vm._v("Edit")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-danger",
+                      attrs: { disabled: "" }
+                    },
+                    [_vm._v("Delete")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-danger",
+                      attrs: { disabled: "" }
+                    },
+                    [_vm._v("Block")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-danger",
+                      attrs: { disabled: "" }
+                    },
+                    [_vm._v("Unblock")]
+                  )
+                ])
           ])
         })
       ],
@@ -57575,6 +57788,10 @@ var staticRenderFns = [
         _c("th", [_vm._v("username")]),
         _vm._v(" "),
         _c("th", [_vm._v("Email")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Role")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Deleted")]),
         _vm._v(" "),
         _c("th", [_vm._v("Actions")])
       ])

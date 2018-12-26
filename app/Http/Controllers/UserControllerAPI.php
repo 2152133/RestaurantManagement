@@ -22,8 +22,7 @@ class UserControllerAPI extends Controller
 
     public function index(Request $request)
     {
-        return UserResource::collection(User::orderBy('created_at', 'desc')->paginate(5));
-        return UserResource::collection(User::paginate(5));
+        return (UserResource::collection(User::orderBy('created_at', 'desc')->withTrashed()->paginate(5)))->response()->setStatusCode(200);
         
 
         /*Caso não se pretenda fazer uso de Eloquent API Resources (https://laravel.com/docs/5.5/eloquent-resources), é possível implementar com esta abordagem:
@@ -167,6 +166,35 @@ class UserControllerAPI extends Controller
         ]);
         $user = User::findOrFail($id);
         $user->fill($request->all());
+        $user->save();
+        return (new UserResource($user))->response()->setStatusCode(200);
+    }
+
+    public function getBlocked(Request $request, $status) 
+    {    
+        return (UserResource::collection(User::where('blocked', '=', $status)->orderBy('created_at', 'desc')->withTrashed()->paginate(5)))->response()->setStatusCode(200);
+    }
+
+    public function getDeleted(Request $request, $status) 
+    {    
+        return $status ? 
+            (UserResource::collection(User::where('deleted_at', '!=', NULL)->orderBy('created_at', 'desc')->withTrashed()->paginate(5)))->response()->setStatusCode(200): 
+            (UserResource::collection(User::where('deleted_at', '=', NULL)->orderBy('created_at', 'desc')->withTrashed()->paginate(5)))->response()->setStatusCode(200);
+    }
+
+    public function block(Request $request, $id) 
+    {
+        //dd($request->all());    
+        $user = User::findOrFail($id);
+        $user->blocked = 1;
+        $user->save();
+        return (new UserResource($user))->response()->setStatusCode(200);
+    }
+
+    public function unblock(Request $request, $id) 
+    {    
+        $user = User::findOrFail($id);
+        $user->blocked = 0;
         $user->save();
         return (new UserResource($user))->response()->setStatusCode(200);
     }

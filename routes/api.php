@@ -95,6 +95,10 @@ Route::post('/meal/addOrder/{meal_id}/{item_id}', 'OrderController@addOrderToMea
 
 // Declare a invoice as paid
 Route::get('users', 'UserControllerAPI@index');
+Route::get('users/blocked/{status}', 'UserControllerAPI@getBlocked');
+Route::get('users/deleted/{status}', 'UserControllerAPI@getDeleted');
+Route::patch('user/block/{id}', 'UserControllerAPI@block');
+Route::patch('user/unblock/{id}', 'UserControllerAPI@unblock');
 Route::get('users/emailavailable', 'UserControllerAPI@emailAvailable');
 Route::middleware('auth:api')->get('users/me', 'UserControllerAPI@myProfile');
 
