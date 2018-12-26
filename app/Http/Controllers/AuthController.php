@@ -34,7 +34,7 @@ class AuthController extends Controller
                 return response()->json(['error' => 'Something went wrong on the server.'], $e->getCode());
             }
         }else {
-            return response()->json(['error' => 'You are currently blocked.'], 400);
+            return response()->json(['error' => 'You are currently blocked.'], 401);
         }
     }
     public function postLogin(Request $request)
