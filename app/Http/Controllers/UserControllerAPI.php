@@ -12,41 +12,27 @@ use Hash;
 use App\Http\Controllers\VerifyController;
 use Carbon\Carbon;
 
-class UserControllerAPI extends Controller
-{
+class UserControllerAPI extends Controller {
     protected $verifyEmail;
-    public function __construct(VerifyController $verifyEmail)
-    {
+    public function __construct(VerifyController $verifyEmail) {
         $this->verifyEmail = $verifyEmail;
     }
 
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         return (UserResource::collection(User::orderBy('created_at', 'desc')->withTrashed()->paginate(5)))->response()->setStatusCode(200);
-        
-
-        /*Caso não se pretenda fazer uso de Eloquent API Resources (https://laravel.com/docs/5.5/eloquent-resources), é possível implementar com esta abordagem:
-        if ($request->has('page')) {
-            return User::with('department')->paginate(5);;
-        } else {
-            return User::with('department')->get();;
-        }*/
     }
 
-    public function show($id)
-    {
+    public function show($id) {
         return new UserResource(User::find($id));
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $request->validate([
             'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
             'username'=> 'required|string|max:50|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'type' => 'required|in:cook,waiter,cashier,manager'
         ]);
-
         $user = new User();
         $user->fill($request->all() + ['remember_token' => str_random(10)]);
         $user->password = Hash::make($user->password);
@@ -55,8 +41,7 @@ class UserControllerAPI extends Controller
         return (new UserResource($user))->response()->setStatusCode(201);
     }
 
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $request->validate([
             'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
             'username'=> 'required|string|max:50|unique:users,username,'.$id,
@@ -75,50 +60,39 @@ class UserControllerAPI extends Controller
             } else {
                 $extention = 'png';
             }
-
             $fileName = str_random().'.'.$extention;
-
-
             $path = storage_path('app/public/profiles/').$fileName;
             file_put_contents($path, $decoded);
-            
             $user->update($request->except('photo_url') + [
                 'photo_url' => $fileName,
             ]);
         } else {
-            //dd($request->all());
             $user->fill($request->all());
         }
         $user->save();
-        //dd(new UserResource($user));
         return (new UserResource($user))->response()->setStatusCode(200);
     }
 
-    public function updateAsManager(Request $request, $id)
-    {
+    public function updateAsManager(Request $request, $id) {
         $request->validate([
             'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
             'username'=> 'required|string|max:50|unique:users,username,'.$id,
             'email' => 'required|email|unique:users,email,'.$id,
             'type' => 'required|in:cook,waiter,cashier,manager'
         ]);
-        
         $user = User::findOrFail($id);
         $user->fill($request->all());
         $user->save();
-        //dd(new UserResource($user));
         return (new UserResource($user))->response()->setStatusCode(200);
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $user = User::findOrFail($id);
         $user->delete();
         return (new UserResource($user))->response()->setStatusCode(204);
     }
 
-    public function emailAvailable(Request $request)
-    {
+    public function emailAvailable(Request $request) {
         $totalEmail = 1;
         if ($request->has('email') && $request->has('id')) {
             $totalEmail = DB::table('users')->where('email', '=', $request->email)->where('id', '<>', $request->id)->count();
@@ -128,13 +102,11 @@ class UserControllerAPI extends Controller
         return response()->json($totalEmail == 0, 200);
     }
 
-    public function myProfile(Request $request)
-    {
+    public function myProfile(Request $request) {
         return (new UserResource($request->user()))->response()->setStatusCode(200);
     }
 
-    public function setNewPassword(Request $request)
-    {
+    public function setNewPassword(Request $request) {
         $request->validate([
             'password' => 'required|min:3|confirmed',
             'password_confirmation' => 'required|min:3'
@@ -149,9 +121,9 @@ class UserControllerAPI extends Controller
         $data['password'] = Hash::make($request->password);
         $user->fill($data);
         $user->save();
-
         return redirect()->route('mainPage')->setStatusCode(200);
     }
+
     public function getManagers(Request $request) {
         $managers = DB::table('users')
             ->where('users.type', '=', 'manager')
@@ -159,8 +131,7 @@ class UserControllerAPI extends Controller
         return $managers;
     }
 
-    public function startEndShift(Request $request, $id)
-    {
+    public function startEndShift(Request $request, $id) {
         $request->validate([
             'email' => 'required|email|unique:users,email,'.$id,
         ]);
@@ -170,29 +141,24 @@ class UserControllerAPI extends Controller
         return (new UserResource($user))->response()->setStatusCode(200);
     }
 
-    public function getBlocked(Request $request, $status) 
-    {    
+    public function getBlocked(Request $request, $status) {    
         return (UserResource::collection(User::where('blocked', '=', $status)->orderBy('created_at', 'desc')->withTrashed()->paginate(5)))->response()->setStatusCode(200);
     }
 
-    public function getDeleted(Request $request, $status) 
-    {    
+    public function getDeleted(Request $request, $status) {    
         return $status ? 
             (UserResource::collection(User::where('deleted_at', '!=', NULL)->orderBy('created_at', 'desc')->withTrashed()->paginate(5)))->response()->setStatusCode(200): 
             (UserResource::collection(User::where('deleted_at', '=', NULL)->orderBy('created_at', 'desc')->withTrashed()->paginate(5)))->response()->setStatusCode(200);
     }
 
-    public function block(Request $request, $id) 
-    {
-        //dd($request->all());    
+    public function block(Request $request, $id) {
         $user = User::findOrFail($id);
         $user->blocked = 1;
         $user->save();
         return (new UserResource($user))->response()->setStatusCode(200);
     }
 
-    public function unblock(Request $request, $id) 
-    {    
+    public function unblock(Request $request, $id) {    
         $user = User::findOrFail($id);
         $user->blocked = 0;
         $user->save();

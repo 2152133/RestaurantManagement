@@ -15,7 +15,6 @@ class AdminMiddleware
      */
     public function handle($request, Closure $next)
     {
-        //dd(auth()->guard('api')->user()->type);
         if (auth()->guard('api')->user()->type == 'manager') {
             return $next($request);
         }

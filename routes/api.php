@@ -24,7 +24,9 @@ use App\Http\Controllers\RestaurantTableController;
 
 Route::middleware('auth:api')->group(function () {
     // get auth user
-    Route::get('/user', function (Request $request) {return $request->user();});
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
     Route::middleware('admin')->group(function () {
         // Delete one item
@@ -33,11 +35,32 @@ Route::middleware('auth:api')->group(function () {
         // Create an item
         Route::post('/item', 'ItemController@store');
         
+        // Get all users
+        Route::get('users', 'UserControllerAPI@index');
+        
+        // Get blocked/not blocked users
+        Route::get('users/blocked/{status}', 'UserControllerAPI@getBlocked');
+
+        // Get soft deleted/not soft deleted users
+        Route::get('users/deleted/{status}', 'UserControllerAPI@getDeleted');
+
+        // Block a user
+        Route::patch('user/block/{id}', 'UserControllerAPI@block');
+
+        // Unblock a user
+        Route::patch('user/unblock/{id}', 'UserControllerAPI@unblock');
+
         // Update an item
         Route::patch('/item/{id}', 'ItemController@update');
         
         // Register user
         Route::post('/register', 'UserControllerAPI@store');
+
+        // Delete a user
+        Route::delete('user/{id}', 'UserControllerAPI@destroy');
+
+        // Update a user profile (as manager)
+        Route::put('user/{id}', 'UserControllerAPI@updateAsManager');
     });
 
     // List all orders
@@ -82,22 +105,22 @@ Route::middleware('auth:api')->group(function () {
     //Add an order to a meal (create order)
     Route::post('/meal/addOrder/{meal_id}/{item_id}', 'OrderController@addOrderToMeal');
 
-    // Declare a invoice as paid
-    Route::get('users', 'UserControllerAPI@index')->middleware('admin');
-    Route::get('users/blocked/{status}', 'UserControllerAPI@getBlocked');
-    Route::get('users/deleted/{status}', 'UserControllerAPI@getDeleted');
-    Route::patch('user/block/{id}', 'UserControllerAPI@block');
-    Route::patch('user/unblock/{id}', 'UserControllerAPI@unblock');
+    // Get email availability
     Route::get('users/emailavailable', 'UserControllerAPI@emailAvailable');
-    Route::middleware('auth:api')->get('users/me', 'UserControllerAPI@myProfile');
 
+    // Get the logged user
+    Route::get('users/me', 'UserControllerAPI@myProfile');
+
+    // Get a user by id
     Route::get('user/{id}', 'UserControllerAPI@show');
+    
+    // Update a user profile (as user)
     Route::patch('user/{id}', 'UserControllerAPI@update');
-    Route::put('user/{id}', 'UserControllerAPI@updateAsManager');
-    Route::delete('user/{id}', 'UserControllerAPI@destroy');
-    Route::post('users', 'UserControllerAPI@store');
+    
+    // Get all managers
     Route::get('managers', 'UserControllerAPI@getManagers');
 
+    // Declare as start/ end shift
     Route::patch('shift/{id}', 'UserControllerAPI@startEndShift');
 
     // Logout
