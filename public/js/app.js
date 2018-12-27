@@ -25211,11 +25211,10 @@ var app = new Vue({
         msg_from_server: function msg_from_server(data) {
             this.msgGlobalTextArea = data + '\n' + this.msgGlobalTextArea;
         },
-
-        // privateMessage(dataFromServer){
-        //     let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
-        //     this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"');        
-        // },
+        privateMessage: function privateMessage(dataFromServer) {
+            var sourceName = dataFromServer[1] === null ? 'Unknown' : dataFromServer[1].name;
+            this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"');
+        },
         privateMessage_unavailable: function privateMessage_unavailable(destUser) {
             this.$toasted.error('User "' + destUser.name + '" is not available');
         },
