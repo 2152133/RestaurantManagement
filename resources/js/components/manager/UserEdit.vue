@@ -1,7 +1,7 @@
 <template>
 <div>
     <div class="jumbotron">
-	    <h2>Edit user</h2>
+	    <h2>Edit User</h2>
 	    <div class="form-group">
 	        <label for="inputName">Name</label>
 	        <input type="text" class="form-control"  id="inputName" placeholder="Fullname" 

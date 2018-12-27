@@ -20,7 +20,7 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Price</th>
-                <th>Actions</th>
+                <th v-if="isManager">Actions</th>
             </tr>
         </thead>
         <tbody v-for="item in items" v-bind:key="item.id">
@@ -28,7 +28,7 @@
             <td>{{ item.name }}</td>
             <td>{{ compactDescription(item.description) }}</td>
             <td>{{ item.price }} €</td>
-            <td> 
+            <td v-if="isManager"> 
                 <a @click.prevent="editItem(item)" class="btn btn-sm btn-primary">Edit</a>
                 <a @click.prevent="deleteItem(item)" class="btn btn-sm btn-danger">Delete</a>
             </td>
@@ -77,6 +77,11 @@ export default {
                 prev_page_url: links.prev,
             }
             this.pagination = pagination
+        },
+    },
+    computed: {
+        isManager() {
+            return this.$store.getters.isManager
         },
     },
     mounted() {

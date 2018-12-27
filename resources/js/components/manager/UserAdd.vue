@@ -3,8 +3,8 @@
     <div class="alert alert-success" v-if="showSuccess">			 
         <strong>{{ successMessage }}</strong>
     </div>
-    <div class="form-group">
-	    <h2>Add user</h2>
+    <div class="jumbotron">
+	    <h2>Add User</h2>
 	    <div class="form-group">
 	        <label for="inputName">Name</label>
 	        <input type="text" class="form-control"  id="inputName" placeholder="Fullname"

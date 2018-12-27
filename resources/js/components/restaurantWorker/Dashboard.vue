@@ -6,8 +6,7 @@
         </div>
         <button class="btn btn-success" @click.prevent="sendMessageToActiveManagers">Send Manager message</button>
         <button class="btn btn-warning"><router-link to="profileEdit">Edit Profile</router-link></button>
-        <button class="btn btn-warning"><router-link to="users">All Users</router-link></button>
-        <button class="btn btn-warning"><router-link to="notifications">Notifications: {{numberOfNotifications}}</router-link></button>
+        <button v-if="isManager" class="btn btn-warning"><router-link to="users">All Users</router-link></button>
     </div>
     <br>
     <div>
@@ -84,27 +83,14 @@ export default {
         },
         timeElapsed(date) {
             let currentDate = new Date()
-            //currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
             let compareDate = new Date(date)
-            //endShiftDate = endShiftDate.getUTCFullYear() + "-" + (endShiftDate.getUTCMonth() + 1) + "-" + endShiftDate.getUTCDate() + " " + endShiftDate.getUTCHours() + ":" + endShiftDate.getUTCMinutes() + ":" + endShiftDate.getUTCSeconds();
-            //let diff = Math.floor(currentDate.getTime() - compareDate.getTime());
-            //let day = 1000 * 60 * 60 * 24;
-            //let days = Math.floor(diff/day);
-            //let months = Math.floor(days/31);
-            //let years = Math.floor(months/12);
             let difference = Math.abs(currentDate - compareDate);
             let minutes = Math.floor((difference/1000)/60);
             let h = Math.floor(minutes/60)
             let m = minutes%60
-            let message = ""//endShiftDate.toDateString();
-            // message += " was "
-            //message += years + " years " 
-            //message += months + " months "
-            //message += days + " days "
+            let message = ""
             message += h + " hours "
             message += m + " minutes"
-            //return (hour + " hours " + minuts + " minutes")
-            //return minutes
             return message
         },
     },
@@ -124,7 +110,9 @@ export default {
         lastShiftStartTime() {
             return this.$store.getters.getAuthUser.last_shift_start
         },
-        
+        isManager() {
+            return this.$store.getters.isManager
+        },
     }
 }
 </script>

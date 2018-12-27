@@ -9,8 +9,7 @@ Vue.component('navbar', require('../components/utils/Navbar.vue'));
 const ordersComponent = Vue.component('orders', require('../components/cook/Orders.vue'));
 Vue.component('orders-list', require('../components/cook/OrdersList.vue'));
 Vue.component('pagination', require('../components/utils/Pagination.vue'));
-const landing_page = Vue.component('landing_page', require('../components/restaurantWorker/LandingPage.vue')); 
-const notifications_page = Vue.component('notifications_page', require('../components/restaurantWorker/Notifications.vue'));
+const dashboard = Vue.component('dashboard', require('../components/restaurantWorker/Dashboard.vue')); 
 const invoicesComponent = Vue.component('pending-invoices', require('../components/cashier/Invoices.vue'));
 Vue.component('invoices-list', require('../components/cashier/InvoicesList.vue'));
 Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
@@ -87,16 +86,8 @@ const routes = [
     },
     {
         path: '/dashboard', 
-        component: landing_page, 
+        component: dashboard, 
         name: 'dashboard',
-        meta: {
-            forAuth: true
-        }
-    },
-    {
-        path: '/notifications', 
-        component: notifications_page, 
-        name: 'notifications',
         meta: {
             forAuth: true
         }

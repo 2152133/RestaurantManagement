@@ -48579,8 +48579,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('navbar', __webpack_requir
 var ordersComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('orders', __webpack_require__(54));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('orders-list', __webpack_require__(57));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('pagination', __webpack_require__(60));
-var landing_page = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('landing_page', __webpack_require__(63));
-var notifications_page = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('notifications_page', __webpack_require__(66));
+var dashboard = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('dashboard', __webpack_require__(135));
 var invoicesComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('pending-invoices', __webpack_require__(69));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoices-list', __webpack_require__(72));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('edit-nif-name', __webpack_require__(15));
@@ -48646,15 +48645,8 @@ var routes = [{
     }
 }, {
     path: '/dashboard',
-    component: landing_page,
+    component: dashboard,
     name: 'dashboard',
-    meta: {
-        forAuth: true
-    }
-}, {
-    path: '/notifications',
-    component: notifications_page,
-    name: 'notifications',
     meta: {
         forAuth: true
     }
@@ -51438,6 +51430,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.successMessage = message;
         }
     },
+    computed: {
+        isManager: function isManager() {
+            return this.$store.getters.isManager;
+        }
+    },
     mounted: function mounted() {
         this.getItems();
     }
@@ -51457,16 +51454,18 @@ var render = function() {
       _c("div", { staticClass: "jumbotron" }, [
         _c("h1", [
           _vm._v(_vm._s(_vm.title) + " "),
-          _c(
-            "button",
-            { staticClass: "btn btn-warning" },
-            [
-              _c("router-link", { attrs: { to: "newItem" } }, [
-                _vm._v("Add new Item")
-              ])
-            ],
-            1
-          )
+          _vm.isManager
+            ? _c(
+                "button",
+                { staticClass: "btn btn-warning" },
+                [
+                  _c("router-link", { attrs: { to: "newItem" } }, [
+                    _vm._v("Add new Item")
+                  ])
+                ],
+                1
+              )
+            : _vm._e()
         ])
       ]),
       _vm._v(" "),
@@ -52452,484 +52451,12 @@ if (false) {
 }
 
 /***/ }),
-/* 63 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(64)
-/* template */
-var __vue_template__ = __webpack_require__(65)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/restaurantWorker/LandingPage.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-71b5cafd", Component.options)
-  } else {
-    hotAPI.reload("data-v-71b5cafd", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 64 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            title: "Dashboard",
-            numberOfNotifications: 0
-        };
-    },
-
-    methods: {
-        startShift: function startShift() {
-            var _this = this;
-
-            this.getAutenticatedUser.shift_active = 1;
-            var currentDate = new Date();
-            currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
-            this.getAutenticatedUser.last_shift_start = currentDate;
-            axios.patch('api/shift/' + this.getAutenticatedUser.id, this.getAutenticatedUser).then(function (response) {
-                _this.timeElapsed(_this.getAutenticatedUser.last_shift_start);
-                _this.$store.dispatch('setAuthUser', _this.getAutenticatedUser);
-                _this.getAutenticatedUser;
-            });
-        },
-        endShift: function endShift() {
-            var _this2 = this;
-
-            this.getAutenticatedUser.shift_active = 0;
-            var currentDate = new Date();
-            currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
-            this.getAutenticatedUser.last_shift_end = currentDate;
-            axios.patch('api/shift/' + this.getAutenticatedUser.id, this.getAutenticatedUser).then(function (response) {
-                _this2.timeElapsed(_this2.getAutenticatedUser.last_shift_end);
-                _this2.$store.dispatch('setAuthUser', _this2.getAutenticatedUser);
-                _this2.getAutenticatedUser;
-            });
-        },
-        sendMessageToActiveManagers: function sendMessageToActiveManagers() {
-            var _this3 = this;
-
-            axios.get("/api/managers").then(function (response) {
-                var managers = [];
-                response.data.forEach(function (manager) {
-                    if (_this3.getAutenticatedUser.id != manager.id && manager.shift_active) {
-                        managers.push(manager);
-                    }
-                });
-                var msg = window.prompt('What do you want to say to the managers?');
-                managers.forEach(function (manager) {
-                    console.log('Sending Message "' + msg + '" to "' + manager.name + '"');
-                    _this3.$socket.emit('privateMessage', msg, _this3.$store.state.user, manager);
-                });
-            });
-        },
-        timeElapsed: function timeElapsed(date) {
-            var currentDate = new Date();
-            //currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
-            var compareDate = new Date(date);
-            //endShiftDate = endShiftDate.getUTCFullYear() + "-" + (endShiftDate.getUTCMonth() + 1) + "-" + endShiftDate.getUTCDate() + " " + endShiftDate.getUTCHours() + ":" + endShiftDate.getUTCMinutes() + ":" + endShiftDate.getUTCSeconds();
-            //let diff = Math.floor(currentDate.getTime() - compareDate.getTime());
-            //let day = 1000 * 60 * 60 * 24;
-            //let days = Math.floor(diff/day);
-            //let months = Math.floor(days/31);
-            //let years = Math.floor(months/12);
-            var difference = Math.abs(currentDate - compareDate);
-            var minutes = Math.floor(difference / 1000 / 60);
-            var h = Math.floor(minutes / 60);
-            var m = minutes % 60;
-            var message = ""; //endShiftDate.toDateString();
-            // message += " was "
-            //message += years + " years " 
-            //message += months + " months "
-            //message += days + " days "
-            message += h + " hours ";
-            message += m + " minutes";
-            //return (hour + " hours " + minuts + " minutes")
-            //return minutes
-            return message;
-        }
-    },
-    computed: {
-        getAutenticatedUser: function getAutenticatedUser() {
-            return this.$store.getters.getAuthUser;
-        },
-        isShiftActive: function isShiftActive() {
-            return this.$store.getters.getAuthUser.shift_active;
-        },
-        shiftStatus: function shiftStatus() {
-            return this.isShiftActive ? 'working' : 'not working';
-        },
-        lastShiftEndTime: function lastShiftEndTime() {
-            return this.$store.getters.getAuthUser.last_shift_end;
-        },
-        lastShiftStartTime: function lastShiftStartTime() {
-            return this.$store.getters.getAuthUser.last_shift_start;
-        }
-    }
-});
-
-/***/ }),
-/* 65 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", [
-      _c("div", { staticClass: "jumbotron" }, [
-        _c("h1", [_vm._v(_vm._s(_vm.title))])
-      ]),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-success",
-          on: {
-            click: function($event) {
-              $event.preventDefault()
-              return _vm.sendMessageToActiveManagers($event)
-            }
-          }
-        },
-        [_vm._v("Send Manager message")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-warning" },
-        [
-          _c("router-link", { attrs: { to: "profileEdit" } }, [
-            _vm._v("Edit Profile")
-          ])
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-warning" },
-        [_c("router-link", { attrs: { to: "users" } }, [_vm._v("All Users")])],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-warning" },
-        [
-          _c("router-link", { attrs: { to: "notifications" } }, [
-            _vm._v("Notifications: " + _vm._s(_vm.numberOfNotifications))
-          ])
-        ],
-        1
-      )
-    ]),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    _c("div", [
-      _vm.isShiftActive
-        ? _c("div", { staticClass: "container" }, [
-            _c("h3", [_vm._v("Status: " + _vm._s(_vm.shiftStatus))]),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v(" "),
-            _c("h3", [
-              _vm._v("Service started at: " + _vm._s(_vm.lastShiftStartTime))
-            ]),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v(" "),
-            _c("h3", [
-              _vm._v(
-                "Time elapsed from service start: " +
-                  _vm._s(_vm.timeElapsed(_vm.lastShiftStartTime))
-              )
-            ])
-          ])
-        : _c("div", { staticClass: "container" }, [
-            _c("h3", [_vm._v("Status: " + _vm._s(_vm.shiftStatus))]),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v(" "),
-            _c("h3", [
-              _vm._v("Service finished at: " + _vm._s(_vm.lastShiftEndTime))
-            ]),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v(" "),
-            _c("h3", [
-              _vm._v(
-                "Time elapsed from service end: " +
-                  _vm._s(_vm.timeElapsed(_vm.lastShiftEndTime))
-              )
-            ])
-          ])
-    ]),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    !_vm.isShiftActive
-      ? _c(
-          "button",
-          {
-            staticClass: "btn btn-success",
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                _vm.startShift()
-              }
-            }
-          },
-          [_vm._v("Start Shift")]
-        )
-      : _c(
-          "button",
-          {
-            staticClass: "btn btn-danger",
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                _vm.endShift()
-              }
-            }
-          },
-          [_vm._v("End Shift")]
-        ),
-    _vm._v(" "),
-    _c("br")
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-71b5cafd", module.exports)
-  }
-}
-
-/***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(67)
-/* template */
-var __vue_template__ = __webpack_require__(68)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/restaurantWorker/Notifications.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cd78f442", Component.options)
-  } else {
-    hotAPI.reload("data-v-cd78f442", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 67 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {};
-    },
-
-    methods: {},
-    mounted: function mounted() {}
-});
-
-/***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm._m(0),
-    _vm._v(" "),
-    _c(
-      "button",
-      { staticClass: "btn btn-danger" },
-      [
-        _c("router-link", { attrs: { to: "dashboard" } }, [
-          _vm._v("Back to Dashboard")
-        ])
-      ],
-      1
-    )
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("table", { staticClass: "table" }, [
-      _c("thead", [
-        _c("tr", [
-          _c("th", [_vm._v("Date")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Type")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Description")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Action")])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("tbody", [
-        _c("tr", [
-          _c("td", [_vm._v("1/1/2000")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("Meal")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("Refeição para a mesa 5")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("...")])
-        ])
-      ])
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-cd78f442", module.exports)
-  }
-}
-
-/***/ }),
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -55229,6 +54756,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.pagination = pagination;
         }
     },
+    computed: {
+        isManager: function isManager() {
+            return this.$store.getters.isManager;
+        }
+    },
     mounted: function mounted() {
         this.getItems();
     }
@@ -55308,7 +54840,19 @@ var render = function() {
       "table",
       { staticClass: "table" },
       [
-        _vm._m(0),
+        _c("thead", [
+          _c("tr", [
+            _c("th", [_vm._v("Product")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Name")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Description")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Price")]),
+            _vm._v(" "),
+            _vm.isManager ? _c("th", [_vm._v("Actions")]) : _vm._e()
+          ])
+        ]),
         _vm._v(" "),
         _vm._l(_vm.items, function(item) {
           return _c("tbody", { key: item.id }, [
@@ -55330,35 +54874,37 @@ var render = function() {
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(item.price) + " €")]),
             _vm._v(" "),
-            _c("td", [
-              _c(
-                "a",
-                {
-                  staticClass: "btn btn-sm btn-primary",
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.editItem(item)
-                    }
-                  }
-                },
-                [_vm._v("Edit")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  staticClass: "btn btn-sm btn-danger",
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.deleteItem(item)
-                    }
-                  }
-                },
-                [_vm._v("Delete")]
-              )
-            ])
+            _vm.isManager
+              ? _c("td", [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-primary",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.editItem(item)
+                        }
+                      }
+                    },
+                    [_vm._v("Edit")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-danger",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.deleteItem(item)
+                        }
+                      }
+                    },
+                    [_vm._v("Delete")]
+                  )
+                ])
+              : _vm._e()
           ])
         })
       ],
@@ -55366,26 +54912,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Product")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Name")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Description")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Price")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Actions")])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -55489,6 +55016,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -55501,16 +55052,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         saveUser: function saveUser() {
             var _this = this;
 
-            axios.patch('api/user/' + this.autenticatedUser.id, this.autenticatedUser).then(function (response) {
-                _this.$store.dispatch('setAuthUser', _this.autenticatedUser);
-                _this.$router.push("/dashboard");
+            this.$validator.validateAll().then(function (result) {
+                if (result) {
+                    _this.autenticatedUser.type = _this.$store.getters.getAuthUser.type;
+                    axios.patch('api/user/' + _this.autenticatedUser.id, _this.autenticatedUser).then(function (response) {
+                        _this.$store.dispatch('setAuthUser', _this.autenticatedUser);
+                        _this.$router.push("/dashboard");
+                    });
+                }
             });
         },
         cancelEdit: function cancelEdit() {
             var _this2 = this;
 
             axios.get('api/user/' + this.autenticatedUser.id).then(function (response) {
-                _this2.$store.dispatch('setAuthUser', _this2.autenticatedUser);
+                _this2.$store.dispatch('setAuthUser', response.data.data);
                 _this2.$router.push("/dashboard");
             });
         },
@@ -55547,7 +55103,7 @@ var render = function() {
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "form-group" }, [
-      _c("label", { attrs: { for: "inputName" } }, [_vm._v("Full Name")]),
+      _c("label", { attrs: { for: "inputName" } }, [_vm._v("Name")]),
       _vm._v(" "),
       _c("input", {
         directives: [
@@ -55556,14 +55112,20 @@ var render = function() {
             rawName: "v-model",
             value: _vm.autenticatedUser.name,
             expression: "autenticatedUser.name"
+          },
+          {
+            name: "validate",
+            rawName: "v-validate",
+            value: "required",
+            expression: "'required'"
           }
         ],
         staticClass: "form-control",
         attrs: {
           type: "text",
-          name: "name",
           id: "inputName",
-          placeholder: "name"
+          placeholder: "Fullname",
+          name: "name"
         },
         domProps: { value: _vm.autenticatedUser.name },
         on: {
@@ -55574,7 +55136,29 @@ var render = function() {
             _vm.$set(_vm.autenticatedUser, "name", $event.target.value)
           }
         }
-      })
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.errors.has("name"),
+              expression: "errors.has('name')"
+            }
+          ],
+          staticClass: "help-block alert alert-danger"
+        },
+        [
+          _vm._v(
+            "\n                " +
+              _vm._s(_vm.errors.first("name")) +
+              "\n            "
+          )
+        ]
+      )
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "form-group" }, [
@@ -55587,14 +55171,20 @@ var render = function() {
             rawName: "v-model",
             value: _vm.autenticatedUser.username,
             expression: "autenticatedUser.username"
+          },
+          {
+            name: "validate",
+            rawName: "v-validate",
+            value: "required",
+            expression: "'required'"
           }
         ],
         staticClass: "form-control",
         attrs: {
           type: "text",
-          name: "username",
           id: "inputUsername",
-          placeholder: "Username"
+          placeholder: "Username",
+          name: "username"
         },
         domProps: { value: _vm.autenticatedUser.username },
         on: {
@@ -55605,7 +55195,29 @@ var render = function() {
             _vm.$set(_vm.autenticatedUser, "username", $event.target.value)
           }
         }
-      })
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.errors.has("username"),
+              expression: "errors.has('username')"
+            }
+          ],
+          staticClass: "help-block alert alert-danger"
+        },
+        [
+          _vm._v(
+            "\n                " +
+              _vm._s(_vm.errors.first("username")) +
+              "\n            "
+          )
+        ]
+      )
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "form-group" }, [
@@ -55618,8 +55230,15 @@ var render = function() {
             rawName: "v-model",
             value: _vm.autenticatedUser.password,
             expression: "autenticatedUser.password"
+          },
+          {
+            name: "validate",
+            rawName: "v-validate",
+            value: "required",
+            expression: "'required'"
           }
         ],
+        ref: "password",
         staticClass: "form-control",
         attrs: { type: "password", name: "password", id: "inputPassword" },
         domProps: { value: _vm.autenticatedUser.password },
@@ -55631,11 +55250,35 @@ var render = function() {
             _vm.$set(_vm.autenticatedUser, "password", $event.target.value)
           }
         }
-      })
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.errors.has("password"),
+              expression: "errors.has('password')"
+            }
+          ],
+          staticClass: "help-block alert alert-danger"
+        },
+        [
+          _vm._v(
+            "\n                " +
+              _vm._s(_vm.errors.first("password")) +
+              "\n            "
+          )
+        ]
+      )
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "form-group" }, [
-      _c("label", { attrs: { for: "inputPassword" } }, [_vm._v("Password")]),
+      _c("label", { attrs: { for: "inputPassword" } }, [
+        _vm._v("Confirm Password")
+      ]),
       _vm._v(" "),
       _c("input", {
         directives: [
@@ -55644,13 +55287,20 @@ var render = function() {
             rawName: "v-model",
             value: _vm.autenticatedUser.password_confirmation,
             expression: "autenticatedUser.password_confirmation"
+          },
+          {
+            name: "validate",
+            rawName: "v-validate",
+            value: "required|confirmed:password",
+            expression: "'required|confirmed:password'"
           }
         ],
         staticClass: "form-control",
         attrs: {
           type: "password",
           name: "password_confirmation",
-          id: "password_confirmation"
+          id: "password_confirmation",
+          "data-vv-as": "password"
         },
         domProps: { value: _vm.autenticatedUser.password_confirmation },
         on: {
@@ -55665,15 +55315,67 @@ var render = function() {
             )
           }
         }
-      })
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.errors.has("password_confirmation"),
+              expression: "errors.has('password_confirmation')"
+            }
+          ],
+          staticClass: "help-block alert alert-danger"
+        },
+        [
+          _vm._v(
+            "\n                " +
+              _vm._s(_vm.errors.first("password_confirmation")) +
+              "\n            "
+          )
+        ]
+      )
     ]),
     _vm._v(" "),
     _c("div", [
       _c("input", {
+        directives: [
+          {
+            name: "validate",
+            rawName: "v-validate",
+            value: "image",
+            expression: "'image'"
+          }
+        ],
         staticClass: "form-data",
-        attrs: { type: "file", accept: "image/*" },
+        attrs: { type: "file", name: "image", accept: "image/*" },
         on: { change: _vm.imageChanged }
-      })
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.errors.has("image"),
+              expression: "errors.has('image')"
+            }
+          ],
+          staticClass: "help-block alert alert-danger"
+        },
+        [
+          _vm._v(
+            "\n                " +
+              _vm._s(_vm.errors.first("image")) +
+              "\n            "
+          )
+        ]
+      )
     ]),
     _vm._v(" "),
     _c("br"),
@@ -56947,7 +56649,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("div", { staticClass: "jumbotron" }, [
-      _c("h2", [_vm._v("Edit user")]),
+      _c("h2", [_vm._v("Edit User")]),
       _vm._v(" "),
       _c("div", { staticClass: "form-group" }, [
         _c("label", { attrs: { for: "inputName" } }, [_vm._v("Name")]),
@@ -57971,8 +57673,8 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
-    _c("div", { staticClass: "form-group" }, [
-      _c("h2", [_vm._v("Add user")]),
+    _c("div", { staticClass: "jumbotron" }, [
+      _c("h2", [_vm._v("Add User")]),
       _vm._v(" "),
       _c("div", { staticClass: "form-group" }, [
         _c("label", { attrs: { for: "inputName" } }, [_vm._v("Name")]),
@@ -67614,6 +67316,324 @@ var install = VeeValidate$1.install;
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 129 */,
+/* 130 */,
+/* 131 */,
+/* 132 */,
+/* 133 */,
+/* 134 */,
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(136)
+/* template */
+var __vue_template__ = __webpack_require__(137)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/restaurantWorker/Dashboard.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-371b2d0b", Component.options)
+  } else {
+    hotAPI.reload("data-v-371b2d0b", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 136 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            title: "Dashboard",
+            numberOfNotifications: 0
+        };
+    },
+
+    methods: {
+        startShift: function startShift() {
+            var _this = this;
+
+            this.getAutenticatedUser.shift_active = 1;
+            var currentDate = new Date();
+            currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
+            this.getAutenticatedUser.last_shift_start = currentDate;
+            axios.patch('api/shift/' + this.getAutenticatedUser.id, this.getAutenticatedUser).then(function (response) {
+                _this.timeElapsed(_this.getAutenticatedUser.last_shift_start);
+                _this.$store.dispatch('setAuthUser', _this.getAutenticatedUser);
+                _this.getAutenticatedUser;
+            });
+        },
+        endShift: function endShift() {
+            var _this2 = this;
+
+            this.getAutenticatedUser.shift_active = 0;
+            var currentDate = new Date();
+            currentDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate() + " " + currentDate.getUTCHours() + ":" + currentDate.getUTCMinutes() + ":" + currentDate.getUTCSeconds();
+            this.getAutenticatedUser.last_shift_end = currentDate;
+            axios.patch('api/shift/' + this.getAutenticatedUser.id, this.getAutenticatedUser).then(function (response) {
+                _this2.timeElapsed(_this2.getAutenticatedUser.last_shift_end);
+                _this2.$store.dispatch('setAuthUser', _this2.getAutenticatedUser);
+                _this2.getAutenticatedUser;
+            });
+        },
+        sendMessageToActiveManagers: function sendMessageToActiveManagers() {
+            var _this3 = this;
+
+            axios.get("/api/managers").then(function (response) {
+                var managers = [];
+                response.data.forEach(function (manager) {
+                    if (_this3.getAutenticatedUser.id != manager.id && manager.shift_active) {
+                        managers.push(manager);
+                    }
+                });
+                var msg = window.prompt('What do you want to say to the managers?');
+                managers.forEach(function (manager) {
+                    console.log('Sending Message "' + msg + '" to "' + manager.name + '"');
+                    _this3.$socket.emit('privateMessage', msg, _this3.$store.state.user, manager);
+                });
+            });
+        },
+        timeElapsed: function timeElapsed(date) {
+            var currentDate = new Date();
+            var compareDate = new Date(date);
+            var difference = Math.abs(currentDate - compareDate);
+            var minutes = Math.floor(difference / 1000 / 60);
+            var h = Math.floor(minutes / 60);
+            var m = minutes % 60;
+            var message = "";
+            message += h + " hours ";
+            message += m + " minutes";
+            return message;
+        }
+    },
+    computed: {
+        getAutenticatedUser: function getAutenticatedUser() {
+            return this.$store.getters.getAuthUser;
+        },
+        isShiftActive: function isShiftActive() {
+            return this.$store.getters.getAuthUser.shift_active;
+        },
+        shiftStatus: function shiftStatus() {
+            return this.isShiftActive ? 'working' : 'not working';
+        },
+        lastShiftEndTime: function lastShiftEndTime() {
+            return this.$store.getters.getAuthUser.last_shift_end;
+        },
+        lastShiftStartTime: function lastShiftStartTime() {
+            return this.$store.getters.getAuthUser.last_shift_start;
+        },
+        isManager: function isManager() {
+            return this.$store.getters.isManager;
+        }
+    }
+});
+
+/***/ }),
+/* 137 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", [
+      _c("div", { staticClass: "jumbotron" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.title))])
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-success",
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              return _vm.sendMessageToActiveManagers($event)
+            }
+          }
+        },
+        [_vm._v("Send Manager message")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-warning" },
+        [
+          _c("router-link", { attrs: { to: "profileEdit" } }, [
+            _vm._v("Edit Profile")
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _vm.isManager
+        ? _c(
+            "button",
+            { staticClass: "btn btn-warning" },
+            [
+              _c("router-link", { attrs: { to: "users" } }, [
+                _vm._v("All Users")
+              ])
+            ],
+            1
+          )
+        : _vm._e()
+    ]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("div", [
+      _vm.isShiftActive
+        ? _c("div", { staticClass: "container" }, [
+            _c("h3", [_vm._v("Status: " + _vm._s(_vm.shiftStatus))]),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c("h3", [
+              _vm._v("Service started at: " + _vm._s(_vm.lastShiftStartTime))
+            ]),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c("h3", [
+              _vm._v(
+                "Time elapsed from service start: " +
+                  _vm._s(_vm.timeElapsed(_vm.lastShiftStartTime))
+              )
+            ])
+          ])
+        : _c("div", { staticClass: "container" }, [
+            _c("h3", [_vm._v("Status: " + _vm._s(_vm.shiftStatus))]),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c("h3", [
+              _vm._v("Service finished at: " + _vm._s(_vm.lastShiftEndTime))
+            ]),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c("h3", [
+              _vm._v(
+                "Time elapsed from service end: " +
+                  _vm._s(_vm.timeElapsed(_vm.lastShiftEndTime))
+              )
+            ])
+          ])
+    ]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    !_vm.isShiftActive
+      ? _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.startShift()
+              }
+            }
+          },
+          [_vm._v("Start Shift")]
+        )
+      : _c(
+          "button",
+          {
+            staticClass: "btn btn-danger",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.endShift()
+              }
+            }
+          },
+          [_vm._v("End Shift")]
+        ),
+    _vm._v(" "),
+    _c("br")
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-371b2d0b", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
