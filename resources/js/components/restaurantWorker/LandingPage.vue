@@ -38,7 +38,6 @@ export default {
         return {
             title: "Dashboard",
             numberOfNotifications: 0,
-            managers: [],
         };
     },
     methods: {
@@ -68,21 +67,20 @@ export default {
                 })
         },
         sendMessageToActiveManagers(){
-            let msg = window.prompt('What do you want to say to the managers?');
-            this.managers.forEach(manager => {
-                console.log('Sending Message "' + msg + '" to "' + manager.name + '"');
-                this.$socket.emit('privateMessage', msg, this.$store.state.user, manager);
-            });
-        },
-        getActiveManagers() {
-             axios.get("/api/managers")
+            axios.get("/api/managers")
                 .then(response => {
+                    let managers = []
                     response.data.forEach(manager => {
                         if (this.getAutenticatedUser.id != manager.id && manager.shift_active) {
-                            this.managers.push(manager)
+                            managers.push(manager)
                         }
                     })
-            })
+                    let msg = window.prompt('What do you want to say to the managers?');
+                    managers.forEach(manager => {
+                        console.log('Sending Message "' + msg + '" to "' + manager.name + '"');
+                        this.$socket.emit('privateMessage', msg, this.$store.state.user, manager);
+                    });
+                })
         },
         timeElapsed(date) {
             let currentDate = new Date()
@@ -127,9 +125,6 @@ export default {
             return this.$store.getters.getAuthUser.last_shift_start
         },
         
-    },
-    mounted() {
-        this.getActiveManagers()
-    },
+    }
 }
 </script>

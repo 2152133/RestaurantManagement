@@ -52543,8 +52543,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             title: "Dashboard",
-            numberOfNotifications: 0,
-            managers: []
+            numberOfNotifications: 0
         };
     },
 
@@ -52578,20 +52577,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         sendMessageToActiveManagers: function sendMessageToActiveManagers() {
             var _this3 = this;
 
-            var msg = window.prompt('What do you want to say to the managers?');
-            this.managers.forEach(function (manager) {
-                console.log('Sending Message "' + msg + '" to "' + manager.name + '"');
-                _this3.$socket.emit('privateMessage', msg, _this3.$store.state.user, manager);
-            });
-        },
-        getActiveManagers: function getActiveManagers() {
-            var _this4 = this;
-
             axios.get("/api/managers").then(function (response) {
+                var managers = [];
                 response.data.forEach(function (manager) {
-                    if (_this4.getAutenticatedUser.id != manager.id && manager.shift_active) {
-                        _this4.managers.push(manager);
+                    if (_this3.getAutenticatedUser.id != manager.id && manager.shift_active) {
+                        managers.push(manager);
                     }
+                });
+                var msg = window.prompt('What do you want to say to the managers?');
+                managers.forEach(function (manager) {
+                    console.log('Sending Message "' + msg + '" to "' + manager.name + '"');
+                    _this3.$socket.emit('privateMessage', msg, _this3.$store.state.user, manager);
                 });
             });
         },
@@ -52637,9 +52633,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         lastShiftStartTime: function lastShiftStartTime() {
             return this.$store.getters.getAuthUser.last_shift_start;
         }
-    },
-    mounted: function mounted() {
-        this.getActiveManagers();
     }
 });
 
