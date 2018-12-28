@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Meal;
+use App\Invoice;
 use App\Http\Resources\Meal as MealResource;
 use App\Http\Resources\Order as OrderResource;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class MealController extends Controller
 {
@@ -24,12 +24,12 @@ class MealController extends Controller
         Meal::create([
             'state' => 'active',
             'table_number' => $table_number,
-            'start' => Carbon::now(),
+            'start' => date('Y-m-d H:i:s'),
             'end' => null,
             'responsible_waiter_id' => $responsible_waiter_id,
             'total_price_preview' => '0',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
         ]);
     }
 
@@ -51,5 +51,66 @@ class MealController extends Controller
                                 ->select('table_number')
                                 ->get();
         return $tablesWithActiveMeals;
+    }
+
+    public function terminateMeal($meal_id){
+       
+        $ordersOfMealNotDelivered = DB::table('orders')
+                            ->where('orders.meal_id', '=', $meal_id)
+                            ->where('orders.state', '!=', 'delivered')
+                            ->get();
+
+        $deliveredMealOrdersPrice = DB::table('orders')
+                            ->join('items', 'orders.item_id', '=', 'items.id')
+                            ->where('orders.meal_id', '=', $meal_id)
+                            ->where('orders.state', '=', 'delivered')
+                            ->select('items.price')
+                            ->get();
+        
+        $ordersOfMealDelivered = DB::table('orders')
+                            ->where('orders.meal_id', '=', $meal_id)
+                            ->where('orders.state', '=', 'delivered')
+                            ->get();       
+        $counter = 0;
+
+        foreach ($deliveredMealOrdersPrice as $order) {
+            $counter += $order->price;
+        }
+        
+
+        foreach ($ordersOfMealNotDelivered as $order) {
+            DB::table('orders')
+            ->where('id', '=', $order->id)
+            ->update(['end' => date('Y-m-d H:i:s'),
+                      'state' => 'not delivered']);
+        }
+
+        DB::table('meals')
+        ->where('id', '=', $meal_id)
+        ->update(['end' => date('Y-m-d H:i:s'),
+                  'state' => 'terminated',
+                  'total_price_preview' => $counter]);
+
+        Invoice::create([
+            'state' => 'pending',
+            'meal_id' => $meal_id,
+            'nif' => null,
+            'name' => null,
+            'date' => date('Y-m-d'),
+            'total_price' => $counter,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+        foreach ($ordersOfMealDelivered as $order) {
+            //criar um invoive item com estes dados
+            /*
+            InvoiceItem::create([
+                'invoice_id' =>   ,
+                'item_id' => $order->item_id,
+                'unit_price'
+            ])
+            */
+        }
     }
 }

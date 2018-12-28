@@ -125,8 +125,28 @@ Route::middleware('auth:api')->group(function () {
 
     // Logout
     Route::post('/logout', 'AuthController@logout');
-});
 
+    //Delete an order 5 seconds after creation
+    Route::delete('/meal/deleteOrderOfMeal/{order_id}/delete', 'OrderController@deleteOrderUpTo5SecondsAfterCreation');
+
+    //Get prepared orders of Meal
+    Route::get('/meals/{mealId}/preparedOrders', 'OrderController@getPreparedOrdersForMeal');
+
+    //Mark a prepared order as delivered
+    Route::put('/meals/{mealId}/markPreparedOrderAsDelivered', 'OrderController@markPreparedOrderAsDelivered');
+
+    //Get orders for active meals
+    Route::get('/meals/{mealId}/mealDetails', 'OrderController@getAllMealDetails');
+
+    //Get all orders for meal
+    Route::get('/meals/{mealId}/allOrders', 'OrderController@getAllOrdersForMeal');
+
+    //Terminate meal
+    Route::put('/meals/{mealId}/terminate', 'MealController@terminateMeal');
+
+    // Declare a invoice as paid
+    Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
+});
 
 // List all items
 Route::get('/items', 'ItemController@index');
@@ -137,3 +157,4 @@ Route::post('/login', 'AuthController@login')->name('login');
 
 // List one item
 Route::get('/item/{id}', 'ItemController@show');
+

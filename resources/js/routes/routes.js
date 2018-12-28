@@ -28,7 +28,7 @@ Vue.component('userEdit', require('../components/manager/UserEdit.vue'));
 Vue.component('usersList', require('../components/manager/UsersList.vue'));
 const userAddComponent = Vue.component('userAdd', require('../components/manager/UserAdd.vue'));
 const itemAddComponent = Vue.component('itemAdd', require('../components/items/ItemAdd.vue'));
-
+//Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
 
 
 

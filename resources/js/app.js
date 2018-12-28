@@ -21,7 +21,9 @@ Vue.use(new VueSocketio({
     connection: 'http://192.168.10.10:8080'
 })); 
 
+
 Vue.use(VeeValidate);
+
 
 
 // Para manter o utilizador logado depois de refrescar a pagina
