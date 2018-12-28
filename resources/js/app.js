@@ -34,7 +34,7 @@ Vue.component('edit-nif-name', require('./components/cashier/InvoicesNifName.vue
 const invoiceDetailsComponent = Vue.component('invoice-details', require('./components/cashier/InvoiceDetails.vue'));
 const meals_of_waiter = Vue.component('waiterMeals', require('./components/Meals.vue'));
 Vue.component('meals-list', require('./components/MealsList.vue'));
-Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
+//Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
 const create_meal = Vue.component('create-meals', require('./components/CreateMeals.vue'));
 
 const routes = [

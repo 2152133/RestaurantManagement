@@ -89,5 +89,23 @@ Route::post('/meal/createMeal/{table_number}/{waiter_id}', 'MealController@creat
 //Add an order to a meal (create order)
 Route::post('/meal/addOrder/{meal_id}/{item_id}', 'OrderController@addOrderToMeal');
 
+//Delete an order 5 seconds after creation
+Route::delete('/meal/deleteOrderOfMeal/{order_id}/delete', 'OrderController@deleteOrderUpTo5SecondsAfterCreation');
+
+//Get prepared orders of Meal
+Route::get('/meals/{mealId}/preparedOrders', 'OrderController@getPreparedOrdersForMeal');
+
+//Mark a prepared order as delivered
+Route::put('/meals/{mealId}/markPreparedOrderAsDelivered', 'OrderController@markPreparedOrderAsDelivered');
+
+//Get orders for active meals
+Route::get('/meals/{mealId}/mealDetails', 'OrderController@getAllMealDetails');
+
+//Get all orders for meal
+Route::get('/meals/{mealId}/allOrders', 'OrderController@getAllOrdersForMeal');
+
+//Terminate meal
+Route::put('/meals/{mealId}/terminate', 'MealController@terminateMeal');
+
 // Declare a invoice as paid
 Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');

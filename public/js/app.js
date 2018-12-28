@@ -14340,16 +14340,16 @@ Vue.component('orders-list', __webpack_require__(51));
 Vue.component('pagination', __webpack_require__(54));
 var landing_page = Vue.component('landing_page', __webpack_require__(57));
 var notifications_page = Vue.component('notifications_page', __webpack_require__(60));
-var pendingInvoicesComponent = Vue.component('pending-invoices', __webpack_require__(66));
+var invoicesComponent = Vue.component('pending-invoices', __webpack_require__(66));
 Vue.component('invoices-list', __webpack_require__(69));
 Vue.component('edit-nif-name', __webpack_require__(72));
 var invoiceDetailsComponent = Vue.component('invoice-details', __webpack_require__(75));
 var meals_of_waiter = Vue.component('waiterMeals', __webpack_require__(80));
 Vue.component('meals-list', __webpack_require__(83));
-Vue.component('edit-nif-name', __webpack_require__(72));
+//Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
 var create_meal = Vue.component('create-meals', __webpack_require__(86));
 
-var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/pendingInvoices', component: pendingInvoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }, { path: '/createMeal', component: create_meal, name: 'create_meal' }];
+var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/invoices', component: invoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }, { path: '/createMeal', component: create_meal, name: 'create_meal' }];
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
@@ -50857,8 +50857,8 @@ var render = function() {
               "a",
               { staticClass: "nav-item nav-link" },
               [
-                _c("router-link", { attrs: { to: "pendingInvoices" } }, [
-                  _vm._v("PendingInvoices")
+                _c("router-link", { attrs: { to: "Invoices" } }, [
+                  _vm._v("Invoices")
                 ])
               ],
               1
@@ -51250,21 +51250,51 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 module.exports = {
-    props: ["orders", "meta", "links", "user"],
-    data: function data() {
-        return {};
+  props: ["orders", "meta", "links", "user"],
+  data: function data() {
+    return {};
+  },
+  methods: {
+    assignOrderToCook: function assignOrderToCook(order, index) {
+      this.$emit("assign-to-cook", order, index);
     },
-    methods: {
-        assignOrderToCook: function assignOrderToCook(order, index) {
-            this.$emit('assign-to-cook', order, index);
-        },
-        declareOrderAsPrepared: function declareOrderAsPrepared(order, index) {},
-        refreshOrders: function refreshOrders(orders, meta, links) {
-            this.$emit('refreshOrders', orders, meta, links);
-        }
+    declareOrderAsPrepared: function declareOrderAsPrepared(order, index) {},
+    refreshOrders: function refreshOrders(orders, meta, links) {
+      this.$emit("refreshOrders", orders, meta, links);
+    },
+    deleteOrder: function deleteOrder(order, index) {
+      this.$emit("delete-order", order, index);
+    },
+    markDelivered: function markDelivered(order, index) {
+      this.$emit("mark-delivered", order, index);
     }
+  }
 };
 
 /***/ }),
@@ -51337,7 +51367,45 @@ var render = function() {
                     }
                   },
                   [_vm._v("Prepared")]
-                )
+                ),
+                _vm._v(" "),
+                order.state == "pending"
+                  ? _c("div", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-outline-danger",
+                          staticStyle: { float: "right" },
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.deleteOrder(order, index)
+                            }
+                          }
+                        },
+                        [_vm._v("Delete Order")]
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                order.state == "prepared"
+                  ? _c("div", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-outline-success",
+                          staticStyle: { float: "right" },
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.markDelivered(order, index)
+                            }
+                          }
+                        },
+                        [_vm._v("Mark as Delivered")]
+                      )
+                    ])
+                  : _vm._e()
               ])
             ])
           })
@@ -52058,7 +52126,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/js/components/cashier/PendingInvoices.vue"
+Component.options.__file = "resources/js/components/cashier/Invoices.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -52067,9 +52135,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cf37ed94", Component.options)
+    hotAPI.createRecord("data-v-1a38e3c6", Component.options)
   } else {
-    hotAPI.reload("data-v-cf37ed94", Component.options)
+    hotAPI.reload("data-v-1a38e3c6", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -52304,7 +52372,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-cf37ed94", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-1a38e3c6", module.exports)
   }
 }
 
@@ -52569,7 +52637,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/js/components/cashier/PendingInvoicesNifName.vue"
+Component.options.__file = "resources/js/components/cashier/InvoicesNifName.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -52578,9 +52646,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-849ff360", Component.options)
+    hotAPI.createRecord("data-v-3da37f89", Component.options)
   } else {
-    hotAPI.reload("data-v-849ff360", Component.options)
+    hotAPI.reload("data-v-3da37f89", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -52628,26 +52696,29 @@ module.exports = {
                 alert("Nif and name required");
                 return;
             }
-            axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.invoice), user: this.currentUser }).then(function (response) {
-                axios.get('/api/invoices/pending').then(function (response) {
-                    // handle success
-                    $invoices = response.data.data;
-                    $meta = response.data.meta;
-                    $links = response.data.links;
-                    _this.$emit('declareAsPaid', $invoices, $meta, $links);
-                    console.log(response);
+            if (/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)) {
+                axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.invoice), user: this.currentUser }).then(function (response) {
+                    axios.get('/api/invoices/pending').then(function (response) {
+                        // handle success
+                        $invoices = response.data.data;
+                        $meta = response.data.meta;
+                        $links = response.data.links;
+                        _this.$emit('declareAsPaid', $invoices, $meta, $links);
+                        console.log(response);
+                    }).catch(function (error) {
+                        // handle error
+                        alert(error);
+                        console.log(error);
+                    }).then(function () {
+                        // always executed
+                    });
                 }).catch(function (error) {
                     // handle error
                     console.log(error);
                 }).then(function () {
                     // always executed
                 });
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
+            }
         },
         cancel: function cancel() {
             this.$emit('cancelEditing');
@@ -52688,7 +52759,12 @@ var render = function() {
               }
             ],
             staticClass: "form-control",
-            attrs: { type: "text", name: "nif" },
+            attrs: {
+              type: "text",
+              name: "nif",
+              pattern: "[0-9]{9}",
+              title: "9 numbers"
+            },
             domProps: { value: _vm.invoice.nif },
             on: {
               input: function($event) {
@@ -52714,7 +52790,12 @@ var render = function() {
               }
             ],
             staticClass: "form-control",
-            attrs: { type: "text", name: "name" },
+            attrs: {
+              type: "text",
+              name: "name",
+              pattern: "[a-zA-Z\\s]*",
+              title: "Only letters and spaces"
+            },
             domProps: { value: _vm.invoice.name },
             on: {
               input: function($event) {
@@ -52762,7 +52843,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-849ff360", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-3da37f89", module.exports)
   }
 }
 
@@ -53151,6 +53232,42 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 module.exports = {
   data: function data() {
@@ -53158,72 +53275,134 @@ module.exports = {
       title: "My meals",
       currentUser: 13,
       usersMeals: [],
-      usersMealsMeta: [],
-      usersMealsLinks: [],
       confirmedMealOrders: [],
-      confirmedOrdersMeta: [],
-      confirmedOrdersLinks: [],
       pendingMealOrders: [],
-      pendingOrdersMeta: [],
-      pendingOrdersLinks: [],
-      isToggled: false,
+      preapredMealsOrders: [],
       allItems: [],
       selectedOptionItem: "Select an item",
       selectedOptionMeal: "Select a meal",
-      isUpdateToggled: false
+      isToggled: false,
+      isUpdateToggled: false,
+      isMealSummaryToggled: false,
+      isMealSummaryVisible: false,
+      successMessage: "",
+      failMessage: "",
+      showSuccess: false,
+      showFailure: false,
+      currentMeal: {},
+      mealDetails: [],
+      allMealOrders: []
     };
   },
 
   methods: {
-    showDiv: function showDiv() {
+    terminateMeal: function terminateMeal(meal, index) {
+      var _this = this;
+
+      axios.put("api/meals/" + meal.id + "/terminate").then(function (response) {
+        _this.showSuccess = "Meal terminated Successfully";
+        _this.showSuccess = true;
+      }).catch(function (error) {
+        _this.failMessage = "Error terminating meal";
+        _this.showFailure = true;
+      });
+      this.usersMeals.splice(index, 1);
+    },
+    markDelivered: function markDelivered(order, index) {
+      var _this2 = this;
+
+      axios.put("/api/meals/" + order.id + "/markPreparedOrderAsDelivered").then(function (response) {
+        _this2.successMessage = "Success";
+        _this2.showSuccess = true;
+      }).catch(function (error) {});
+    },
+    deleteOrder: function deleteOrder(order, index) {
+      var _this3 = this;
+
+      axios.delete("/api/meal/deleteOrderOfMeal/" + order.id + "/delete").then(function (response) {
+        _this3.pendingMealOrders.splice(index, 1);
+        _this3.successMessage = "Success";
+        _this3.showSuccess = true;
+      }).catch(function (error) {
+        _this3.showFailure = true;
+        _this3.failMessage = "Fail";
+      });
+    },
+
+    showOrdersOfMeal: function showOrdersOfMeal(meal) {
+      var _this4 = this;
+
       this.isToggled = true;
+
+      axios.get("/api/meals/" + meal.id + "/confirmedOrders").then(function (response) {
+        _this4.confirmedMealOrders = response.data.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
+      axios.get("/api/meals/" + meal.id + "/pendingOrders").then(function (response) {
+        _this4.pendingMealOrders = response.data.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
+
+      axios.get("/api/meals/" + meal.id + "/preparedOrders").then(function (response) {
+        _this4.preapredMealsOrders = response.data.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
     },
     showUpdate: function showUpdate() {
       this.isUpdateToggled = true;
+      this.isToggled = false;
+      this.isMealSummaryToggled = false;
+    },
+    showMealSummary: function showMealSummary(meal) {
+      var _this5 = this;
+
+      axios.get("/api/meals/" + meal.id + "/mealDetails").then(function (response) {
+        _this5.mealDetails = response.data.data;
+      }).catch(function (error) {});
+
+      this.actualMealDetails = [];
+      this.currentMeal = meal;
+      this.isMealSummaryToggled = true;
+      this.isToggled = false;
+      this.isUpdateToggled = false;
     },
     addOrderToMeal: function addOrderToMeal(meal_number, item_number) {
-      axios.post("/api/meal/addOrder/" + meal_number + "/" + item_number).then(function (response) {}).catch(function (error) {});
+      var _this6 = this;
+
+      axios.post("/api/meal/addOrder/" + meal_number + "/" + item_number).then(function (response) {
+        _this6.successMessage = "Success";
+        _this6.showSuccess = true;
+      }).catch(function (error) {
+        _this6.showFailure = true;
+        _this6.failMessage = "Fail";
+      });
+    },
+    getMealsOfWaiter: function getMealsOfWaiter() {
+      var _this7 = this;
+
+      //GET MEALS OF WAITER
+      axios.get("/api/meals/waiterMeals/" + this.currentUser).then(function (response) {
+        _this7.usersMeals = response.data.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    getAllItems: function getAllItems() {
+      var _this8 = this;
+
+      axios.get("/api/items/all").then(function (response) {
+        _this8.allItems = response.data;
+      }).catch(function (error) {});
     }
   },
 
   mounted: function mounted() {
-    var _this = this;
+    this.getMealsOfWaiter();
 
-    axios.get("/api/meals/waiterMeals/" + this.currentUser).then(function (response) {
-      _this.usersMeals = response.data.data;
-      _this.usersMealsMeta = response.data.meta;
-      _this.usersMealsLinks = response.data.links;
-
-      //CONFIRMED
-      _this.usersMeals.forEach(function (index) {
-        axios.get("/api/meals/" + index.id + "/confirmedOrders").then(function (response) {
-          _this.confirmedMealOrders = response.data.data;
-          _this.confirmedOrdersMeta = response.data.meta;
-          _this.confirmedOrdersLinks = response.data.links;
-          console.log(_this.confirmedMealOrders);
-        }).catch(function (error) {
-          console.log(error);
-        });
-      });
-
-      //PENDING
-      _this.usersMeals.forEach(function (index) {
-        axios.get("/api/meals/" + index.id + "/pendingOrders").then(function (response) {
-          _this.pendingMealOrders = response.data.data;
-          _this.pendingOrdersMeta = response.data.meta;
-          _this.pendingOrdersLinks = response.data.links;
-          console.log(_this.pendingMealOrders);
-        }).catch(function (error) {
-          console.log(error);
-        });
-      });
-    }).catch(function (error) {
-      console.log(error);
-    });
-
-    axios.get("/api/items/all").then(function (response) {
-      _this.allItems = response.data;
-    }).catch(function (error) {});
+    this.getAllItems();
   }
 };
 
@@ -53243,12 +53422,13 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("meals-list", {
-        attrs: {
-          meals: _vm.usersMeals,
-          meta: _vm.usersMealsMeta,
-          links: _vm.usersMealsLinks
-        },
-        on: { "show-div": _vm.showDiv, "show-update": _vm.showUpdate }
+        attrs: { meals: _vm.usersMeals },
+        on: {
+          "show-ordersOfMeal": _vm.showOrdersOfMeal,
+          "show-update": _vm.showUpdate,
+          "show-summary": _vm.showMealSummary,
+          "terminate-meal": _vm.terminateMeal
+        }
       }),
       _vm._v(" "),
       _vm.isToggled
@@ -53257,40 +53437,56 @@ var render = function() {
             [
               _c("h3", [_vm._v("Confirmed Orders")]),
               _vm._v(" "),
-              _c("orders-list", {
-                attrs: {
-                  orders: _vm.confirmedMealOrders,
-                  meta: _vm.confirmedOrdersMeta,
-                  links: _vm.confirmedOrdersLinks
-                }
-              })
-            ],
-            1
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.isToggled
-        ? _c(
-            "div",
-            [
+              _c("orders-list", { attrs: { orders: _vm.confirmedMealOrders } }),
+              _vm._v(" "),
               _c("h3", [_vm._v("Pending Orders")]),
               _vm._v(" "),
               _c("orders-list", {
-                attrs: {
-                  orders: _vm.pendingMealOrders,
-                  meta: _vm.pendingOrdersMeta,
-                  links: _vm.pendingOrdersLinks
-                }
-              })
+                attrs: { orders: _vm.pendingMealOrders },
+                on: { "delete-order": _vm.deleteOrder }
+              }),
+              _vm._v(" "),
+              _c(
+                "div",
+                [
+                  _c("h3", [_vm._v("Prepared Orders")]),
+                  _vm._v(" "),
+                  _c("orders-list", {
+                    attrs: { orders: _vm.preapredMealsOrders },
+                    on: { "mark-delivered": _vm.markDelivered }
+                  }),
+                  _vm._v(" "),
+                  _vm.showSuccess || _vm.showFailure
+                    ? _c(
+                        "div",
+                        {
+                          staticClass: "alert",
+                          class: {
+                            "alert-success": _vm.showSuccess,
+                            "alert-danger": _vm.showFailure
+                          }
+                        },
+                        [
+                          _c("strong", [_vm._v(_vm._s(_vm.successMessage))]),
+                          _vm._v(" "),
+                          _c("strong", [_vm._v(_vm._s(_vm.failMessage))])
+                        ]
+                      )
+                    : _vm._e()
+                ],
+                1
+              )
             ],
             1
           )
         : _vm._e(),
       _vm._v(" "),
       _vm.isUpdateToggled
+        ? _c("div", [_c("h2", [_vm._v("Add an order to a meal")])])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.isUpdateToggled
         ? _c("div", [
-            _c("h2", [_vm._v("Add an order to a meal")]),
-            _vm._v(" "),
             _c("label", { attrs: { for: "meals" } }, [
               _vm._v("Active meals that I'm responsible for")
             ]),
@@ -53335,8 +53531,12 @@ var render = function() {
                 })
               ],
               2
-            ),
-            _vm._v(" "),
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.isUpdateToggled
+        ? _c("div", [
             _c("label", { attrs: { for: "items" } }, [_vm._v("Items")]),
             _vm._v(" "),
             _c(
@@ -53379,8 +53579,12 @@ var render = function() {
                 })
               ],
               2
-            ),
-            _vm._v(" "),
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.isUpdateToggled
+        ? _c("div", [
             _c("br"),
             _vm._v(" "),
             _c(
@@ -53400,14 +53604,78 @@ var render = function() {
                 }
               },
               [_vm._v("Add order")]
-            )
+            ),
+            _vm._v(" "),
+            _vm.showSuccess || _vm.showFailure
+              ? _c(
+                  "div",
+                  {
+                    staticClass: "alert",
+                    class: {
+                      "alert-success": _vm.showSuccess,
+                      "alert-danger": _vm.showFailure
+                    }
+                  },
+                  [
+                    _c("strong", [_vm._v(_vm._s(_vm.successMessage))]),
+                    _vm._v(" "),
+                    _c("strong", [_vm._v(_vm._s(_vm.failMessage))])
+                  ]
+                )
+              : _vm._e()
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _vm.isMealSummaryToggled
+        ? _c("div", [
+            _c("h3", [_vm._v("Meal Summary")]),
+            _vm._v(" "),
+            _c("table", { staticClass: "table" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.mealDetails, function(m) {
+                  return _c("tr", { key: m.id }, [
+                    _c("td", [_vm._v(_vm._s(m.table_number))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(m.name))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(m.price))])
+                  ])
+                })
+              )
+            ]),
+            _vm._v(" "),
+            _c("h5", [
+              _vm._v(
+                "Total Price: " + _vm._s(_vm.currentMeal.total_price_preview)
+              )
+            ])
           ])
         : _vm._e()
     ],
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Table Number")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Item Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Item Price")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -53516,6 +53784,18 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 module.exports = {
   props: ["meals", "meta", "links", "user"],
@@ -53523,11 +53803,17 @@ module.exports = {
     return {};
   },
   methods: {
-    showDiv: function showDiv() {
-      this.$emit("show-div");
+    showOrdersOfMeal: function showOrdersOfMeal(meal) {
+      this.$emit("show-ordersOfMeal", meal);
     },
     showUpdate: function showUpdate() {
       this.$emit("show-update");
+    },
+    showSummary: function showSummary(meal) {
+      this.$emit("show-summary", meal);
+    },
+    terminateMeal: function terminateMeal(meal, index) {
+      this.$emit("terminate-meal", meal, index);
     }
   }
 };
@@ -53540,91 +53826,113 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-outline-success",
-          staticStyle: { float: "right" },
-          attrs: { type: "button" }
-        },
-        [
-          _c("router-link", { attrs: { to: { name: "create_meal" } } }, [
-            _vm._v("Create Meal")
-          ])
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-outline-warning",
-          staticStyle: { float: "right" },
-          attrs: { type: "button" },
-          on: {
-            click: function($event) {
-              $event.preventDefault()
-              _vm.showUpdate()
-            }
+  return _c("div", [
+    _c(
+      "button",
+      {
+        staticClass: "btn btn-outline-success",
+        staticStyle: { float: "right" },
+        attrs: { type: "button" }
+      },
+      [
+        _c("router-link", { attrs: { to: { name: "create_meal" } } }, [
+          _vm._v("Create Meal")
+        ])
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        staticClass: "btn btn-outline-warning",
+        staticStyle: { float: "right" },
+        attrs: { type: "button" },
+        on: {
+          click: function($event) {
+            $event.preventDefault()
+            _vm.showUpdate(_vm.meal, _vm.index)
           }
-        },
-        [_vm._v("Add order to meal")]
-      ),
+        }
+      },
+      [_vm._v("Add order to meal")]
+    ),
+    _vm._v(" "),
+    _c("table", { staticClass: "table" }, [
+      _vm._m(0),
       _vm._v(" "),
       _c(
-        "button",
-        {
-          staticClass: "btn btn-outline-primary",
-          staticStyle: {},
-          attrs: { type: "button" },
-          on: {
-            click: function($event) {
-              $event.preventDefault()
-              _vm.showDiv()
-            }
-          }
-        },
-        [_vm._v("See meal's details")]
-      ),
-      _vm._v(" "),
-      _c("pagination", {
-        attrs: { objects: _vm.meals, meta: _vm.meta, links: _vm.links }
-      }),
-      _vm._v(" "),
-      _c("table", { staticClass: "table" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "tbody",
-          _vm._l(_vm.meals, function(meal) {
-            return _c("tr", { key: meal.id }, [
-              _c("td", [_vm._v(_vm._s(meal.id))]),
+        "tbody",
+        _vm._l(_vm.meals, function(meal, index) {
+          return _c("tr", { key: meal.id }, [
+            _c("td", [_vm._v(_vm._s(meal.id))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(meal.state))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(meal.table_number))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(meal.start))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(meal.end))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(meal.total_price_preview))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(meal.created_at))]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-outline-primary",
+                  staticStyle: { float: "right" },
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.showOrdersOfMeal(meal)
+                    }
+                  }
+                },
+                [_vm._v("Meal's orders' state")]
+              ),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(meal.state))]),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-outline-info",
+                  staticStyle: { float: "right" },
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.showSummary(meal)
+                    }
+                  }
+                },
+                [_vm._v("See meal summary")]
+              ),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(meal.table_number))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(meal.start))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(meal.end))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(meal.total_price_preview))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(meal.created_at))]),
-              _vm._v(" "),
-              _c("td"),
-              _vm._v(" "),
-              _c("td")
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-outline-danger",
+                  staticStyle: { float: "right" },
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.terminateMeal(meal, index)
+                    }
+                  }
+                },
+                [_vm._v("Terminate meal")]
+              )
             ])
-          })
-        )
-      ])
-    ],
-    1
-  )
+          ])
+        })
+      )
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
