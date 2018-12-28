@@ -6,46 +6,42 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class AuthController extends Controller
-{
-    public function login(Request $request)
-    {
+class AuthController extends Controller {
+    
+    public function login(Request $request) {
         $http = new \GuzzleHttp\Client;
-        try {
-            $response = $http->post(config('services.passport.login_endpoint'), [
-                'form_params' => [
-                    'grant_type' => 'password',
-                    'client_id' => config('services.passport.client_id'),
-                    'client_secret' => config('services.passport.client_secret'),
-                    'username' => $request->username,
-                    'password' => $request->password,
-                ]
-            ]);
-            return $response->getBody();
-        } catch (\GuzzleHttp\Exception\BadResponseException $e) {
-            if ($e->getCode() === 400) {
-                return response()->json('Invalid Request. Please enter a username or a password.', $e->getCode());
-            } else if ($e->getCode() === 401) {
-                return response()->json('Your credentials are incorrect. Please try again', $e->getCode());
+        $user = User::where('email', '=', $request->email)->firstOrFail();
+        if (!$user->blocked) {
+            try {
+                $response = $http->post(config('services.passport.login_endpoint'), [
+                        'form_params' => [
+                        'grant_type' => 'password',
+                        'client_id' => config('services.passport.client_id'),
+                        'client_secret' => config('services.passport.client_secret'),
+                        'username' => $request->email,
+                        'password' => $request->password,
+                    ]
+                ]);
+                return response($response->getBody(), 200);
+            } catch (\GuzzleHttp\Exception\BadResponseException $e) {
+                if ($e->getCode() === 400) {
+                    return response()->json(['error' => 'Invalid Request. Please enter a username or a password.'], $e->getCode());
+                } else if ($e->getCode() === 401) {
+                    return response()->json(['error' => 'Your credentials are incorrect. Please try again.'], $e->getCode());
+                }
+                return response()->json(['error' => 'Something went wrong on the server.'], $e->getCode());
             }
-            return response()->json('Something went wrong on the server.', $e->getCode());
+        }else {
+            return response()->json(['error' => 'You are currently blocked.'], 401);
         }
     }
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:3',
-        ]);
-        return User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+
+    public function postLogin(Request $request) {
+        return $request->all();
     }
-    public function logout()
-    {
+
+    public function logout() {
+        dd(auth());
         auth()->user()->tokens->each(function ($token, $key) {
             $token->delete();
         });

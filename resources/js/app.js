@@ -1,69 +1,147 @@
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
 require('./bootstrap');
 
 window.Vue = require('vue');
 
-import VueRouter from 'vue-router';
-Vue.use(VueRouter);
+import store from './store/store';
+import router from './routes/routes'
+import VueSocketio from 'vue-socket.io';
+import Toasted from 'vue-toasted';
+import swal from 'sweetalert';
+import VeeValidate from 'vee-validate';
+ 
+Vue.use(Toasted, {
+    position: 'bottom-center',
+    duration: 5000,
+    type: 'info',
+});
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
+Vue.use(new VueSocketio({
+    debug: true,
+    connection: 'http://192.168.10.10:8080'
+})); 
 
-// Vue.component('example-component', require('./components/ExampleComponent.vue'));
-const itemsComponent = Vue.component('items', require('./components/allUsers/Items.vue'));
-Vue.component('navbar', require('./components/Navbar.vue'));
-const ordersComponent = Vue.component('orders', require('./components/cook/Orders.vue'));
-Vue.component('orders-list', require('./components/cook/OrdersList.vue'));
-Vue.component('pagination', require('./components/pagination.vue'));
-const landing_page = Vue.component('landing_page', require('./components/restaurantWorker/LandingPage.vue')); 
-const notifications_page = Vue.component('notifications_page', require('./components/restaurantWorker/Notifications.vue'));
-const invoicesComponent = Vue.component('pending-invoices', require('./components/cashier/Invoices.vue'));
-Vue.component('invoices-list', require('./components/cashier/InvoicesList.vue'));
-Vue.component('edit-nif-name', require('./components/cashier/InvoicesNifName.vue'));
-const invoiceDetailsComponent = Vue.component('invoice-details', require('./components/cashier/InvoiceDetails.vue'));
-const meals_of_waiter = Vue.component('waiterMeals', require('./components/Meals.vue'));
-Vue.component('meals-list', require('./components/MealsList.vue'));
-Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
-const create_meal = Vue.component('create-meals', require('./components/CreateMeals.vue'));
+Vue.use(VeeValidate);
 
-const routes = [
-    {path: '/', redirect: '/orders'},
-    {path: '/orders', component: ordersComponent},
-    {path: '/items', component: itemsComponent},
-    {path: '/dashboard', component: landing_page, name: 'dashboard'},
-    {path: '/notifications', component: notifications_page, name: 'notifications'},
-    {path: '/invoices', component: invoicesComponent},
-    {path: '/mealsOfWaiter', component:meals_of_waiter},
-    {path: '/createMeal', component:create_meal, name:'create_meal'},
-];
 
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
+// Para manter o utilizador logado depois de refrescar a pagina
+store.state.user = store.getters.getAuthUser
+store.state.token = store.getters.getToken
+store.state.tokenType = store.getters.getTokenType
+store.state.getExpiration = store.getters.getExpiration
+axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+// interceptors - pre and post request
+axios.interceptors.response.use(
+    (response) => {
+        //console.log(response)
+        return response;
+    }, 
+    (error) => {
+        // error message
+        // error.response.data.error
+        // error status code
+        // error.response.status
+        //console.log(error.response.data.error)
+        if (error.response.status == 400) {
+            swal(error.response.status.toString(), error.response.data.error, 'error')
+        }
+        else if (error.response.status == 401) {
+            swal(error.response.status.toString(), error.response.data.error, 'error')
+        }
+        else if (error.response.status == 404) {
+            swal(error.response.status.toString(), 'Resource not found.', 'error')
+        }
+        else if (error.response.status == 422) {
+            if (error.response.data.errors.email)
+                swal(error.response.status.toString(), error.response.data.errors.email[0], 'error')
+            else if (error.response.data.errors.name)
+                swal(error.response.status.toString(), error.response.data.errors.name[0], 'error')
+            else if (error.response.data.errors.username)
+                swal(error.response.status.toString(), error.response.data.errors.username[0], 'error')
+            else if (error.response.data.errors.description)
+                swal(error.response.status.toString(), error.response.data.errors.description[0], 'error')
+            else if (error.response.data.errors.price)
+                swal(error.response.status.toString(), error.response.data.errors.price[0], 'error')
+            else if (error.response.data.errors.photo_url)
+                swal(error.response.status.toString(), error.response.data.errors.photo_url[0], 'error')
+            else
+                swal(error.response.status.toString(), 'Invalid data.', 'error')
+        }
+        else if (error.status == 500) {
+            swal(error.response.status.toString(), 'We are expiriencing an internal problem.', 'error')
+        }
+    }
+);
 
-const router = new VueRouter({
-    routes: routes
+// navigation ward <=> middlewares
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.forVisitors)) {
+        if (store.getters.isAuthenticated) {
+            next({
+                path: '/dashboard'
+            })
+        } else next()
+    }
+    else if (to.matched.some(record => record.meta.forManager)) {
+        if (!store.getters.isManager) {
+            next({
+                path: '/dashboard'
+            })
+        } else next()
+    }
+    else if (to.matched.some(record => record.meta.forAuth)) {
+        if (!store.getters.isAuthenticated) {
+            next({
+                path: '/login'
+            })
+        } else next()
+    } else next()
 });
 
 const app = new Vue({
     el: '#app',
     router: router,
-});
-
-
+    store,
+    data: {
+        msgGlobalText: '',
+        msgGlobalTextArea: '',
+    },
+    methods: {
+        sendGlobalMsg(){
+            console.log('Sending to the server this message: "' + this.msgGlobalText + '"');
+            if (store.state.user === null) {
+                this.$socket.emit('msg_from_client', this.msgGlobalText);
+            } else {
+                this.$socket.emit('msg_from_client', this.msgGlobalText, store.state.user);
+            }
+            this.msgGlobalText = "";
+        },
+    },
+    sockets: {
+        // dispultado quando o socket e chamado
+        connect() {
+            console.log(`Socket connect with ID: ${this.$socket.id}`);
+            if (store.state.user) {
+                this.$socket.emit('user_enter', store.state.user);
+            }
+        },
+        msg_from_server(data) {
+            this.msgGlobalTextArea = data + '\n' + this.msgGlobalTextArea;
+        },
+        privateMessage(dataFromServer){
+            let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
+            this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"');        
+        },
+        privateMessage_unavailable(destUser){
+            this.$toasted.error('User "' + destUser.name + '" is not available');       
+        },
+        privateMessage_sent(dataFromServer){
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+    },
+    created() {
+        //console.log('-----');
+        //console.log(store.state.user);
+    }
+})
