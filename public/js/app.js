@@ -14340,16 +14340,16 @@ Vue.component('orders-list', __webpack_require__(51));
 Vue.component('pagination', __webpack_require__(54));
 var landing_page = Vue.component('landing_page', __webpack_require__(57));
 var notifications_page = Vue.component('notifications_page', __webpack_require__(60));
-var pendingInvoicesComponent = Vue.component('pending-invoices', __webpack_require__(66));
+var invoicesComponent = Vue.component('pending-invoices', __webpack_require__(66));
 Vue.component('invoices-list', __webpack_require__(69));
 Vue.component('edit-nif-name', __webpack_require__(72));
 var invoiceDetailsComponent = Vue.component('invoice-details', __webpack_require__(75));
 var meals_of_waiter = Vue.component('waiterMeals', __webpack_require__(80));
 Vue.component('meals-list', __webpack_require__(83));
-Vue.component('edit-nif-name', __webpack_require__(72));
+Vue.component('edit-nif-name', __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./components/cashier/PendingInvoicesNifName.vue\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())));
 var create_meal = Vue.component('create-meals', __webpack_require__(86));
 
-var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/pendingInvoices', component: pendingInvoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }, { path: '/createMeal', component: create_meal, name: 'create_meal' }];
+var routes = [{ path: '/', redirect: '/orders' }, { path: '/orders', component: ordersComponent }, { path: '/items', component: itemsComponent }, { path: '/dashboard', component: landing_page, name: 'dashboard' }, { path: '/notifications', component: notifications_page, name: 'notifications' }, { path: '/invoices', component: invoicesComponent }, { path: '/mealsOfWaiter', component: meals_of_waiter }, { path: '/createMeal', component: create_meal, name: 'create_meal' }];
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
@@ -50857,8 +50857,8 @@ var render = function() {
               "a",
               { staticClass: "nav-item nav-link" },
               [
-                _c("router-link", { attrs: { to: "pendingInvoices" } }, [
-                  _vm._v("PendingInvoices")
+                _c("router-link", { attrs: { to: "Invoices" } }, [
+                  _vm._v("Invoices")
                 ])
               ],
               1
@@ -52058,7 +52058,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/js/components/cashier/PendingInvoices.vue"
+Component.options.__file = "resources/js/components/cashier/Invoices.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -52067,9 +52067,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cf37ed94", Component.options)
+    hotAPI.createRecord("data-v-1a38e3c6", Component.options)
   } else {
-    hotAPI.reload("data-v-cf37ed94", Component.options)
+    hotAPI.reload("data-v-1a38e3c6", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -52304,7 +52304,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-cf37ed94", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-1a38e3c6", module.exports)
   }
 }
 
@@ -52569,7 +52569,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/js/components/cashier/PendingInvoicesNifName.vue"
+Component.options.__file = "resources/js/components/cashier/InvoicesNifName.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -52578,9 +52578,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-849ff360", Component.options)
+    hotAPI.createRecord("data-v-3da37f89", Component.options)
   } else {
-    hotAPI.reload("data-v-849ff360", Component.options)
+    hotAPI.reload("data-v-3da37f89", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -52628,26 +52628,29 @@ module.exports = {
                 alert("Nif and name required");
                 return;
             }
-            axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.invoice), user: this.currentUser }).then(function (response) {
-                axios.get('/api/invoices/pending').then(function (response) {
-                    // handle success
-                    $invoices = response.data.data;
-                    $meta = response.data.meta;
-                    $links = response.data.links;
-                    _this.$emit('declareAsPaid', $invoices, $meta, $links);
-                    console.log(response);
+            if (/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)) {
+                axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.invoice), user: this.currentUser }).then(function (response) {
+                    axios.get('/api/invoices/pending').then(function (response) {
+                        // handle success
+                        $invoices = response.data.data;
+                        $meta = response.data.meta;
+                        $links = response.data.links;
+                        _this.$emit('declareAsPaid', $invoices, $meta, $links);
+                        console.log(response);
+                    }).catch(function (error) {
+                        // handle error
+                        alert(error);
+                        console.log(error);
+                    }).then(function () {
+                        // always executed
+                    });
                 }).catch(function (error) {
                     // handle error
                     console.log(error);
                 }).then(function () {
                     // always executed
                 });
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
+            }
         },
         cancel: function cancel() {
             this.$emit('cancelEditing');
@@ -52688,7 +52691,12 @@ var render = function() {
               }
             ],
             staticClass: "form-control",
-            attrs: { type: "text", name: "nif" },
+            attrs: {
+              type: "text",
+              name: "nif",
+              pattern: "[0-9]{9}",
+              title: "9 numbers"
+            },
             domProps: { value: _vm.invoice.nif },
             on: {
               input: function($event) {
@@ -52714,7 +52722,12 @@ var render = function() {
               }
             ],
             staticClass: "form-control",
-            attrs: { type: "text", name: "name" },
+            attrs: {
+              type: "text",
+              name: "name",
+              pattern: "[a-zA-Z\\s]*",
+              title: "Only letters and spaces"
+            },
             domProps: { value: _vm.invoice.name },
             on: {
               input: function($event) {
@@ -52762,7 +52775,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-849ff360", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-3da37f89", module.exports)
   }
 }
 
