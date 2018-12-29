@@ -74,38 +74,10 @@
                     });
             },
             loadInPreparationUserOrders: function(){
-                axios.get('/api/orders/inPreparation/fromCook/' + this.$store.getters.getAuthUser.id)
-                    .then((response) => {
-                        // handle success
-                        this.$store.state.inPreparationUserOrders = response.data.data;
-                        this.$store.state.inPreparationUserOrdersMeta = response.data.meta;
-                        this.$store.state.inPreparationUserOrdersLinks = response.data.links;
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    })
-                    .then(function () {
-                        // always executed
-                    });
+                this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
             },
             loadConfirmedOrders: function(){
-                axios.get('/api/orders/confirmed')
-                    .then((response) => {
-                        // handle success
-                        this.$store.state.confirmedOrders = response.data.data;
-                        this.$store.state.confirmedOrdersMeta = response.data.meta;
-                        this.$store.state.confirmedOrdersLinks = response.data.links;
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    })
-                    .then(function () {
-                        // always executed
-                    });
+                this.$store.dispatch('loadConfirmedOrders');
             },
             refreshConfirmedOrders(newConfirmedOrders, newConfirmedMeta, newConfirmedLinks){
                 this.$store.state.confirmedOrders = newConfirmedOrders;

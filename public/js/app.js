@@ -48882,6 +48882,18 @@ var index_esm = {
         localStorage.removeItem('access_token');
         localStorage.removeItem('expiration_time');
         axios.defaults.headers.common.Authorization = undefined;
+    },
+
+    //-----------orders--------------------
+    assignResponseToInPreparationUserOrders: function assignResponseToInPreparationUserOrders(state, response) {
+        state.inPreparationUserOrders = response.data.data;
+        state.inPreparationUserOrdersMeta = response.data.meta;
+        state.inPreparationUserOrdersLinks = response.data.links;
+    },
+    assignResponseToConfirmedOrders: function assignResponseToConfirmedOrders(state, response) {
+        state.confirmedOrders = response.data.data;
+        state.confirmedOrdersMeta = response.data.meta;
+        state.confirmedOrdersLinks = response.data.links;
     }
 });
 
@@ -48895,6 +48907,32 @@ var index_esm = {
         var commit = _ref.commit;
 
         commit('setAuthUser', data);
+    },
+    loadInPreparationUserOrders: function loadInPreparationUserOrders(context, userId) {
+        axios.get('/api/orders/inPreparation/fromCook/' + userId).then(function (response) {
+            // handle success
+            console.log(response);
+            var id = context.getters.getAuthUser.id;
+            console.log(id);
+            context.commit('assignResponseToInPreparationUserOrders', response);
+        }).catch(function (error) {
+            // handle error
+            console.log(error);
+        }).then(function () {
+            // always executed
+        });
+    },
+    loadConfirmedOrders: function loadConfirmedOrders(context) {
+        axios.get('/api/orders/confirmed').then(function (response) {
+            // handle success
+            context.commit('assignResponseToConfirmedOrders', response);
+            console.log(response);
+        }).catch(function (error) {
+            // handle error
+            console.log(error);
+        }).then(function () {
+            // always executed
+        });
     }
 });
 
@@ -52218,36 +52256,10 @@ module.exports = {
             });
         },
         loadInPreparationUserOrders: function loadInPreparationUserOrders() {
-            var _this3 = this;
-
-            axios.get('/api/orders/inPreparation/fromCook/' + this.$store.getters.getAuthUser.id).then(function (response) {
-                // handle success
-                _this3.$store.state.inPreparationUserOrders = response.data.data;
-                _this3.$store.state.inPreparationUserOrdersMeta = response.data.meta;
-                _this3.$store.state.inPreparationUserOrdersLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
+            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
         },
         loadConfirmedOrders: function loadConfirmedOrders() {
-            var _this4 = this;
-
-            axios.get('/api/orders/confirmed').then(function (response) {
-                // handle success
-                _this4.$store.state.confirmedOrders = response.data.data;
-                _this4.$store.state.confirmedOrdersMeta = response.data.meta;
-                _this4.$store.state.confirmedOrdersLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
+            this.$store.dispatch('loadConfirmedOrders');
         },
         refreshConfirmedOrders: function refreshConfirmedOrders(newConfirmedOrders, newConfirmedMeta, newConfirmedLinks) {
             this.$store.state.confirmedOrders = newConfirmedOrders;
