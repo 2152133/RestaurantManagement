@@ -49017,6 +49017,9 @@ var userAddComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('us
 var itemAddComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemAdd', __webpack_require__(143));
 //Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
 
+var mealsComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('meals', __webpack_require__(149));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('mealsListManager', __webpack_require__(152));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('mealDetailsList', __webpack_require__(155));
 
 //passport
 //Vue.component('passport-clients', require('../components/passport/Clients.vue').default);
@@ -49026,6 +49029,12 @@ var itemAddComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('it
 var routes = [{
     path: '/',
     redirect: '/items'
+}, {
+    path: '/meals',
+    component: mealsComponent,
+    meta: {
+        forManager: true
+    }
 }, {
     path: '/orders',
     component: ordersComponent,
@@ -68030,6 +68039,608 @@ var install = VeeValidate$1.install;
 /* harmony default export */ __webpack_exports__["a"] = (VeeValidate$1);
 
 
+
+/***/ }),
+/* 149 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(150)
+/* template */
+var __vue_template__ = __webpack_require__(151)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/manager/Meals.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-e53d8e5a", Component.options)
+  } else {
+    hotAPI.reload("data-v-e53d8e5a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 150 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            status: 0,
+            title: 'Meals',
+            currentMealOrders: null,
+            mealId: 0
+        };
+    },
+    methods: {
+        setCurrentMealOrders: function setCurrentMealOrders(mealOrders, mealId) {
+            this.currentMealOrders = mealOrders;
+            this.mealId = mealId;
+        },
+        cleanCurrentMealOrders: function cleanCurrentMealOrders() {
+            this.currentMealOrders = null;
+            this.mealId = 0;
+        }
+    }
+});
+
+/***/ }),
+/* 151 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "jumbotron" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.title))])
+      ]),
+      _vm._v(" "),
+      _c("meals-list-manager", {
+        on: { "meal-order-details-click": _vm.setCurrentMealOrders }
+      }),
+      _vm._v(" "),
+      _vm.currentMealOrders && _vm.mealId
+        ? _c("meal-details-list", {
+            attrs: { mealOrders: _vm.currentMealOrders, mealId: _vm.mealId },
+            on: { "close-meal-order-details-click": _vm.cleanCurrentMealOrders }
+          })
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-e53d8e5a", module.exports)
+  }
+}
+
+/***/ }),
+/* 152 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(153)
+/* template */
+var __vue_template__ = __webpack_require__(154)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/manager/MealsList.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-e0558dde", Component.options)
+  } else {
+    hotAPI.reload("data-v-e0558dde", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 153 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            title: 'Meals',
+            subTitle: 'Items of meal: ',
+            meals: [],
+            mealItemOrders: [],
+            pagination: {}
+        };
+    },
+
+    methods: {
+        getMeals: function getMeals(url) {
+            var _this = this;
+
+            var page_url = url || '/api/meals';
+            axios.get(page_url).then(function (response) {
+                Object.assign(_this.meals, response.data.data);
+                _this.makePagination(response.data.meta, response.data.links);
+            });
+        },
+        makePagination: function makePagination(meta, links) {
+            var pagination = {
+                current_page: meta.current_page,
+                last_page: meta.last_page,
+                next_page_url: links.next,
+                prev_page_url: links.prev
+            };
+            this.pagination = pagination;
+        },
+        getMealOrders: function getMealOrders(id) {
+            var _this2 = this;
+
+            axios.get("/api/meals/" + id + "/allOrders").then(function (response) {
+                _this2.$emit('meal-order-details-click', response.data.data, id);
+            });
+        }
+    },
+    mounted: function mounted() {
+        this.getMeals();
+    }
+});
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
+      _c("br"),
+      _vm._v(" "),
+      _c("ul", { staticClass: "pagination" }, [
+        _c(
+          "li",
+          {
+            staticClass: "page-item",
+            class: [{ disabled: !_vm.pagination.prev_page_url }]
+          },
+          [
+            _c(
+              "a",
+              {
+                staticClass: "page-link",
+                attrs: { href: "#" },
+                on: {
+                  click: function($event) {
+                    _vm.getMeals(_vm.pagination.prev_page_url)
+                  }
+                }
+              },
+              [_vm._v("Previous")]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c("li", { staticClass: "page-item disabled" }, [
+          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
+            _vm._v(
+              "Page " +
+                _vm._s(_vm.pagination.current_page) +
+                " of " +
+                _vm._s(_vm.pagination.last_page)
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "li",
+          {
+            staticClass: "page-item",
+            class: [{ disabled: !_vm.pagination.next_page_url }]
+          },
+          [
+            _c(
+              "a",
+              {
+                staticClass: "page-link",
+                attrs: { href: "#" },
+                on: {
+                  click: function($event) {
+                    _vm.getMeals(_vm.pagination.next_page_url)
+                  }
+                }
+              },
+              [_vm._v("Next")]
+            )
+          ]
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "table",
+      { staticClass: "table" },
+      [
+        _vm._m(0),
+        _vm._v(" "),
+        _vm._l(_vm.meals, function(meal) {
+          return _c("tbody", { key: meal.id }, [
+            _c("td", [_vm._v(_vm._s(meal.state))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(meal.table_number))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(meal.created_at.date))]),
+            _vm._v(" "),
+            _c("td", [
+              _vm._v(
+                _vm._s(
+                  meal.responsible_waiter
+                    ? meal.responsible_waiter.name
+                    : " - NONE - "
+                )
+              )
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(meal.total_price_preview))]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "a",
+                {
+                  staticClass: "btn btn-sm btn-primary",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.getMealOrders(meal.id)
+                    }
+                  }
+                },
+                [_vm._v("Details")]
+              )
+            ])
+          ])
+        })
+      ],
+      2
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("State")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Table")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Date")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Waiter")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Price")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Actions")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-e0558dde", module.exports)
+  }
+}
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(156)
+/* template */
+var __vue_template__ = __webpack_require__(157)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/manager/MealDetailsList.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-ad07e480", Component.options)
+  } else {
+    hotAPI.reload("data-v-ad07e480", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 156 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['mealOrders', 'mealId'],
+    data: function data() {
+        return {
+            subTitle: 'Items of Meal: ',
+            items: []
+        };
+    },
+
+    methods: {
+        getItems: function getItems(id) {
+            var _this = this;
+
+            axios.get("/api/items/all").then(function (response) {
+                _this.items = response.data;
+            });
+        },
+        item: function item(id) {
+            var item = [];
+            for (var i = 0; i < this.items.length; i++) {
+                if (this.items[i].id == id) {
+                    item.name = this.items[i].name;
+                    item.type = this.items[i].type;
+                    item.price = this.items[i].price;
+                    break;
+                }
+            }
+            return item != [] ? item : '- NONE -';
+        },
+        closeMealOrdersDetails: function closeMealOrdersDetails() {
+            this.$emit('close-meal-order-details-click');
+        }
+    },
+    mounted: function mounted() {
+        this.getItems();
+    }
+});
+
+/***/ }),
+/* 157 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "jumbotron" }, [
+    _c("h1", [
+      _vm._v(_vm._s(_vm.subTitle) + " " + _vm._s(_vm.mealId) + " "),
+      _c(
+        "a",
+        {
+          staticClass: "btn btn-warning",
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              _vm.closeMealOrdersDetails()
+            }
+          }
+        },
+        [_vm._v("Close")]
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "table",
+      { staticClass: "table" },
+      [
+        _vm._m(0),
+        _vm._v(" "),
+        _vm._l(_vm.mealOrders, function(order) {
+          return _c("tbody", { key: order.id }, [
+            _c("td", [_vm._v(_vm._s(_vm.item(order.item_id).name))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.item(order.item_id).type))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(_vm.item(order.item_id).price))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(order.state))])
+          ])
+        })
+      ],
+      2
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Type")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Price")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Order State")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-ad07e480", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

@@ -85,7 +85,7 @@ Route::middleware('auth:api')->group(function () {
     // Declare a invoice as paid
     Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
 
-    //Get all meals
+    //Get all active meals
     Route::get('/meals/all', 'MealController@all');
 
     // Get all waiter's meals
@@ -96,6 +96,9 @@ Route::middleware('auth:api')->group(function () {
 
     //For a meal from a waiter, get it's orders
     Route::get('/meals/{mealId}/pendingOrders', 'OrderController@getPendingOrdersForMeal');
+
+    //Get all meals
+    Route::get('/meals', 'MealController@index');
 
     //Get all restaurant tables
     Route::get('/restaurantTables/all', 'RestaurantTableController@all');

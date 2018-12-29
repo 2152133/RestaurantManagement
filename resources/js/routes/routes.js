@@ -30,6 +30,9 @@ const userAddComponent = Vue.component('userAdd', require('../components/manager
 const itemAddComponent = Vue.component('itemAdd', require('../components/items/ItemAdd.vue'));
 //Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
 
+const mealsComponent = Vue.component('meals', require('../components/manager/Meals.vue'));
+Vue.component('mealsListManager', require('../components/manager/MealsList.vue'));
+Vue.component('mealDetailsList', require('../components/manager/MealDetailsList.vue'));
 
 
 //passport
@@ -41,6 +44,13 @@ const routes = [
     {
         path: '/', 
         redirect: '/items'
+    },
+    {
+        path: '/meals', 
+        component: mealsComponent,
+        meta: {
+            forManager: true,
+        }
     },
     {
         path: '/orders', 

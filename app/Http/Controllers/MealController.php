@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\DB;
 
 class MealController extends Controller
 {
+    public function index() {
+        return (MealResource::collection(Meal::orderBy('created_at', 'desc')->withTrashed()->paginate(5)))->response()->setStatusCode(200);
+    }
+
     public function all()
     {
         // Get meals
