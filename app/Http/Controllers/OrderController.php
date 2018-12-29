@@ -16,31 +16,57 @@ class OrderController extends Controller
      */
     public function all()
     {
-        // Get orders
-        $orders = Order::where('state', 'confirmed')->orderBy('created_at', 'asc')->paginate(5);
-
-        // Return collection of orders as a resource
-        return OrderResource::collection($orders);
+        
     }
 
-    public function whereUser($user)
+    public function allConfirmed()
     {
         // Get orders
-        $orders = Order::where('state', 'in preparation')->where('responsible_cook_id', $user)->orderBy('created_at', 'asc')->paginate(3);
+        $orders = Order::where('state', 'confirmed')
+                            ->orderBy('created_at', 'asc')
+                            ->paginate(5);
 
         // Return collection of orders as a resource
         return OrderResource::collection($orders);
     }
 
-    public function assignOrderToCook(Request $request, $orderID)
+    public function inPreparationWhereUser($userId)
+    {
+        // Get orders
+        $orders = Order::where('state', 'in preparation')
+                            ->where('responsible_cook_id', $userId)
+                            ->orderBy('created_at', 'asc')
+                            ->paginate(5);
+
+        // Return collection of orders as a resource
+        return OrderResource::collection($orders);
+    }
+
+    public function assignOrderToCook(Request $request,$orderId)
     {
         try {
-            $requestOrder = json_decode($request->order);
-
-            $order = Order::findOrFail($requestOrder->id);
+            $order = Order::findOrFail($orderId);
 
             $order->state = "in preparation";
-            $order->responsible_cook_id = $request->user;
+            $order->responsible_cook_id = $request->userId;
+
+            if ($order->save()) {
+                return new OrderResource($order);
+            }
+        } catch (Exception $e) {
+            Debugbar::addThrowable($e);
+        }
+    }
+
+    public function declareOrderAsPrepared(Request $request, $orderId)
+    {
+        
+        try {
+            $order = Order::findOrFail($orderId);
+
+            $order->state = "prepared";
+            
+            $order->responsible_cook_id = $request->userId;
 
             if ($order->save()) {
                 return new OrderResource($order);

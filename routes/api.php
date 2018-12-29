@@ -62,15 +62,19 @@ Route::middleware('auth:api')->group(function () {
         // Update a user profile (as manager)
         Route::put('user/{id}', 'UserControllerAPI@updateAsManager');
     });
+});
 
-    // List all orders
-    Route::get('/orders/all', 'OrderController@all');
+    // List all confirmed orders
+    Route::get('/orders/confirmed', 'OrderController@allConfirmed');
 
     // List orders from a cook
-    Route::get('/orders/fromCook/{responsibleCookId}', 'OrderController@whereUser');
+    Route::get('/orders/inPreparation/fromCook/{responsibleCookId}', 'OrderController@inPreparationWhereUser');
 
     // Patch order by order id
-    Route::patch('/orders/{id}', 'OrderController@assignOrderToCook');
+    Route::patch('/orders/{id}/assign', 'OrderController@assignOrderToCook');
+
+    // Patch order by order id
+    Route::patch('/orders/{id}/prepared', 'OrderController@declareOrderAsPrepared');
 
     // Get all pending invoices
     Route::get('/invoices/pending', 'InvoiceController@getPending');
@@ -146,7 +150,7 @@ Route::middleware('auth:api')->group(function () {
 
     // Declare a invoice as paid
     Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
-});
+
 
 // List all items
 Route::get('/items', 'ItemController@index');
