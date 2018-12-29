@@ -10,11 +10,17 @@ use App\Http\Resources\Invoice as InvoiceResource;
 class InvoiceController extends Controller
 {
     public function getPending(){
-        return Invoice::where('state', 'pending')->orderBy('id', 'asc')->paginate(5);
+        // Get pending invoices
+        $invoices = Invoice::where('state', 'pending')->orderBy('id', 'asc')->paginate(5);
+        // Return collection of invoices as a resource
+        return InvoiceResource::collection($invoices);
     }
 
     public function getPaid(){
-        return Invoice::where('state', 'paid')->orderBy('id', 'asc')->paginate(5);
+        // Get pending invoices
+        $invoices = Invoice::where('state', 'paid')->orderBy('id', 'asc')->paginate(5);
+        // Return collection of invoices as a resource
+        return InvoiceResource::collection($invoices);
     }
 
     public function declareInvoiceAsPaid(Request $request){
