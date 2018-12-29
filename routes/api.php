@@ -71,10 +71,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/orders/inPreparation/fromCook/{responsibleCookId}', 'OrderController@inPreparationWhereUser');
 
     // Patch order by order id
-    Route::patch('/orders/{id}/assign', 'OrderController@assignOrderToCook');
+    Route::patch('/orders/{orderId}/assignTo/{userId}', 'OrderController@assignOrderToCook');
 
     // Patch order by order id
-    Route::patch('/orders/{id}/prepared', 'OrderController@declareOrderAsPrepared');
+    Route::patch('/orders/{orderId}/preparedBy/{userId}', 'OrderController@declareOrderAsPrepared');
 
     // Get all pending invoices
     Route::get('/invoices/pending', 'InvoiceController@getPending');

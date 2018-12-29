@@ -42,13 +42,13 @@ class OrderController extends Controller
         return OrderResource::collection($orders);
     }
 
-    public function assignOrderToCook(Request $request,$orderId)
+    public function assignOrderToCook($orderId, $userId)
     {
         try {
             $order = Order::findOrFail($orderId);
 
             $order->state = "in preparation";
-            $order->responsible_cook_id = $request->userId;
+            $order->responsible_cook_id = $userId;
 
             if ($order->save()) {
                 return new OrderResource($order);
@@ -58,7 +58,7 @@ class OrderController extends Controller
         }
     }
 
-    public function declareOrderAsPrepared(Request $request, $orderId)
+    public function declareOrderAsPrepared($orderId, $userId)
     {
         
         try {
@@ -66,7 +66,7 @@ class OrderController extends Controller
 
             $order->state = "prepared";
             
-            $order->responsible_cook_id = $request->userId;
+            $order->responsible_cook_id = $userId;
 
             if ($order->save()) {
                 return new OrderResource($order);

@@ -44,5 +44,19 @@ export default {
         state.confirmedOrders = response.data.data;
         state.confirmedOrdersMeta = response.data.meta;
         state.confirmedOrdersLinks = response.data.links;
+    },
+    cleanOrdersArrays(state){
+        state.confirmedOrders = [];
+        state.inPreparationUserOrders = [];
+    },
+    refreshConfirmedOrders(state, payload){
+        state.confirmedOrders = payload.newConfirmedOrders;
+        state.confirmedOrdersMeta = payload.newConfirmedMeta;
+        state.confirmedOrdersLinks = payload.newConfirmedLinks;
+    },
+    refreshInPreparationUserOrders(state, payload){
+        state.inPreparationUserOrders = payload.newInPreparationUserOrders;
+        state.inPreparationUserOrdersMeta = payload.newInPreparationUserOrdersMeta;
+        state.inPreparationUserOrdersLinks = payload.newInPreparationUserOrdersLinks;
     }
 }

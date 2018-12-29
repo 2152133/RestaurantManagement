@@ -48894,6 +48894,20 @@ var index_esm = {
         state.confirmedOrders = response.data.data;
         state.confirmedOrdersMeta = response.data.meta;
         state.confirmedOrdersLinks = response.data.links;
+    },
+    cleanOrdersArrays: function cleanOrdersArrays(state) {
+        state.confirmedOrders = [];
+        state.inPreparationUserOrders = [];
+    },
+    refreshConfirmedOrders: function refreshConfirmedOrders(state, payload) {
+        state.confirmedOrders = payload.newConfirmedOrders;
+        state.confirmedOrdersMeta = payload.newConfirmedMeta;
+        state.confirmedOrdersLinks = payload.newConfirmedLinks;
+    },
+    refreshInPreparationUserOrders: function refreshInPreparationUserOrders(state, payload) {
+        state.inPreparationUserOrders = payload.newInPreparationUserOrders;
+        state.inPreparationUserOrdersMeta = payload.newInPreparationUserOrdersMeta;
+        state.inPreparationUserOrdersLinks = payload.newInPreparationUserOrdersLinks;
     }
 });
 
@@ -48927,6 +48941,33 @@ var index_esm = {
             // handle success
             context.commit('assignResponseToConfirmedOrders', response);
             console.log(response);
+        }).catch(function (error) {
+            // handle error
+            console.log(error);
+        }).then(function () {
+            // always executed
+        });
+    },
+    assignOrderToCook: function assignOrderToCook(context, payload) {
+        console.log("2: " + payload.userId);
+        axios.patch('/api/orders/' + payload.orderId + '/assignTo/' + payload.userId).then(function (response) {
+            // handle success
+            context.commit('cleanOrdersArrays');
+            context.dispatch('loadConfirmedOrders');
+            context.dispatch('loadInPreparationUserOrders', payload.userId);
+        }).catch(function (error) {
+            // handle error
+            console.log(error);
+        }).then(function () {
+            // always executed
+        });
+    },
+    declareOrderAsPrepared: function declareOrderAsPrepared(context, payload) {
+        axios.patch('/api/orders/' + payload.orderId + '/preparedBy/' + payload.userId).then(function (response) {
+            // handle success
+            context.commit('cleanOrdersArrays');
+            context.dispatch('loadConfirmedOrders');
+            context.dispatch('loadInPreparationUserOrders', payload.userId);
         }).catch(function (error) {
             // handle error
             console.log(error);
@@ -52214,46 +52255,11 @@ module.exports = {
         };
     },
     methods: {
-        removeOrderFromArray: function removeOrderFromArray(array, index) {
-            var order = array[index];
-            array.splice(index, 1);
-            console.log(order);
-            return order;
-        },
-        addOrderToArray: function addOrderToArray(array, order) {
-            array.push(order);
-        },
         assignOrderToCook: function assignOrderToCook(order, index) {
-            var _this = this;
-
-            axios.patch('/api/orders/' + order.id + '/assign', { userId: this.$store.getters.getAuthUser.id }).then(function (response) {
-                // handle success
-                _this.$store.state.confirmedOrders = [];
-                _this.$store.state.inPreparationUserOrders = [];
-                _this.loadConfirmedOrders();
-                _this.loadInPreparationUserOrders();
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
+            this.$store.dispatch('assignOrderToCook', { orderId: order.id, userId: this.$store.getters.getAuthUser.id });
         },
         declareOrderAsPrepared: function declareOrderAsPrepared(order, index) {
-            var _this2 = this;
-
-            axios.patch('/api/orders/' + order.id + '/prepared', { userId: this.$store.getters.getAuthUser.id }).then(function (response) {
-                // handle success
-                _this2.$store.state.confirmedOrders = [];
-                _this2.$store.state.inPreparationUserOrders = [];
-                _this2.loadConfirmedOrders();
-                _this2.loadInPreparationUserOrders();
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
+            this.$store.dispatch('declareOrderAsPrepared', { orderId: order.id, userId: this.$store.getters.getAuthUser.id });
         },
         loadInPreparationUserOrders: function loadInPreparationUserOrders() {
             this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
@@ -52262,14 +52268,10 @@ module.exports = {
             this.$store.dispatch('loadConfirmedOrders');
         },
         refreshConfirmedOrders: function refreshConfirmedOrders(newConfirmedOrders, newConfirmedMeta, newConfirmedLinks) {
-            this.$store.state.confirmedOrders = newConfirmedOrders;
-            this.$store.state.confirmedOrdersMeta = newConfirmedMeta;
-            this.$store.state.confirmedOrdersLinks = newConfirmedLinks;
+            this.$store.commit('refreshConfirmedOrders', { newConfirmedOrders: newConfirmedOrders, newConfirmedMeta: newConfirmedMeta, newConfirmedLinks: newConfirmedLinks });
         },
         refreshInPreparationUserOrders: function refreshInPreparationUserOrders(newInPreparationUserOrders, newInPreparationUserOrdersMeta, newInPreparationUserOrdersLinks) {
-            this.$store.state.inPreparationUserOrders = newInPreparationUserOrders;
-            this.$store.state.inPreparationUserOrdersMeta = newInPreparationUserOrdersMeta;
-            this.$store.state.inPreparationUserOrdersLinks = newInPreparationUserOrdersLinks;
+            this.$store.commit('refreshInPreparationUserOrders', { newInPreparationUserOrders: newInPreparationUserOrders, newInPreparationUserOrdersMeta: newInPreparationUserOrdersMeta, newInPreparationUserOrdersLinks: newInPreparationUserOrdersLinks });
         }
     },
     computed: {
@@ -52507,7 +52509,7 @@ module.exports = Component.exports
 //
 
 module.exports = {
-  props: ["orders", "meta", "links", "user"],
+  props: ["orders", "meta", "links"],
   data: function data() {
     return {};
   },
@@ -52760,7 +52762,11 @@ module.exports = Component.exports
 module.exports = {
     props: ["objects", "meta", "links"],
     data: function data() {
-        return {};
+        return {
+            newObjects: [],
+            newMeta: [],
+            newLinks: []
+        };
     },
 
     methods: {
@@ -52769,16 +52775,16 @@ module.exports = {
 
             axios.get(url).then(function (response) {
                 //this.objects = response.data.data;
-                Object.assign(_this.objects, response.data.data);
+                _this.newObjects = response.data.data;
                 _this.makePagination(response.data.meta, response.data.links);
-                _this.$emit('refreshObjects', _this.objects, _this.meta, _this.links);
+                _this.$emit('refreshObjects', _this.newObjects, _this.newMeta, _this.newLinks);
             }).catch(function (error) {
                 return console.log(error);
             });
         },
         makePagination: function makePagination(meta, links) {
-            this.meta = meta;
-            this.links = links;
+            this.newMeta = meta;
+            this.newLinks = links;
         }
     }
 };

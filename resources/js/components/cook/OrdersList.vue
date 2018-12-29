@@ -67,7 +67,7 @@
 
 <script>
 module.exports = {
-  props: ["orders", "meta", "links", "user"],
+  props: ["orders", "meta", "links"],
   data: function() {
     return {};
   },

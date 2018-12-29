@@ -29,49 +29,11 @@
             }
         },
         methods: {
-            removeOrderFromArray: function(array, index){
-                var order = array[index];
-                array.splice(index, 1);
-                console.log(order);
-                return order;
-            },
-            addOrderToArray: function(array, order){
-                array.push(order);
-            },
-            assignOrderToCook: function(order, index){
-                axios.patch('/api/orders/' + order.id + '/assign', {userId: this.$store.getters.getAuthUser.id})
-                    .then((response) => {
-                        // handle success
-                        this.$store.state.confirmedOrders = [];
-                        this.$store.state.inPreparationUserOrders = [];
-                        this.loadConfirmedOrders();
-                        this.loadInPreparationUserOrders();
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    })
-                    .then(function () {
-                        // always executed
-                    });
-                    
+            assignOrderToCook: function(order,index){
+                this.$store.dispatch('assignOrderToCook', {orderId: order.id, userId: this.$store.getters.getAuthUser.id});    
             },
             declareOrderAsPrepared: function(order, index){
-                axios.patch('/api/orders/' + order.id + '/prepared', {userId: this.$store.getters.getAuthUser.id})
-                    .then((response) => {
-                        // handle success
-                        this.$store.state.confirmedOrders = [];
-                        this.$store.state.inPreparationUserOrders = [];
-                        this.loadConfirmedOrders();
-                        this.loadInPreparationUserOrders();
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    })
-                    .then(function () {
-                        // always executed
-                    });
+                this.$store.dispatch('declareOrderAsPrepared', {orderId: order.id, userId: this.$store.getters.getAuthUser.id});
             },
             loadInPreparationUserOrders: function(){
                 this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
@@ -80,14 +42,10 @@
                 this.$store.dispatch('loadConfirmedOrders');
             },
             refreshConfirmedOrders(newConfirmedOrders, newConfirmedMeta, newConfirmedLinks){
-                this.$store.state.confirmedOrders = newConfirmedOrders;
-                this.$store.state.confirmedOrdersMeta = newConfirmedMeta;
-                this.$store.state.confirmedOrdersLinks = newConfirmedLinks;
+                this.$store.commit('refreshConfirmedOrders', {newConfirmedOrders, newConfirmedMeta, newConfirmedLinks});
             },
             refreshInPreparationUserOrders(newInPreparationUserOrders, newInPreparationUserOrdersMeta, newInPreparationUserOrdersLinks){
-                this.$store.state.inPreparationUserOrders = newInPreparationUserOrders;
-                this.$store.state.inPreparationUserOrdersMeta = newInPreparationUserOrdersMeta;
-                this.$store.state.inPreparationUserOrdersLinks = newInPreparationUserOrdersLinks;
+                this.$store.commit('refreshInPreparationUserOrders', {newInPreparationUserOrders, newInPreparationUserOrdersMeta, newInPreparationUserOrdersLinks});
             }
         },
         computed: {

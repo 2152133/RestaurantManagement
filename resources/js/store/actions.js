@@ -35,4 +35,37 @@ export default {
                 // always executed
             });
     },
+    assignOrderToCook(context, payload){
+        console.log("2: " + payload.userId);
+        axios.patch('/api/orders/' + payload.orderId + '/assignTo/' + payload.userId)
+            .then((response) => {
+                // handle success
+                context.commit('cleanOrdersArrays');
+                context.dispatch('loadConfirmedOrders');
+                context.dispatch('loadInPreparationUserOrders', payload.userId);
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
+    },
+    declareOrderAsPrepared(context, payload){
+        axios.patch('/api/orders/' + payload.orderId + '/preparedBy/' + payload.userId)
+            .then((response) => {
+                // handle success
+                context.commit('cleanOrdersArrays');
+                context.dispatch('loadConfirmedOrders');
+                context.dispatch('loadInPreparationUserOrders', payload.userId);
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
+    },
 }
