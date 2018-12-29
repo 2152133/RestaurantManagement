@@ -55,4 +55,26 @@ export default {
             return state.user.type == "manager" ? true : false;
         return false    
     },
+    confirmedOrders(state){
+        return state.confirmedOrders;
+    },
+    confirmedOrdersMeta(state){
+        return state.confirmedOrdersMeta;
+    },
+    confirmedOrdersLinks(state){
+        return state.confirmedOrdersLinks;
+    },
+    inPreparationUserOrders(state){
+        return state.inPreparationUserOrders;
+    },
+    inPreparationUserOrdersMeta(state){
+        return state.inPreparationUserOrdersMeta;
+    },
+    inPreparationUserOrdersLinks(state){
+        return state.inPreparationUserOrdersLinks;
+    },
+    currentOrder(state){
+        return state.currentOrder;
+    }
+
 }

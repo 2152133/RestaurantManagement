@@ -47796,12 +47796,13 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
         tokenType: "",
         token: "",
         expiration: 0,
-        pendingOrders: [],
-        pendingOrdersMeta: [],
-        pendingOrdersLinks: [],
-        confirmedUserOrders: [],
-        confirmedUserOrdersMeta: [],
-        confirmedUserOrdersLinks: []
+        confirmedOrders: [],
+        confirmedOrdersMeta: [],
+        confirmedOrdersLinks: [],
+        inPreparationUserOrders: [],
+        inPreparationUserOrdersMeta: [],
+        inPreparationUserOrdersLinks: [],
+        currentOrder: {}
     },
     getters: __WEBPACK_IMPORTED_MODULE_2__getters__["a" /* default */],
     mutations: __WEBPACK_IMPORTED_MODULE_3__mutations__["a" /* default */],
@@ -48813,6 +48814,27 @@ var index_esm = {
     isManager: function isManager(state) {
         if (state.user) return state.user.type == "manager" ? true : false;
         return false;
+    },
+    confirmedOrders: function confirmedOrders(state) {
+        return state.confirmedOrders;
+    },
+    confirmedOrdersMeta: function confirmedOrdersMeta(state) {
+        return state.confirmedOrdersMeta;
+    },
+    confirmedOrdersLinks: function confirmedOrdersLinks(state) {
+        return state.confirmedOrdersLinks;
+    },
+    inPreparationUserOrders: function inPreparationUserOrders(state) {
+        return state.inPreparationUserOrders;
+    },
+    inPreparationUserOrdersMeta: function inPreparationUserOrdersMeta(state) {
+        return state.inPreparationUserOrdersMeta;
+    },
+    inPreparationUserOrdersLinks: function inPreparationUserOrdersLinks(state) {
+        return state.inPreparationUserOrdersLinks;
+    },
+    currentOrder: function currentOrder(state) {
+        return state.currentOrder;
     }
 });
 
@@ -52150,18 +52172,9 @@ module.exports = {
             showSuccess: false,
             showFailure: false,
             successMessage: '',
-            failMessage: '',
-            currentOrder: {},
-            currentUser: '52',
-            confirmedOrders: [],
-            confirmedOrdersMeta: [],
-            confirmedOrdersLinks: [],
-            inPreparationUserOrders: [],
-            inPreparationUserOrdersMeta: [],
-            inPreparationUserOrdersLinks: []
+            failMessage: ''
         };
     },
-
     methods: {
         removeOrderFromArray: function removeOrderFromArray(array, index) {
             var order = array[index];
@@ -52177,8 +52190,8 @@ module.exports = {
 
             axios.patch('/api/orders/' + order.id + '/assign', { userId: this.$store.getters.getAuthUser.id }).then(function (response) {
                 // handle success
-                _this.confirmedOrders = [];
-                _this.inPreparationUserOrders = [];
+                _this.$store.state.confirmedOrders = [];
+                _this.$store.state.inPreparationUserOrders = [];
                 _this.loadConfirmedOrders();
                 _this.loadInPreparationUserOrders();
             }).catch(function (error) {
@@ -52193,8 +52206,8 @@ module.exports = {
 
             axios.patch('/api/orders/' + order.id + '/prepared', { userId: this.$store.getters.getAuthUser.id }).then(function (response) {
                 // handle success
-                _this2.confirmedOrders = [];
-                _this2.inPreparationUserOrders = [];
+                _this2.$store.state.confirmedOrders = [];
+                _this2.$store.state.inPreparationUserOrders = [];
                 _this2.loadConfirmedOrders();
                 _this2.loadInPreparationUserOrders();
             }).catch(function (error) {
@@ -52209,9 +52222,9 @@ module.exports = {
 
             axios.get('/api/orders/inPreparation/fromCook/' + this.$store.getters.getAuthUser.id).then(function (response) {
                 // handle success
-                _this3.inPreparationUserOrders = response.data.data;
-                _this3.inPreparationUserOrdersMeta = response.data.meta;
-                _this3.inPreparationUserOrdersLinks = response.data.links;
+                _this3.$store.state.inPreparationUserOrders = response.data.data;
+                _this3.$store.state.inPreparationUserOrdersMeta = response.data.meta;
+                _this3.$store.state.inPreparationUserOrdersLinks = response.data.links;
                 console.log(response);
             }).catch(function (error) {
                 // handle error
@@ -52225,9 +52238,9 @@ module.exports = {
 
             axios.get('/api/orders/confirmed').then(function (response) {
                 // handle success
-                _this4.confirmedOrders = response.data.data;
-                _this4.confirmedOrdersMeta = response.data.meta;
-                _this4.confirmedOrdersLinks = response.data.links;
+                _this4.$store.state.confirmedOrders = response.data.data;
+                _this4.$store.state.confirmedOrdersMeta = response.data.meta;
+                _this4.$store.state.confirmedOrdersLinks = response.data.links;
                 console.log(response);
             }).catch(function (error) {
                 // handle error
@@ -52237,14 +52250,37 @@ module.exports = {
             });
         },
         refreshConfirmedOrders: function refreshConfirmedOrders(newConfirmedOrders, newConfirmedMeta, newConfirmedLinks) {
-            this.confirmedOrders = newConfirmedOrders;
-            this.confirmedOrdersMeta = newConfirmedMeta;
-            this.confirmedOrdersLinks = newConfirmedLinks;
+            this.$store.state.confirmedOrders = newConfirmedOrders;
+            this.$store.state.confirmedOrdersMeta = newConfirmedMeta;
+            this.$store.state.confirmedOrdersLinks = newConfirmedLinks;
         },
         refreshInPreparationUserOrders: function refreshInPreparationUserOrders(newInPreparationUserOrders, newInPreparationUserOrdersMeta, newInPreparationUserOrdersLinks) {
-            this.inPreparationUserOrders = newInPreparationUserOrders;
-            this.inPreparationUserOrdersMeta = newInPreparationUserOrdersMeta;
-            this.inPreparationUserOrdersLinks = newInPreparationUserOrdersLinks;
+            this.$store.state.inPreparationUserOrders = newInPreparationUserOrders;
+            this.$store.state.inPreparationUserOrdersMeta = newInPreparationUserOrdersMeta;
+            this.$store.state.inPreparationUserOrdersLinks = newInPreparationUserOrdersLinks;
+        }
+    },
+    computed: {
+        confirmedOrders: function confirmedOrders() {
+            return this.$store.getters.confirmedOrders;
+        },
+        confirmedOrdersMeta: function confirmedOrdersMeta() {
+            return this.$store.getters.confirmedOrdersMeta;
+        },
+        confirmedOrdersLinks: function confirmedOrdersLinks() {
+            return this.$store.getters.confirmedOrdersLinks;
+        },
+        inPreparationUserOrders: function inPreparationUserOrders() {
+            return this.$store.getters.inPreparationUserOrders;
+        },
+        inPreparationUserOrdersMeta: function inPreparationUserOrdersMeta() {
+            return this.$store.getters.inPreparationUserOrdersMeta;
+        },
+        inPreparationUserOrdersLinks: function inPreparationUserOrdersLinks() {
+            return this.$store.getters.inPreparationUserOrdersLinks;
+        },
+        currentOrder: function currentOrder() {
+            return this.$store.getters.currentOrder;
         }
     },
     mounted: function mounted() {
@@ -52284,8 +52320,7 @@ var render = function() {
         attrs: {
           orders: _vm.confirmedOrders,
           meta: _vm.confirmedOrdersMeta,
-          links: _vm.confirmedOrdersLinks,
-          user: _vm.currentUser
+          links: _vm.confirmedOrdersLinks
         },
         on: {
           "assign-to-cook": _vm.assignOrderToCook,
