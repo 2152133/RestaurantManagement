@@ -49,10 +49,7 @@
                 </div>
             </td>
             <td v-else>
-                <a disabled class="btn btn-sm btn-primary">Edit</a>
-                <a disabled class="btn btn-sm btn-danger">Delete</a>
-                <a disabled class="btn btn-sm btn-danger">Block</a>
-                <a disabled class="btn btn-sm btn-danger">Unblock</a>
+                <a >- NONE -</a>
             </td>
         </tbody>
     </table>

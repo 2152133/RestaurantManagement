@@ -18,7 +18,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(invoice,index) in invoices" :key="invoice.id">
+                <tr v-for="invoice in invoices" :key="invoice.id">
                     <td>{{invoice.id}}</td>
                     <td>{{invoice.state}}</td>
                     <td>{{invoice.meal_id}}</td>

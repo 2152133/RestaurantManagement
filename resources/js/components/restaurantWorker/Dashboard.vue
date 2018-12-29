@@ -6,8 +6,9 @@
         </div>
         <button class="btn btn-success" @click.prevent="sendMessageToActiveManagers">Send Manager message</button>
         <button class="btn btn-warning"><router-link to="profileEdit">Edit Profile</router-link></button>
-        <button v-if="isManager" class="btn btn-warning"><router-link to="users">All Users</router-link></button>
-        <button v-if="isManager" class="btn btn-warning"><router-link to="meals">All Meals</router-link></button>
+        <button v-if="isManager" class="btn btn-warning"><router-link to="managerUsers">Users</router-link></button>
+        <button v-if="isManager" class="btn btn-warning"><router-link to="managerMeals">Meals</router-link></button>
+        <button v-if="isManager" class="btn btn-warning"><router-link to="managerInvoices">Invoices</router-link></button>
     </div>
     <br>
     <div>

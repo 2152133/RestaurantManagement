@@ -23,6 +23,23 @@ class InvoiceController extends Controller
         return InvoiceResource::collection($invoices);
     }
 
+    public function getFiltered(Request $request) {
+        $invoices = new Invoice;
+        $queries = [];
+        $columns = [
+            'state', 'created_at', 'responsible_waiter_id'
+        ];
+
+        foreach ($columns as $column) {
+            if($request->has($column)) {
+                $invoices = $invoices->where($column, $request[$column]);
+                $queries[$column] = $request[$column];
+            }
+        }
+
+        return InvoiceResource::collection($invoices->paginate(5))->appends($queries);
+    }
+
     public function declareInvoiceAsPaid(Request $request){
         try{
             $requestInvoice = json_decode($request->invoice);

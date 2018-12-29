@@ -12,7 +12,6 @@
 export default {
     data: function() {
         return {
-            status: 0,
             title: 'Meals',
             currentMealOrders: null,
             mealId: 0,

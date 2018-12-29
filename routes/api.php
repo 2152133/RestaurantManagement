@@ -85,6 +85,12 @@ Route::middleware('auth:api')->group(function () {
     // Declare a invoice as paid
     Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
 
+    //Get filtered meals
+    Route::get('/meals/filtered', 'MealController@getFiltered');
+    
+    //Get active and terminated meals
+    Route::get('/meals/activeAndTerminated ', 'MealController@getActiveAndTerminated');
+
     //Get all active meals
     Route::get('/meals/all', 'MealController@all');
 
@@ -153,6 +159,9 @@ Route::middleware('auth:api')->group(function () {
 
     // Declare a invoice as paid
     Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
+
+    //Get filtered meals
+    Route::get('/invoices/filtered', 'InvoiceController@getFiltered');
 
 
 // List all items

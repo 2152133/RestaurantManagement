@@ -13,7 +13,7 @@
                     <th>Sub-total</th>
                 </thead>
                 <tbody>
-                    <tr v-for="item in invoice.items">
+                    <tr v-for="item in invoice.items" :key="item.id">
                         <td>
                             <label>{{item.name}}</label>
                             <br/>

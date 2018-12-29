@@ -86,7 +86,7 @@ export default {
                         this.showSuccess = true;
                         this.successMessage = 'User Created';
                         setTimeout(() => {
-                            this.$router.push("/users")
+                            this.$router.push("/managerUsers")
                         }, 1000);
                     })
                 }
@@ -95,7 +95,7 @@ export default {
         cancelEdit() {
             this.user = {}
             this.showSuccess = false
-            this.$router.push("/users")
+            this.$router.push("/managerUsers")
         }
     },
 }

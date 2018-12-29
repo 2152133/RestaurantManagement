@@ -23,22 +23,20 @@ const profileEdit = Vue.component('profileEdit', require('../components/restaura
 Vue.component('itemEdit', require('../components/items/ItemEdit.vue'));
 const login = Vue.component('login', require('../components/auth/login.vue'));
 const logout = Vue.component('logout', require('../components/auth/logout.vue'));
-const usersComponent = Vue.component('users', require('../components/manager/Users.vue'));
-Vue.component('userEdit', require('../components/manager/UserEdit.vue'));
-Vue.component('usersList', require('../components/manager/UsersList.vue'));
-const userAddComponent = Vue.component('userAdd', require('../components/manager/UserAdd.vue'));
+const managerUsersComponent = Vue.component('users', require('../components/manager/Users/Users.vue'));
+Vue.component('userEdit', require('../components/manager/Users/UserEdit.vue'));
+Vue.component('usersList', require('../components/manager/Users/UsersList.vue'));
+const userAddComponent = Vue.component('userAdd', require('../components/manager/Users/UserAdd.vue'));
 const itemAddComponent = Vue.component('itemAdd', require('../components/items/ItemAdd.vue'));
 //Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
 
-const mealsComponent = Vue.component('meals', require('../components/manager/Meals.vue'));
-Vue.component('mealsListManager', require('../components/manager/MealsList.vue'));
-Vue.component('mealDetailsList', require('../components/manager/MealDetailsList.vue'));
+const managerMealsComponent = Vue.component('meals', require('../components/manager/Meals/Meals.vue'));
+Vue.component('mealsListManager', require('../components/manager/Meals/MealsList.vue'));
+Vue.component('mealDetailsList', require('../components/manager/Meals/MealDetailsList.vue'));
 
-
-//passport
-//Vue.component('passport-clients', require('../components/passport/Clients.vue').default);
-//Vue.component('passport-authorized-clients', require('../components/passport/AuthorizedClients.vue').default);
-//Vue.component('passport-personal-access-tokens', require('../components/passport/PersonalAccessTokens.vue').default);
+const managerInvoicesComponent = Vue.component('invoices', require('../components/manager/Invoices/Invoices.vue'));
+Vue.component('invoicesListManager', require('../components/manager/Invoices/InvoicesList.vue'));
+//Vue.component('mealDetailsList', require('../components/manager/MealDetailsList.vue'));
 
 const routes = [
     {
@@ -46,8 +44,8 @@ const routes = [
         redirect: '/items'
     },
     {
-        path: '/meals', 
-        component: mealsComponent,
+        path: '/managerMeals', 
+        component: managerMealsComponent,
         meta: {
             forManager: true,
         }
@@ -80,8 +78,16 @@ const routes = [
         }
     },
     {
-        path: '/users', 
-        component: usersComponent,
+        path: '/managerUsers', 
+        component: managerUsersComponent,
+        meta: {
+            forAuth: true,
+            forManager: true
+        }
+    },
+    {
+        path: '/managerInvoices', 
+        component: managerInvoicesComponent,
         meta: {
             forAuth: true,
             forManager: true
