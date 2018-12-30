@@ -5,7 +5,11 @@
             <br/>
             <label>Table: {{invoice.table_number}}</label>
             <br/>
-            <label>Responsible Waiter: {{invoice.responsible_waiter_name}}</label>
+            <label>Responsible Waiter: {{ invoice.responsible_waiter ? invoice.responsible_waiter.name : " - NONE - " }}</label>
+            <br/>
+            <label>Name: {{ invoice.name ? invoice.name : " - NONE - " }}</label>
+            <br/>
+            <label>NIF: {{ invoice.nif ? invoice.nif : " - NONE - " }}</label>
             <br/>
             <table>
                 <thead>

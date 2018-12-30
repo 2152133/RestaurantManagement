@@ -53329,8 +53329,6 @@ module.exports = Component.exports
 //
 //
 //
-//
-//
 
 module.exports = {
     props: ["invoices", "meta", "links", "user"],
@@ -53384,15 +53382,21 @@ var render = function() {
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(invoice.table_number))]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(invoice.responsible_waiter_id))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(invoice.responsible_waiter_name))]),
+              _c("td", [
+                _vm._v(
+                  _vm._s(
+                    invoice.responsible_waiter
+                      ? invoice.responsible_waiter.name
+                      : " - NONE - "
+                  )
+                )
+              ]),
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(invoice.nif))]),
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(invoice.name))]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(invoice.total_price))]),
+              _c("td", [_vm._v(_vm._s(invoice.total_price) + " €")]),
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(invoice.created_at.date))]),
               _vm._v(" "),
@@ -53444,21 +53448,19 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("State")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Meal Id")]),
+        _c("th", [_vm._v("Meal")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Table Number")]),
+        _c("th", [_vm._v("Table")]),
         _vm._v(" "),
-        _c("th", [_vm._v("responsible_waiter_id")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("responsible_waiter_name")]),
+        _c("th", [_vm._v("Waiter Name")]),
         _vm._v(" "),
         _c("th", [_vm._v("nif")]),
         _vm._v(" "),
         _c("th", [_vm._v("name")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Total Price")]),
+        _c("th", [_vm._v("Total")]),
         _vm._v(" "),
-        _c("th", [_vm._v("created_at")]),
+        _c("th", [_vm._v("Date")]),
         _vm._v(" "),
         _c("th", [_vm._v("Actions")])
       ])
@@ -54140,6 +54142,10 @@ module.exports = function listToStyles (parentId, list) {
 //
 //
 //
+//
+//
+//
+//
 
 module.exports = {
     props: ["invoice", "user"],
@@ -54178,7 +54184,28 @@ var render = function() {
       _vm._v(" "),
       _c("label", [
         _vm._v(
-          "Responsible Waiter: " + _vm._s(_vm.invoice.responsible_waiter_name)
+          "Responsible Waiter: " +
+            _vm._s(
+              _vm.invoice.responsible_waiter
+                ? _vm.invoice.responsible_waiter.name
+                : " - NONE - "
+            )
+        )
+      ]),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("label", [
+        _vm._v(
+          "Name: " + _vm._s(_vm.invoice.name ? _vm.invoice.name : " - NONE - ")
+        )
+      ]),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("label", [
+        _vm._v(
+          "NIF: " + _vm._s(_vm.invoice.nif ? _vm.invoice.nif : " - NONE - ")
         )
       ]),
       _vm._v(" "),
