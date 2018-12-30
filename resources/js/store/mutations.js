@@ -34,4 +34,29 @@ export default {
         localStorage.removeItem('expiration_time')
         axios.defaults.headers.common.Authorization = undefined;
     },
+    //-----------orders--------------------
+    assignResponseToInPreparationUserOrders(state, response){
+        state.inPreparationUserOrders = response.data.data;
+        state.inPreparationUserOrdersMeta = response.data.meta;
+        state.inPreparationUserOrdersLinks = response.data.links;
+    },
+    assignResponseToConfirmedOrders(state, response){
+        state.confirmedOrders = response.data.data;
+        state.confirmedOrdersMeta = response.data.meta;
+        state.confirmedOrdersLinks = response.data.links;
+    },
+    cleanOrdersArrays(state){
+        state.confirmedOrders = [];
+        state.inPreparationUserOrders = [];
+    },
+    refreshConfirmedOrders(state, payload){
+        state.confirmedOrders = payload.newConfirmedOrders;
+        state.confirmedOrdersMeta = payload.newConfirmedMeta;
+        state.confirmedOrdersLinks = payload.newConfirmedLinks;
+    },
+    refreshInPreparationUserOrders(state, payload){
+        state.inPreparationUserOrders = payload.newInPreparationUserOrders;
+        state.inPreparationUserOrdersMeta = payload.newInPreparationUserOrdersMeta;
+        state.inPreparationUserOrdersLinks = payload.newInPreparationUserOrdersLinks;
+    }
 }

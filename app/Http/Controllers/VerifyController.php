@@ -12,7 +12,7 @@ class VerifyController extends Controller
     {
         User::where('remember_token', $remember_token)->firstOrFail()
         ->update([
-            'remember_token' => null,
+            //'remember_token' => null,
             'email_verified_at' => Carbon::now()
         ]);
 

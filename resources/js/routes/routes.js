@@ -9,8 +9,7 @@ Vue.component('navbar', require('../components/utils/Navbar.vue'));
 const ordersComponent = Vue.component('orders', require('../components/cook/Orders.vue'));
 Vue.component('orders-list', require('../components/cook/OrdersList.vue'));
 Vue.component('pagination', require('../components/utils/Pagination.vue'));
-const landing_page = Vue.component('landing_page', require('../components/restaurantWorker/LandingPage.vue')); 
-const notifications_page = Vue.component('notifications_page', require('../components/restaurantWorker/Notifications.vue'));
+const dashboard = Vue.component('dashboard', require('../components/restaurantWorker/Dashboard.vue')); 
 const invoicesComponent = Vue.component('pending-invoices', require('../components/cashier/Invoices.vue'));
 Vue.component('invoices-list', require('../components/cashier/InvoicesList.vue'));
 Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
@@ -20,25 +19,39 @@ Vue.component('meals-list', require('../components/MealsList.vue'));
 Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
 const create_meal = Vue.component('create-meal', require('../components/CreateMeals.vue'));
 Vue.component('itemsList', require('../components/items/ItemsList.vue'));
-Vue.component('profileEdit', require('../components/user/ProfileEdit.vue'));
-Vue.component('ItemEdit', require('../components/items/ItemEdit.vue'));
 const managementComponent = Vue.component('management-dashboard', require('../components/manager/ManagerDashboard.vue'));
 Vue.component('tables-list', require('../components/manager/TablesList.vue'));
 Vue.component('add-edit-table', require('../components/manager/AddEditTable.vue'));
+const profileEdit = Vue.component('profileEdit', require('../components/restaurantWorker/ProfileEdit.vue'));
+Vue.component('itemEdit', require('../components/items/ItemEdit.vue'));
 const login = Vue.component('login', require('../components/auth/login.vue'));
 const logout = Vue.component('logout', require('../components/auth/logout.vue'));
+const managerUsersComponent = Vue.component('users', require('../components/manager/Users/Users.vue'));
+Vue.component('userEdit', require('../components/manager/Users/UserEdit.vue'));
+Vue.component('usersList', require('../components/manager/Users/UsersList.vue'));
+const userAddComponent = Vue.component('userAdd', require('../components/manager/Users/UserAdd.vue'));
+const itemAddComponent = Vue.component('itemAdd', require('../components/items/ItemAdd.vue'));
+//Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
 
+const managerMealsComponent = Vue.component('meals', require('../components/manager/Meals/Meals.vue'));
+Vue.component('mealsListManager', require('../components/manager/Meals/MealsList.vue'));
+Vue.component('mealDetailsList', require('../components/manager/Meals/MealDetailsList.vue'));
 
-
-//passport
-//Vue.component('passport-clients', require('../components/passport/Clients.vue').default);
-//Vue.component('passport-authorized-clients', require('../components/passport/AuthorizedClients.vue').default);
-//Vue.component('passport-personal-access-tokens', require('../components/passport/PersonalAccessTokens.vue').default);
+const managerInvoicesComponent = Vue.component('invoices', require('../components/manager/Invoices/Invoices.vue'));
+Vue.component('invoicesListManager', require('../components/manager/Invoices/InvoicesList.vue'));
+//Vue.component('mealDetailsList', require('../components/manager/MealDetailsList.vue'));
 
 const routes = [
     {
         path: '/', 
         redirect: '/items'
+    },
+    {
+        path: '/managerMeals', 
+        component: managerMealsComponent,
+        meta: {
+            forManager: true,
+        }
     },
     {
         path: '/orders', 
@@ -49,19 +62,51 @@ const routes = [
     },
     {
         path: '/items', 
-        component: itemsComponent},
+        component: itemsComponent
+    },
     {
-        path: '/dashboard', 
-        component: landing_page, 
-        name: 'dashboard',
+        path: '/newUser', 
+        component: userAddComponent,
+        meta: {
+            forAuth: true,
+            forManager: true
+        }
+    },
+    {
+        path: '/newItem', 
+        component: itemAddComponent,
+        meta: {
+            forAuth: true,
+            forManager: true
+        }
+    },
+    {
+        path: '/managerUsers', 
+        component: managerUsersComponent,
+        meta: {
+            forAuth: true,
+            forManager: true
+        }
+    },
+    {
+        path: '/managerInvoices', 
+        component: managerInvoicesComponent,
+        meta: {
+            forAuth: true,
+            forManager: true
+        }
+    },
+    {
+        path: '/profileEdit', 
+        component: profileEdit,
         meta: {
             forAuth: true
         }
     },
     {
-        path: '/notifications', 
-        component: notifications_page, 
-        name: 'notifications',
+        path: '/dashboard', 
+        component: dashboard, 
+        name: 'dashboard',
         meta: {
             forAuth: true
         }

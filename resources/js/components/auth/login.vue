@@ -2,7 +2,6 @@
     <div>
         <br>
         <div class="alert" :class="typeofmsg" v-if="showMessage">             
-            <!-- <button type="button" class="close-btn" v-on:click="showMessage=false">&times;</button> -->
             <strong>{{ message }}</strong>
         </div>
         <div class="jumbotron">
@@ -44,34 +43,29 @@
             login() {
                 this.showMessage = false;
                 axios.post('api/login', this.user)
+                .then(response => {
+                    let tokenType = response.data.token_type
+                    let token = response.data.access_token
+                    let expiration = response.data.expires_in + Date.now()
+                    this.$store.dispatch('setAuthUser', this.user)
+                    this.$store.commit('setToken', {token, tokenType, expiration})
+                    this.$socket.emit('user_enter', this.$store.state.user);
+                    this.typeofmsg = "alert-success";
+                    this.message = "User authenticated correctly";
+                    this.showMessage = true;
+                    setTimeout(() => {
+                        this.$router.push("/dashboard")
+                    }, 1000);
+                })
+                .then(response => {
+                axios.get('api/user')
                     .then(response => {
-                        let tokenType = response.data.token_type
-                        let token = response.data.access_token
-                        let expiration = response.data.expires_in + Date.now()
-                        this.$store.commit('setToken', {token, tokenType, expiration})
-                        //this.$store.commit('setUser', loginUser)
-                        this.typeofmsg = "alert-success";
-                        this.message = "User authenticated correctly";
-                        this.showMessage = true;
-                        setTimeout(() => {
-                            this.$router.push("/dashboard")
-                        }, 1000);
+                        let user = response.data
+                        this.$store.dispatch('setAuthUser', user)
                     })
                     .catch(error => {
-                        this.typeofmsg = "alert-danger";
-                        this.message = "Invalid credentials";
-                        this.showMessage = true;
                         console.log(error);
                     })
-                    .then(response => {
-                    axios.get('api/user')
-                        .then(response => {
-                            let user = response.data
-                            this.$store.dispatch('setAuthUser', user)
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        })
                 })
             },
         },

@@ -21,7 +21,7 @@ class ItemController extends Controller
         $items = Item::orderBy('created_at', 'desc')->paginate(5);
 
         // Return collection of items as a resource
-        return ItemResource::collection($items);
+        return (ItemResource::collection($items))->response()->setStatusCode(200);
     }
 
     public function store(Request $request)
@@ -31,10 +31,11 @@ class ItemController extends Controller
             'name' => 'required|string|max:50|unique:items,name',
             'type'=> 'required|in:dish,drink',
             'description' => 'required|string|max:200',
-            'photo_url' => 'nullable',
+            'photo_url' => 'required',
             'price' => 'required|between:0,99.99'
         ]);
-
+        
+        $item = new Item();
         if (strpos($request->input('photo_url'), 'data:image/') !== false) {
             $exploded = explode(',', $request->photo_url);
             $decoded = base64_decode($exploded[1]);
@@ -50,7 +51,6 @@ class ItemController extends Controller
             $path = storage_path('app/public/items/').$fileName;
             file_put_contents($path, $decoded);
             
-            $item = new Item();
             $item->fill($request->except('photo_url') + [
                 'photo_url' => $fileName,
             ]);
@@ -58,7 +58,7 @@ class ItemController extends Controller
             $item->fill($request->all());
         }
         $item->save();
-        return response()->json(new ItemResource($item), 201);
+        return (new ItemResource($item))->response()->setStatusCode(201);
     }
     
     public function update(Request $request, $id)
@@ -97,33 +97,27 @@ class ItemController extends Controller
         } else {
             $item->update($request->all());
         }
-        return new ItemResource($item);
+        $item->save();
+        return (new ItemResource($item))->response()->setStatusCode(200);
     }
 
 
     public function all()
     {
-        $allItems = DB::table('items')
-            ->get();
+        $allItems = DB::table('items')->get();
         return $allItems;
     }
 
     public function show($id)
     {
         $item = Item::findOrFail($id);
-        return new ItemResource($item);
+        return (new ItemResource($item))->response()->setStatusCode(200);
     }
 
     public function destroy($id)
     {
-        // Get item
         $item = Item::findOrFail($id);
-
-        // Method = delete -> return deleted item
-        if ($item->delete()) {
-            return new ItemResource($item);
-            //204
-            //500
-        }
+        $item->delete();
+        return (new ItemResource($item))->response()->setStatusCode(204);
     }
 }

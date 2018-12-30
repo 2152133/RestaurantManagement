@@ -1,8 +1,12 @@
 <template>
 <div>
+    <div class="alert alert-success" v-if="showSuccess">			 
+        <button type="button" class="close-btn" v-on:click="showSuccess=false">&times;</button>
+        <strong>{{ successMessage }}</strong>
+    </div>
     <div class="jumbotron">
-	    <h2>Edit Item</h2>
-	     <div class="form-group">
+	    <h2>Add Item</h2>
+	    <div class="form-group">
 	        <label for="inputName">Name</label>
 	        <input
 	            type="text" class="form-control" v-model="item.name"
@@ -49,8 +53,8 @@
 	    </div>
         <div>
             <input class="form-data" type="file" name="image" accept="image/*"
-                @change="imageChanged" 
-                v-validate="'image'">
+                @change="imageChanged"
+                v-validate="'required|image'">
             <div class="help-block alert alert-danger"
                 v-show="errors.has('image')">
                 {{ errors.first('image')}}
@@ -67,25 +71,38 @@
 
 <script>
 export default {
-    props: ['item'],
+    data() {
+        return {
+            showSuccess: false,
+            successMessage: '',
+            item: {
+                name: '',
+                type: '',
+                description: '',
+                price: '',
+                photo_url: null
+            }
+        }
+    },
     methods: {
         saveItem(){
             this.$validator.validateAll().then((result) => {
                 if(result) {
-                    axios.patch('api/item/'+this.item.id, this.item)
-                    .then(response=>{
+                    axios.post('api/item', this.item)
+                    .then(response => {
                         Object.assign(this.item, response.data.data);
                         this.$emit('item-saved', this.item)
-                    });
+                        this.showSuccess = true;
+                        this.successMessage = 'Item Created';
+                        this.$router.push("/items")
+                    })
                 }
             })
         },
         cancelEdit(){
-            axios.get('api/item/'+this.item.id)
-                .then(response=>{
-                    Object.assign(this.item, response.data.data);
-                    this.$emit('item-canceled', this.item);
-                });
+            this.item = {}
+            this.showSuccess = false;
+            this.$router.push("/items")
         },
         imageChanged(event) {
             let fileReader = new FileReader()
@@ -93,9 +110,7 @@ export default {
             fileReader.onload = (event) => {
                 this.item.photo_url = event.target.result
             }
-        },
-
+        }
     },
-
 }
 </script>

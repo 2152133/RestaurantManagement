@@ -45,9 +45,36 @@ export default {
             return null;
         }
 
-        return JSON.parse(user);;
+        return JSON.parse(user);
     },
     isAuthenticated(state) {
         return state.token && state.tokenType ? true:false;
     },
+    isManager(state) {
+        if(state.user)
+            return state.user.type == "manager" ? true : false;
+        return false    
+    },
+    confirmedOrders(state){
+        return state.confirmedOrders;
+    },
+    confirmedOrdersMeta(state){
+        return state.confirmedOrdersMeta;
+    },
+    confirmedOrdersLinks(state){
+        return state.confirmedOrdersLinks;
+    },
+    inPreparationUserOrders(state){
+        return state.inPreparationUserOrders;
+    },
+    inPreparationUserOrdersMeta(state){
+        return state.inPreparationUserOrdersMeta;
+    },
+    inPreparationUserOrdersLinks(state){
+        return state.inPreparationUserOrdersLinks;
+    },
+    currentOrder(state){
+        return state.currentOrder;
+    }
+
 }

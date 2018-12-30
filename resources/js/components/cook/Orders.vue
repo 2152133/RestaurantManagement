@@ -4,9 +4,9 @@
             <h1>{{title}}</h1>
         </div>
         
-        <orders-list :orders="userOrders" :meta="userOrdersMeta" :links="userOrdersLinks" @refreshOrders="refreshUserOrders"></orders-list>
+        <orders-list :orders="inPreparationUserOrders" :meta="inPreparationUserOrdersMeta" :links="inPreparationUserOrdersLinks" v-on:declare-order-as-prepared="declareOrderAsPrepared" @refreshOrders="refreshInPreparationUserOrders"></orders-list>
         
-        <orders-list :orders="orders" :meta="ordersMeta" :links="ordersLinks" :user="currentUser" v-on:assign-to-cook="assignOrderToCook" @refreshOrders="refreshOrders"></orders-list>
+        <orders-list :orders="confirmedOrders" :meta="confirmedOrdersMeta" :links="confirmedOrdersLinks" v-on:assign-to-cook="assignOrderToCook" v-on:declare-order-as-prepared="declareOrderAsPrepared" @refreshOrders="refreshConfirmedOrders" ></orders-list>
             
         <div class="alert" :class="{'alert-success':showSuccess, 'alert-danger':showFailure}" v-if="showSuccess || showFailure">
             <button type="button" @click="showSuccess = false; showFailure = false;" class="close-btn" >&times;</button>
@@ -26,94 +26,54 @@
                 showFailure: false,
                 successMessage: '',
                 failMessage: '',
-                currentOrder: {},
-                currentUser: '52',
-                orders: [],
-                ordersMeta:[],
-                ordersLinks:[],
-                userOrders: [],
-                userOrdersMeta:[],
-                userOrdersLinks:[],
-                changingOrder: {}
             }
-        }
-        ,
+        },
         methods: {
-            removeOrderFromArray: function(array, index){
-                var order = array[index];
-                array.splice(index, 1);
-                console.log(order);
-                return order;
+            assignOrderToCook: function(order,index){
+                this.$store.dispatch('assignOrderToCook', {orderId: order.id, userId: this.$store.getters.getAuthUser.id});    
             },
-            addOrderToArray: function(array, order){
-                array.push(order);
+            declareOrderAsPrepared: function(order, index){
+                this.$store.dispatch('declareOrderAsPrepared', {orderId: order.id, userId: this.$store.getters.getAuthUser.id});
             },
-            assignOrderToCook: function(order, index){
-                axios.patch('/api/orders/' + order.id, {order: JSON.stringify(order), user: this.currentUser})
-                    .then((response) => {
-                        // handle success
-                        this.orders = [];
-                        this.userOrders = [];
-                        this.loadConfirmedOrders();
-                        this.loadUserOrders();
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    })
-                    .then(function () {
-                        // always executed
-                    });
-                    
-            },
-            loadUserOrders: function(){
-                axios.get('/api/orders/fromCook/' + this.currentUser)
-                    .then((response) => {
-                        // handle success
-                        this.userOrders = response.data.data;
-                        this.userOrdersMeta = response.data.meta;
-                        this.userOrdersLinks = response.data.links;
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    })
-                    .then(function () {
-                        // always executed
-                    });
+            loadInPreparationUserOrders: function(){
+                this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
             },
             loadConfirmedOrders: function(){
-                axios.get('/api/orders/all')
-                    .then((response) => {
-                        // handle success
-                        this.orders = response.data.data;
-                        this.ordersMeta = response.data.meta;
-                        this.ordersLinks = response.data.links;
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    })
-                    .then(function () {
-                        // always executed
-                    });
+                this.$store.dispatch('loadConfirmedOrders');
             },
-            refreshOrders(newOrders, newMeta, newLinks){
-                this.orders = newOrders;
-                this.ordersMeta = newMeta;
-                this.ordersLinks = newLinks;
+            refreshConfirmedOrders(newConfirmedOrders, newConfirmedMeta, newConfirmedLinks){
+                this.$store.commit('refreshConfirmedOrders', {newConfirmedOrders, newConfirmedMeta, newConfirmedLinks});
             },
-            refreshUserOrders(newUserOrders, newUserOrdersMeta, newUserOrdersLinks){
-                this.userOrders = newUserOrders;
-                this.userOrdersMeta = newUserOrdersMeta;
-                this.userOrdersLinks = newUserOrdersLinks;
+            refreshInPreparationUserOrders(newInPreparationUserOrders, newInPreparationUserOrdersMeta, newInPreparationUserOrdersLinks){
+                this.$store.commit('refreshInPreparationUserOrders', {newInPreparationUserOrders, newInPreparationUserOrdersMeta, newInPreparationUserOrdersLinks});
+            }
+        },
+        computed: {
+            confirmedOrders(){
+                return this.$store.getters.confirmedOrders;
+            },
+            confirmedOrdersMeta(){
+                return this.$store.getters.confirmedOrdersMeta;
+            },
+            confirmedOrdersLinks(){
+                return this.$store.getters.confirmedOrdersLinks;
+            },
+            inPreparationUserOrders(){
+                return this.$store.getters.inPreparationUserOrders;
+            },
+            inPreparationUserOrdersMeta(){
+                return this.$store.getters.inPreparationUserOrdersMeta;
+            },
+            inPreparationUserOrdersLinks(){
+                return this.$store.getters.inPreparationUserOrdersLinks;
+            },
+            currentOrder(){
+                return this.$store.getters.currentOrder;
             }
         },
         mounted() {
             this.loadConfirmedOrders();
-            this.loadUserOrders();
+            this.loadInPreparationUserOrders();
         }
     };
 </script>
