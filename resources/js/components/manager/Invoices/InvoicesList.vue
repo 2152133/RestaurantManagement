@@ -60,13 +60,13 @@ export default {
                 let page_url = url || '/api/invoices/pending'
                 axios.get(page_url)
                 .then(response => {
-                    Object.assign(this.invoices, response.data.data);
+                    this.invoices = response.data.data
                     this.makePagination(response.data.meta, response.data.links)
                 })
             }else {
                 axios.get(url)
                 .then(response => {
-                    Object.assign(this.invoices, response.data.data)
+                    this.invoices = response.data.data
                     this.makeFilteredPagination(response.data)
                 })
             }

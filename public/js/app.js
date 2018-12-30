@@ -59201,12 +59201,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (!this.filteredSearch) {
                 var page_url = url || '/api/invoices/pending';
                 axios.get(page_url).then(function (response) {
-                    Object.assign(_this.invoices, response.data.data);
+                    _this.invoices = response.data.data;
                     _this.makePagination(response.data.meta, response.data.links);
                 });
             } else {
                 axios.get(url).then(function (response) {
-                    Object.assign(_this.invoices, response.data.data);
+                    _this.invoices = response.data.data;
                     _this.makeFilteredPagination(response.data);
                 });
             }
