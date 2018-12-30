@@ -11,6 +11,7 @@ import swal from 'sweetalert';
 import VeeValidate from 'vee-validate';
  
 Vue.use(Toasted, {
+    theme: "bubble",
     position: 'bottom-center',
     duration: 5000,
     type: 'info',
@@ -105,21 +106,6 @@ const app = new Vue({
     el: '#app',
     router: router,
     store,
-    data: {
-        msgGlobalText: '',
-        msgGlobalTextArea: '',
-    },
-    methods: {
-        sendGlobalMsg(){
-            console.log('Sending to the server this message: "' + this.msgGlobalText + '"');
-            if (store.state.user === null) {
-                this.$socket.emit('msg_from_client', this.msgGlobalText);
-            } else {
-                this.$socket.emit('msg_from_client', this.msgGlobalText, store.state.user);
-            }
-            this.msgGlobalText = "";
-        },
-    },
     sockets: {
         // dispultado quando o socket e chamado
         connect() {
@@ -128,22 +114,73 @@ const app = new Vue({
                 this.$socket.emit('user_enter', store.state.user);
             }
         },
-        msg_from_server(data) {
-            this.msgGlobalTextArea = data + '\n' + this.msgGlobalTextArea;
-        },
-        privateMessage(dataFromServer){
+        // managers
+        managerMessage(dataFromServer){
             let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
             this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"');        
         },
-        privateMessage_unavailable(destUser){
+        managerMessage_unavailable(destUser){
             this.$toasted.error('User "' + destUser.name + '" is not available');       
         },
-        privateMessage_sent(dataFromServer){
+        managerMessage_sent(dataFromServer){
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+        // cooks
+        cookMessage(dataFromServer){
+            let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
+            this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"', {
+                action : {
+                    text : 'Go to Orders',
+                    onClick : (e, toastObject) => {
+                        this.$router.push("/orders")
+                        toastObject.goAway(0);
+                    }
+                },
+            });        
+        },
+        cookMessage_unavailable(destUser){
+            this.$toasted.error('User "' + destUser.name + '" is not available');       
+        },
+        cookMessage_sent(dataFromServer){
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+        // waiter of meal
+        responsableWaiterMessage(dataFromServer){
+            let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
+            this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"', {
+                action : {
+                    text : 'Go to Meals',
+                    onClick : (e, toastObject) => {
+                        this.$router.push("/mealsOfWaiter")
+                        toastObject.goAway(0);
+                    }
+                },
+            });        
+        },
+        responsableWaiterMessage_unavailable(destUser){
+            this.$toasted.error('User "' + destUser.name + '" is not available');       
+        },
+        responsableWaiterMessage_sent(dataFromServer){
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+        // cashiers
+        cashierMessage(dataFromServer){
+            let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
+            this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"', {
+                action : {
+                    text : 'Go to Invoices',
+                    onClick : (e, toastObject) => {
+                        this.$router.push("/invoices")
+                        toastObject.goAway(0);
+                    }
+                },
+            });        
+        },
+        cashierMessage_unavailable(destUser){
+            this.$toasted.error('User "' + destUser.name + '" is not available');       
+        },
+        cashierMessage_sent(dataFromServer){
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
         },
     },
-    created() {
-        //console.log('-----');
-        //console.log(store.state.user);
-    }
 })

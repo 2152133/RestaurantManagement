@@ -51,7 +51,6 @@ export default {
                 .then(response=>{
                     this.timeElapsed(this.getAutenticatedUser.last_shift_start)
                     this.$store.dispatch('setAuthUser', this.getAutenticatedUser)
-                    this.getAutenticatedUser
                 })
             
         },
@@ -64,7 +63,6 @@ export default {
                 .then(response=>{
                     this.timeElapsed(this.getAutenticatedUser.last_shift_end)
                     this.$store.dispatch('setAuthUser', this.getAutenticatedUser)
-                    this.getAutenticatedUser
                 })
         },
         sendMessageToActiveManagers(){
@@ -79,7 +77,7 @@ export default {
                     let msg = window.prompt('What do you want to say to the managers?');
                     managers.forEach(manager => {
                         console.log('Sending Message "' + msg + '" to "' + manager.name + '"');
-                        this.$socket.emit('privateMessage', msg, this.$store.state.user, manager);
+                        this.$socket.emit('managerMessage', msg, this.$store.state.user, manager);
                     });
                 })
         },

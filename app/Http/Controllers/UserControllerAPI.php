@@ -131,6 +131,27 @@ class UserControllerAPI extends Controller {
         return $managers;
     }
 
+    public function getCooks(Request $request) {
+        $cooks = DB::table('users')
+            ->where('users.type', '=', 'cook')
+            ->get();
+        return $cooks;
+    }
+
+    public function getWaiters(Request $request) {
+        $waiters = DB::table('users')
+            ->where('users.type', '=', 'waiter')
+            ->get();
+        return $waiters;
+    }
+
+    public function getCashier(Request $request) {
+        $cashiers = DB::table('users')
+            ->where('users.type', '=', 'cashier')
+            ->get();
+        return $cashiers;
+    }
+
     public function startEndShift(Request $request, $id) {
         $request->validate([
             'email' => 'required|email|unique:users,email,'.$id,

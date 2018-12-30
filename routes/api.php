@@ -133,6 +133,15 @@ Route::middleware('auth:api')->group(function () {
     // Get all managers
     Route::get('managers', 'UserControllerAPI@getManagers');
 
+    // Get all cooks
+    Route::get('cooks', 'UserControllerAPI@getCooks');
+
+    // Get all waiters
+    Route::get('waiters', 'UserControllerAPI@getWaiters');
+
+    // Get all cashiers
+    Route::get('cashiers', 'UserControllerAPI@getCashiers');
+
     // Declare as start/ end shift
     Route::patch('shift/{id}', 'UserControllerAPI@startEndShift');
 

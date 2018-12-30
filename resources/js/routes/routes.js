@@ -14,10 +14,10 @@ const invoicesComponent = Vue.component('pending-invoices', require('../componen
 Vue.component('invoices-list', require('../components/cashier/InvoicesList.vue'));
 Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
 Vue.component('invoice-details', require('../components/cashier/InvoiceDetails.vue'));
-const meals_of_waiter = Vue.component('waiterMeals', require('../components/Meals.vue'));
-Vue.component('meals-list', require('../components/MealsList.vue'));
+const meals_of_waiter = Vue.component('waiterMeals', require('../components/waiter/Meals.vue'));
+Vue.component('meals-list', require('../components/waiter/MealsList.vue'));
 Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
-const create_meal = Vue.component('create-meal', require('../components/CreateMeals.vue'));
+const create_meal = Vue.component('create-meal', require('../components/waiter/CreateMeals.vue'));
 Vue.component('itemsList', require('../components/items/ItemsList.vue'));
 const profileEdit = Vue.component('profileEdit', require('../components/restaurantWorker/ProfileEdit.vue'));
 Vue.component('itemEdit', require('../components/items/ItemEdit.vue'));
