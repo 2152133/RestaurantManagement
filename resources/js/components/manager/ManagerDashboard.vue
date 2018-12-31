@@ -10,12 +10,10 @@
                 <strong>@{{failMessage}}</strong>
             </div>
 
-            <tables-list v-if="!editingTable && !creatingTable" :tables="tables" :meta="tablesMeta" :links="tablesLinks" @createTable="openCreateTable" @editTable="editTable" @deleteTable="deleteTable" @refreshTables="refreshTables"></tables-list>
-            <add-edit-table v-if="editingTable" :table="currentTable" @save="saveTable" @cancel="endEditingTable"></add-edit-table> 
-            <add-edit-table v-if="creatingTable" :table="currentTable" @save="createTable" @cancel="endCreatingTable"></add-edit-table>
-            
+            <tables-list :tables="tables" :meta="tablesMeta" :links="tablesLinks" @createTable="openCreateTable" @editTable="editTable" @deleteTable="deleteTable" @refreshTables="refreshTables"></tables-list>
+
             <items-list :items="items" @edit-click="editItem" @delete-click="deleteItem" @message="childMessage" ref="itemsListRef"></items-list>
-            
+            <button class="btn btn-success" @click="createItem()">New Item</button>
             
         </div>         
 </template>
@@ -34,25 +32,11 @@
         ,
         methods: {
             loadTables: function(){
-            axios.get('/api/tables/all')
-                    .then((response) => {
-                        // handle success
-                        this.$store.state.tables = response.data.data;
-                        this.$store.state.tablesMeta = response.data.meta;
-                        this.$store.state.tablesLinks = response.data.links;
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        console.log(error);
-                    })
-                    .then(function () {
-                        // always executed
-                    });
-                },
+                this.$store.dispatch('loadTables');
+            },
             editTable(table){
                 this.$store.state.currentTable = table;
-                this.$store.state.editingTable = true;
+                this.$router.push({name: 'editTable', params: {table: this.currentTable, title: 'Edit table'}})
             },
             deleteTable(table){
                 axios.delete('/api/tables/' + table.table_number)
@@ -98,7 +82,7 @@
             },
             openCreateTable(){
                 this.$store.state.creatingTable = true;
-            },
+                this.$router.push({name: 'addTable', params: {table: this.currentTable, title: 'Add table'}});            },
             createTable(table, newTableNumber){
                 axios.post('/api/tables/' + newTableNumber)
                     .then((response) => {
@@ -119,9 +103,13 @@
             endCreatingTable(){
                 this.$store.state.creatingTable = false;
             },
+            createItem(){
+                this.$router.push("/newItem");
+            },
             editItem(item){
             this.$store.state.currentItem = item;
             this.$store.state.showSuccess = false;
+            this.$router.push({name: 'editItem', params: {item: this.$store.getters.currentItem}})
             },
             deleteItem(item){
                 axios.delete('api/item/' + item.id)

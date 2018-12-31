@@ -14,7 +14,7 @@ const profileEdit = Vue.component('profileEdit', require('../components/restaura
 //-----------------------Items--------------------------------
 const itemsComponent = Vue.component('items', require('../components/items/Items.vue'));
 Vue.component('itemsList', require('../components/items/ItemsList.vue'));
-Vue.component('itemEdit', require('../components/items/ItemEdit.vue'));
+const editItemComponent = Vue.component('itemEdit', require('../components/items/ItemEdit.vue'));
 const itemAddComponent = Vue.component('itemAdd', require('../components/items/ItemAdd.vue'));
 
 
@@ -43,7 +43,7 @@ const create_meal = Vue.component('create-meal', require('../components/CreateMe
 //-------------------------Manager---------------------------
 const managementComponent = Vue.component('management-dashboard', require('../components/manager/ManagerDashboard.vue'));
 Vue.component('tables-list', require('../components/manager/TablesList.vue'));
-Vue.component('add-edit-table', require('../components/manager/AddEditTable.vue'));
+const addEditTableComponent = Vue.component('add-edit-table', require('../components/manager/AddEditTable.vue'));
 const managerUsersComponent = Vue.component('users', require('../components/manager/Users/Users.vue'));
 Vue.component('userEdit', require('../components/manager/Users/UserEdit.vue'));
 Vue.component('usersList', require('../components/manager/Users/UsersList.vue'));
@@ -68,9 +68,88 @@ const logout = Vue.component('logout', require('../components/auth/logout.vue'))
 
 
 const routes = [
+    //--------------Items---------------------
     {
         path: '/', 
         redirect: '/items'
+    },
+    {
+        path: '/items', 
+        component: itemsComponent
+    },
+
+
+
+
+    //-------------------Cooks-------------------
+    {
+        path: '/orders', 
+        component: ordersComponent,
+        meta: {
+            forAuth: true
+        }
+    },
+
+
+
+
+    //-------------------Cashiers-------------------
+    {
+        path: '/invoices', 
+        component: invoicesComponent,
+        meta: {
+            forAuth: true
+        }
+    },
+
+
+
+
+    //------------------Waiters---------------------
+    {
+        path: '/mealsOfWaiter', 
+        component: meals_of_waiter,
+        meta: {
+            forAuth: true
+        }
+    },
+    {
+        path: '/createMeal', 
+        component: create_meal,
+        name: 'create_meal',
+        meta: {
+            forAuth: true
+        }
+    },
+
+
+
+
+    //----------------------Managers-----------------------
+    {
+        path: '/management', 
+        component: managementComponent,
+        meta: {
+            forAuth: true
+        }
+    },
+    {
+        path: '/addTable', 
+        component: addEditTableComponent,
+        name: 'addTable',
+        meta: {
+            forAuth: true
+        },
+        props: true,
+    },
+    {
+        path: '/editTable', 
+        component: addEditTableComponent,
+        name: 'editTable',
+        meta: {
+            forAuth: true
+        },
+        props: true,
     },
     {
         path: '/managerMeals', 
@@ -80,15 +159,12 @@ const routes = [
         }
     },
     {
-        path: '/orders', 
-        component: ordersComponent,
+        path: '/managerUsers', 
+        component: managerUsersComponent,
         meta: {
-            forAuth: true
+            forAuth: true,
+            forManager: true
         }
-    },
-    {
-        path: '/items', 
-        component: itemsComponent
     },
     {
         path: '/newUser', 
@@ -107,12 +183,13 @@ const routes = [
         }
     },
     {
-        path: '/managerUsers', 
-        component: managerUsersComponent,
+        path: '/editItem', 
+        component: editItemComponent,
+        name: 'editItem',
         meta: {
-            forAuth: true,
-            forManager: true
-        }
+            forAuth: true
+        },
+        props: true,
     },
     {
         path: '/managerInvoices', 
@@ -122,6 +199,10 @@ const routes = [
             forManager: true
         }
     },
+
+
+
+    //-----------------Restaurant worker-----------------------
     {
         path: '/profileEdit', 
         component: profileEdit,
@@ -137,42 +218,9 @@ const routes = [
             forAuth: true
         }
     },
-    {
-        path: '/invoices', 
-        component: invoicesComponent,
-        meta: {
-            forAuth: true
-        }
-    },
-    {
-        path: '/mealsOfWaiter', 
-        component: meals_of_waiter,
-        meta: {
-            forAuth: true
-        }
-    },
-    {
-        path: '/createMeal', 
-        component: create_meal,
-        name: 'create_meal',
-        meta: {
-            forAuth: true
-        }
-    },
-    {
-        path: '/management', 
-        component: managementComponent,
-        meta: {
-            forAuth: true
-        }
-    },
-    {
-        path: '/editItem', 
-        component: managementComponent,
-        meta: {
-            forAuth: true
-        }
-    },
+    
+    
+    //---------------Auth----------------------
     {
         path: '/login', 
         component: login, 

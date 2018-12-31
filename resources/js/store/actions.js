@@ -68,4 +68,19 @@ export default {
                 // always executed
             });
     },
+    loadTables(context){
+        axios.get('/api/tables/all')
+                .then((response) => {
+                    // handle success
+                    context.commit('refreshTablesPagination', response);
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+                .then(function () {
+                    // always executed
+                });
+            },
 }

@@ -58,5 +58,10 @@ export default {
         state.inPreparationUserOrders = payload.newInPreparationUserOrders;
         state.inPreparationUserOrdersMeta = payload.newInPreparationUserOrdersMeta;
         state.inPreparationUserOrdersLinks = payload.newInPreparationUserOrdersLinks;
-    }
+    },
+    refreshTablesPagination(state, response){
+        state.tables = response.data.data;
+        state.tablesMeta = response.data.meta;
+        state.tablesLinks = response.data.links;
+    },
 }

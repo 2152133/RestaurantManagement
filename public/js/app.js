@@ -48633,6 +48633,11 @@ var index_esm = {
         state.inPreparationUserOrders = payload.newInPreparationUserOrders;
         state.inPreparationUserOrdersMeta = payload.newInPreparationUserOrdersMeta;
         state.inPreparationUserOrdersLinks = payload.newInPreparationUserOrdersLinks;
+    },
+    refreshTablesPagination: function refreshTablesPagination(state, response) {
+        state.tables = response.data.data;
+        state.tablesMeta = response.data.meta;
+        state.tablesLinks = response.data.links;
     }
 });
 
@@ -48699,6 +48704,18 @@ var index_esm = {
         }).then(function () {
             // always executed
         });
+    },
+    loadTables: function loadTables(context) {
+        axios.get('/api/tables/all').then(function (response) {
+            // handle success
+            context.commit('refreshTablesPagination', response);
+            console.log(response);
+        }).catch(function (error) {
+            // handle error
+            console.log(error);
+        }).then(function () {
+            // always executed
+        });
     }
 });
 
@@ -48722,7 +48739,7 @@ var profileEdit = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('profile
 //-----------------------Items--------------------------------
 var itemsComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('items', __webpack_require__(48));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemsList', __webpack_require__(91));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemEdit', __webpack_require__(106));
+var editItemComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemEdit', __webpack_require__(106));
 var itemAddComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemAdd', __webpack_require__(127));
 
 //------------------------Orders-------------------------------------
@@ -48743,7 +48760,7 @@ var create_meal = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('create-
 //-------------------------Manager---------------------------
 var managementComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('management-dashboard', __webpack_require__(94));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('tables-list', __webpack_require__(97));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('add-edit-table', __webpack_require__(100));
+var addEditTableComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('add-edit-table', __webpack_require__(100));
 var managerUsersComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('users', __webpack_require__(115));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('userEdit', __webpack_require__(118));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('usersList', __webpack_require__(121));
@@ -48762,9 +48779,73 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('pagination', __webpack_re
 var login = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('login', __webpack_require__(109));
 var logout = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('logout', __webpack_require__(112));
 
-var routes = [{
+var routes = [
+//--------------Items---------------------
+{
     path: '/',
     redirect: '/items'
+}, {
+    path: '/items',
+    component: itemsComponent
+},
+
+//-------------------Cooks-------------------
+{
+    path: '/orders',
+    component: ordersComponent,
+    meta: {
+        forAuth: true
+    }
+},
+
+//-------------------Cashiers-------------------
+{
+    path: '/invoices',
+    component: invoicesComponent,
+    meta: {
+        forAuth: true
+    }
+},
+
+//------------------Waiters---------------------
+{
+    path: '/mealsOfWaiter',
+    component: meals_of_waiter,
+    meta: {
+        forAuth: true
+    }
+}, {
+    path: '/createMeal',
+    component: create_meal,
+    name: 'create_meal',
+    meta: {
+        forAuth: true
+    }
+},
+
+//----------------------Managers-----------------------
+{
+    path: '/management',
+    component: managementComponent,
+    meta: {
+        forAuth: true
+    }
+}, {
+    path: '/addTable',
+    component: addEditTableComponent,
+    name: 'addTable',
+    meta: {
+        forAuth: true
+    },
+    props: true
+}, {
+    path: '/editTable',
+    component: addEditTableComponent,
+    name: 'editTable',
+    meta: {
+        forAuth: true
+    },
+    props: true
 }, {
     path: '/managerMeals',
     component: managerMealsComponent,
@@ -48772,14 +48853,12 @@ var routes = [{
         forManager: true
     }
 }, {
-    path: '/orders',
-    component: ordersComponent,
+    path: '/managerUsers',
+    component: managerUsersComponent,
     meta: {
-        forAuth: true
+        forAuth: true,
+        forManager: true
     }
-}, {
-    path: '/items',
-    component: itemsComponent
 }, {
     path: '/newUser',
     component: userAddComponent,
@@ -48795,12 +48874,13 @@ var routes = [{
         forManager: true
     }
 }, {
-    path: '/managerUsers',
-    component: managerUsersComponent,
+    path: '/editItem',
+    component: editItemComponent,
+    name: 'editItem',
     meta: {
-        forAuth: true,
-        forManager: true
-    }
+        forAuth: true
+    },
+    props: true
 }, {
     path: '/managerInvoices',
     component: managerInvoicesComponent,
@@ -48808,7 +48888,10 @@ var routes = [{
         forAuth: true,
         forManager: true
     }
-}, {
+},
+
+//-----------------Restaurant worker-----------------------
+{
     path: '/profileEdit',
     component: profileEdit,
     meta: {
@@ -48821,38 +48904,10 @@ var routes = [{
     meta: {
         forAuth: true
     }
-}, {
-    path: '/invoices',
-    component: invoicesComponent,
-    meta: {
-        forAuth: true
-    }
-}, {
-    path: '/mealsOfWaiter',
-    component: meals_of_waiter,
-    meta: {
-        forAuth: true
-    }
-}, {
-    path: '/createMeal',
-    component: create_meal,
-    name: 'create_meal',
-    meta: {
-        forAuth: true
-    }
-}, {
-    path: '/management',
-    component: managementComponent,
-    meta: {
-        forAuth: true
-    }
-}, {
-    path: '/editItem',
-    component: managementComponent,
-    meta: {
-        forAuth: true
-    }
-}, {
+},
+
+//---------------Auth----------------------
+{
     path: '/login',
     component: login,
     name: 'login',
@@ -55847,8 +55902,6 @@ module.exports = Component.exports
 //
 //
 //
-//
-//
 
 module.exports = {
     data: function data() {
@@ -55863,32 +55916,19 @@ module.exports = {
 
     methods: {
         loadTables: function loadTables() {
-            var _this = this;
-
-            axios.get('/api/tables/all').then(function (response) {
-                // handle success
-                _this.$store.state.tables = response.data.data;
-                _this.$store.state.tablesMeta = response.data.meta;
-                _this.$store.state.tablesLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
+            this.$store.dispatch('loadTables');
         },
         editTable: function editTable(table) {
             this.$store.state.currentTable = table;
-            this.$store.state.editingTable = true;
+            this.$router.push({ name: 'editTable', params: { table: this.currentTable, title: 'Edit table' } });
         },
         deleteTable: function deleteTable(table) {
-            var _this2 = this;
+            var _this = this;
 
             axios.delete('/api/tables/' + table.table_number).then(function (response) {
                 // handle success
-                _this2.$store.state.tables = {};
-                _this2.loadTables();
+                _this.$store.state.tables = {};
+                _this.loadTables();
                 console.log(response);
             }).catch(function (error) {
                 // handle error
@@ -55903,12 +55943,12 @@ module.exports = {
             this.$store.state.tablesLinks = newLinks;
         },
         saveTable: function saveTable(table, newTableNumber) {
-            var _this3 = this;
+            var _this2 = this;
 
             axios.patch('/api/tables/' + table.table_number, { table: JSON.stringify(table), newTableNumber: newTableNumber, user: this.currentUser }).then(function (response) {
                 // handle success
-                _this3.$store.state.tables = {};
-                _this3.loadTables();
+                _this2.$store.state.tables = {};
+                _this2.loadTables();
                 console.log(response);
             }).catch(function (error) {
                 // handle error
@@ -55924,15 +55964,16 @@ module.exports = {
         },
         openCreateTable: function openCreateTable() {
             this.$store.state.creatingTable = true;
+            this.$router.push({ name: 'addTable', params: { table: this.currentTable, title: 'Add table' } });
         },
         createTable: function createTable(table, newTableNumber) {
-            var _this4 = this;
+            var _this3 = this;
 
             axios.post('/api/tables/' + newTableNumber).then(function (response) {
                 // handle success
-                _this4.$store.state.tables = {};
-                _this4.loadTables();
-                _this4.$store.state.creatingTable = false;
+                _this3.$store.state.tables = {};
+                _this3.loadTables();
+                _this3.$store.state.creatingTable = false;
                 console.log(response);
             }).catch(function (error) {
                 // handle error
@@ -55944,15 +55985,19 @@ module.exports = {
         endCreatingTable: function endCreatingTable() {
             this.$store.state.creatingTable = false;
         },
+        createItem: function createItem() {
+            this.$router.push("/newItem");
+        },
         editItem: function editItem(item) {
             this.$store.state.currentItem = item;
             this.$store.state.showSuccess = false;
+            this.$router.push({ name: 'editItem', params: { item: this.$store.getters.currentItem } });
         },
         deleteItem: function deleteItem(item) {
-            var _this5 = this;
+            var _this4 = this;
 
             axios.delete('api/item/' + item.id).then(function (response) {
-                _this5.getItems();
+                _this4.getItems();
             });
         },
 
@@ -55968,10 +56013,10 @@ module.exports = {
             this.showSuccess = false;
         },
         getItems: function getItems() {
-            var _this6 = this;
+            var _this5 = this;
 
             axios.get('api/items').then(function (response) {
-                _this6.$store.state.items = response.data.data;
+                _this5.$store.state.items = response.data.data;
             });
         },
         childMessage: function childMessage(message) {
@@ -56059,35 +56104,19 @@ var render = function() {
           )
         : _vm._e(),
       _vm._v(" "),
-      !_vm.editingTable && !_vm.creatingTable
-        ? _c("tables-list", {
-            attrs: {
-              tables: _vm.tables,
-              meta: _vm.tablesMeta,
-              links: _vm.tablesLinks
-            },
-            on: {
-              createTable: _vm.openCreateTable,
-              editTable: _vm.editTable,
-              deleteTable: _vm.deleteTable,
-              refreshTables: _vm.refreshTables
-            }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.editingTable
-        ? _c("add-edit-table", {
-            attrs: { table: _vm.currentTable },
-            on: { save: _vm.saveTable, cancel: _vm.endEditingTable }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.creatingTable
-        ? _c("add-edit-table", {
-            attrs: { table: _vm.currentTable },
-            on: { save: _vm.createTable, cancel: _vm.endCreatingTable }
-          })
-        : _vm._e(),
+      _c("tables-list", {
+        attrs: {
+          tables: _vm.tables,
+          meta: _vm.tablesMeta,
+          links: _vm.tablesLinks
+        },
+        on: {
+          createTable: _vm.openCreateTable,
+          editTable: _vm.editTable,
+          deleteTable: _vm.deleteTable,
+          refreshTables: _vm.refreshTables
+        }
+      }),
       _vm._v(" "),
       _c("items-list", {
         ref: "itemsListRef",
@@ -56097,7 +56126,20 @@ var render = function() {
           "delete-click": _vm.deleteItem,
           message: _vm.childMessage
         }
-      })
+      }),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-success",
+          on: {
+            click: function($event) {
+              _vm.createItem()
+            }
+          }
+        },
+        [_vm._v("New Item")]
+      )
     ],
     1
   )
@@ -56244,20 +56286,6 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-primary btn-sm btn-block",
-                    attrs: { type: "Submit" },
-                    on: {
-                      click: function($event) {
-                        _vm.editTable(table, index)
-                      }
-                    }
-                  },
-                  [_vm._v("Edit")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
                     staticClass: "btn btn-danger btn-sm btn-block",
                     attrs: { type: "Submit" },
                     on: {
@@ -56384,9 +56412,13 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
+//
 
 module.exports = {
-    props: ['table'],
+    props: ['table', 'title'],
     data: function data() {
         return {
             newTableNumber: -1
@@ -56395,12 +56427,26 @@ module.exports = {
 
     methods: {
         save: function save() {
+            var _this = this;
+
             this.newTableNumber = document.getElementById("newTableNumber").value;
             console.log(this.newTableNumber);
-            this.$emit('save', this.table, this.newTableNumber);
+            //this.$emit('save', this.table, this.newTableNumber);
+            axios.post('/api/tables/' + this.newTableNumber).then(function (response) {
+                // handle success
+                _this.$store.state.tables = {};
+                _this.$store.dispatch('loadTables');
+                _this.$router.go(-1);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
         },
         cancel: function cancel() {
-            this.$emit('cancel', this.table);
+            this.$store.state.currentTable = {};
+            this.$router.go(-1);
         }
     }
 };
@@ -56414,6 +56460,10 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _c("div", { staticClass: "jumbotron" }, [
+      _c("h1", [_vm._v(_vm._s(_vm.title))])
+    ]),
+    _vm._v(" "),
     _c(
       "form",
       {
