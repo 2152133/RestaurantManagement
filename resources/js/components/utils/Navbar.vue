@@ -23,7 +23,7 @@
                     <a><router-link class="nav-item nav-link" to="dashboard" v-if="isAuthenticated">Dashboard</router-link></a>
                 </li>
                 <li class="nav-item">
-                    <a><router-link class="nav-item nav-link" to="management" v-if="this.$store.getters.isAuthenticated">Management</router-link></a>
+                    <a><router-link class="nav-item nav-link" to="tables" v-if="this.$store.getters.isAuthenticated">Tables</router-link></a>
                 </li>
             </ul>
             <ul class="navbar-nav">

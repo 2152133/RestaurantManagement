@@ -12,9 +12,6 @@
 
             <tables-list :tables="tables" :meta="tablesMeta" :links="tablesLinks" @createTable="openCreateTable" @editTable="editTable" @deleteTable="deleteTable" @refreshTables="refreshTables"></tables-list>
 
-            <items-list :items="items" @edit-click="editItem" @delete-click="deleteItem" @message="childMessage" ref="itemsListRef"></items-list>
-            <button class="btn btn-success" @click="createItem()">New Item</button>
-            
         </div>         
 </template>
 
@@ -22,11 +19,7 @@
     module.exports = {
         data: function() {
             return {
-                title: 'Management dashboard',
-                showSuccess: false,
-                showFailure: false,
-                successMessage: '',
-                failMessage: '', 
+                title: 'Tables',
             }
         }
         ,
@@ -103,41 +96,7 @@
             endCreatingTable(){
                 this.$store.state.creatingTable = false;
             },
-            createItem(){
-                this.$router.push("/newItem");
-            },
-            editItem(item){
-            this.$store.state.currentItem = item;
-            this.$store.state.showSuccess = false;
-            this.$router.push({name: 'editItem', params: {item: this.$store.getters.currentItem}})
-            },
-            deleteItem(item){
-                axios.delete('api/item/' + item.id)
-                .then(response => {
-                    this.getItems();
-                })
-            },
-            savedItem: function(){
-                this.$store.state.currentItem = null;
-                this.$refs.itemsListRef.editingitem = null;
-                this.showSuccess = true;
-                this.successMessage = 'Item Saved';
-            },
-            cancelEdit: function(){
-                this.$store.state.currentItem = null;
-                this.$refs.itemsListRef.editingitem = null;
-                this.showSuccess = false;
-            },
-            getItems: function(){
-                axios.get('api/items')
-                .then(response=>{
-                    this.$store.state.items = response.data.data; 
-                });
-            },
-            childMessage: function(message){
-                this.showSuccess = true;
-                this.successMessage = message;
-            } 
+
         },
         computed: {
             tables(){
@@ -158,17 +117,11 @@
             creatingTable(){
                 return this.$store.getters.creatingTable;
             },
-            currentItem(){
-                return this.$store.getters.currentItem;
-            },
-            items(){
-                return this.$store.getters.items;
-            },
+
         },
         mounted(){
             this.loadTables();
-            this.getItems();
         }
-        };
+    };
 </script>
     
