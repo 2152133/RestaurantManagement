@@ -3,43 +3,69 @@ import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);
 
-// Vue.component('example-component', require('./components/ExampleComponent.vue'));
+
+
+//-----------------Restaurant worker-------------------------
+const dashboard = Vue.component('dashboard', require('../components/restaurantWorker/Dashboard.vue')); 
+const profileEdit = Vue.component('profileEdit', require('../components/restaurantWorker/ProfileEdit.vue'));
+
+
+
+//-----------------------Items--------------------------------
 const itemsComponent = Vue.component('items', require('../components/items/Items.vue'));
-Vue.component('navbar', require('../components/utils/Navbar.vue'));
+Vue.component('itemsList', require('../components/items/ItemsList.vue'));
+Vue.component('itemEdit', require('../components/items/ItemEdit.vue'));
+const itemAddComponent = Vue.component('itemAdd', require('../components/items/ItemAdd.vue'));
+
+
+
+//------------------------Orders-------------------------------------
 const ordersComponent = Vue.component('orders', require('../components/cook/Orders.vue'));
 Vue.component('orders-list', require('../components/cook/OrdersList.vue'));
-Vue.component('pagination', require('../components/utils/Pagination.vue'));
-const dashboard = Vue.component('dashboard', require('../components/restaurantWorker/Dashboard.vue')); 
+
+
+//---------------------Cashier--------------------------------------
 const invoicesComponent = Vue.component('pending-invoices', require('../components/cashier/Invoices.vue'));
 Vue.component('invoices-list', require('../components/cashier/InvoicesList.vue'));
 Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
 Vue.component('invoice-details', require('../components/cashier/InvoiceDetails.vue'));
+
+
+
+
+//-----------------------------Waiter---------------------------
 const meals_of_waiter = Vue.component('waiterMeals', require('../components/Meals.vue'));
 Vue.component('meals-list', require('../components/MealsList.vue'));
-Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
 const create_meal = Vue.component('create-meal', require('../components/CreateMeals.vue'));
-Vue.component('itemsList', require('../components/items/ItemsList.vue'));
+
+
+
+//-------------------------Manager---------------------------
 const managementComponent = Vue.component('management-dashboard', require('../components/manager/ManagerDashboard.vue'));
 Vue.component('tables-list', require('../components/manager/TablesList.vue'));
 Vue.component('add-edit-table', require('../components/manager/AddEditTable.vue'));
-const profileEdit = Vue.component('profileEdit', require('../components/restaurantWorker/ProfileEdit.vue'));
-Vue.component('itemEdit', require('../components/items/ItemEdit.vue'));
-const login = Vue.component('login', require('../components/auth/login.vue'));
-const logout = Vue.component('logout', require('../components/auth/logout.vue'));
 const managerUsersComponent = Vue.component('users', require('../components/manager/Users/Users.vue'));
 Vue.component('userEdit', require('../components/manager/Users/UserEdit.vue'));
 Vue.component('usersList', require('../components/manager/Users/UsersList.vue'));
 const userAddComponent = Vue.component('userAdd', require('../components/manager/Users/UserAdd.vue'));
-const itemAddComponent = Vue.component('itemAdd', require('../components/items/ItemAdd.vue'));
-//Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
-
 const managerMealsComponent = Vue.component('meals', require('../components/manager/Meals/Meals.vue'));
 Vue.component('mealsListManager', require('../components/manager/Meals/MealsList.vue'));
 Vue.component('mealDetailsList', require('../components/manager/Meals/MealDetailsList.vue'));
-
 const managerInvoicesComponent = Vue.component('invoices', require('../components/manager/Invoices/Invoices.vue'));
 Vue.component('invoicesListManager', require('../components/manager/Invoices/InvoicesList.vue'));
-//Vue.component('mealDetailsList', require('../components/manager/MealDetailsList.vue'));
+
+
+//-------------------------Utils-------------------------
+Vue.component('navbar', require('../components/utils/Navbar.vue'));
+Vue.component('pagination', require('../components/utils/Pagination.vue'));
+
+
+
+//----------------------Auth---------------------------
+const login = Vue.component('login', require('../components/auth/login.vue'));
+const logout = Vue.component('logout', require('../components/auth/logout.vue'));
+
+
 
 const routes = [
     {
@@ -135,6 +161,13 @@ const routes = [
     },
     {
         path: '/management', 
+        component: managementComponent,
+        meta: {
+            forAuth: true
+        }
+    },
+    {
+        path: '/editItem', 
         component: managementComponent,
         meta: {
             forAuth: true

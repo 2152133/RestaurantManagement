@@ -48715,43 +48715,52 @@ var index_esm = {
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
 
-// Vue.component('example-component', require('./components/ExampleComponent.vue'));
+//-----------------Restaurant worker-------------------------
+var dashboard = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('dashboard', __webpack_require__(63));
+var profileEdit = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('profileEdit', __webpack_require__(103));
+
+//-----------------------Items--------------------------------
 var itemsComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('items', __webpack_require__(48));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('navbar', __webpack_require__(51));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemsList', __webpack_require__(91));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemEdit', __webpack_require__(106));
+var itemAddComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemAdd', __webpack_require__(127));
+
+//------------------------Orders-------------------------------------
 var ordersComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('orders', __webpack_require__(54));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('orders-list', __webpack_require__(57));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('pagination', __webpack_require__(60));
-var dashboard = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('dashboard', __webpack_require__(63));
+
+//---------------------Cashier--------------------------------------
 var invoicesComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('pending-invoices', __webpack_require__(66));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoices-list', __webpack_require__(69));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('edit-nif-name', __webpack_require__(15));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoice-details', __webpack_require__(74));
+
+//-----------------------------Waiter---------------------------
 var meals_of_waiter = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('waiterMeals', __webpack_require__(82));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('meals-list', __webpack_require__(85));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('edit-nif-name', __webpack_require__(15));
 var create_meal = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('create-meal', __webpack_require__(88));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemsList', __webpack_require__(91));
+
+//-------------------------Manager---------------------------
 var managementComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('management-dashboard', __webpack_require__(94));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('tables-list', __webpack_require__(97));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('add-edit-table', __webpack_require__(100));
-var profileEdit = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('profileEdit', __webpack_require__(103));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemEdit', __webpack_require__(106));
-var login = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('login', __webpack_require__(109));
-var logout = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('logout', __webpack_require__(112));
 var managerUsersComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('users', __webpack_require__(115));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('userEdit', __webpack_require__(118));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('usersList', __webpack_require__(121));
 var userAddComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('userAdd', __webpack_require__(124));
-var itemAddComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemAdd', __webpack_require__(127));
-//Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
-
 var managerMealsComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('meals', __webpack_require__(130));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('mealsListManager', __webpack_require__(133));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('mealDetailsList', __webpack_require__(136));
-
 var managerInvoicesComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoices', __webpack_require__(139));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoicesListManager', __webpack_require__(142));
-//Vue.component('mealDetailsList', require('../components/manager/MealDetailsList.vue'));
+
+//-------------------------Utils-------------------------
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('navbar', __webpack_require__(51));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('pagination', __webpack_require__(60));
+
+//----------------------Auth---------------------------
+var login = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('login', __webpack_require__(109));
+var logout = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('logout', __webpack_require__(112));
 
 var routes = [{
     path: '/',
@@ -48833,6 +48842,12 @@ var routes = [{
     }
 }, {
     path: '/management',
+    component: managementComponent,
+    meta: {
+        forAuth: true
+    }
+}, {
+    path: '/editItem',
     component: managementComponent,
     meta: {
         forAuth: true
