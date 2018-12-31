@@ -38,6 +38,8 @@ const managerInvoicesComponent = Vue.component('invoices', require('../component
 Vue.component('invoicesListManager', require('../components/manager/Invoices/InvoicesList.vue'));
 //Vue.component('mealDetailsList', require('../components/manager/MealDetailsList.vue'));
 
+const statisticsComponent = Vue.component('statistics', require('../components/manager/Statistics.vue'));
+
 const routes = [
     {
         path: '/', 
@@ -46,6 +48,13 @@ const routes = [
     {
         path: '/managerMeals', 
         component: managerMealsComponent,
+        meta: {
+            forManager: true,
+        }
+    },
+    {
+        path: '/statistics', 
+        component: statisticsComponent,
         meta: {
             forManager: true,
         }

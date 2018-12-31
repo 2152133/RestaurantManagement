@@ -2,13 +2,13 @@
 <div>
     <nav aria-label="Page navigation example">
         <div>
-            <a class="btn btn-primary" @click.prevent="reset()">Reset</a>
-            <a class="btn btn-primary" @click.prevent="filterByState('active')">Active</a>
-            <a class="btn btn-primary" @click.prevent="filterByState('terminated')">Terminated</a>
-            <a class="btn btn-primary" @click.prevent="filterByState('paid')">Paid</a>
-            <a class="btn btn-primary" @click.prevent="filterByState('not paid')">Not Paid</a>
+            <a class="btn btn-info" @click.prevent="reset()">Reset</a>
+            <a class="btn btn-info" @click.prevent="filterByState('active')">Active</a>
+            <a class="btn btn-info" @click.prevent="filterByState('terminated')">Terminated</a>
+            <a class="btn btn-info" @click.prevent="filterByState('paid')">Paid</a>
+            <a class="btn btn-info" @click.prevent="filterByState('not paid')">Not Paid</a>
         </div>
-        <br>
+        <hr>
         <ul class="pagination">
             <li v-bind:class="[{disabled: !pagination.prev_page_url}]" 
             class="page-item"><a class="page-link" href="#"
@@ -39,7 +39,7 @@
             <td>{{ meal.responsible_waiter ? meal.responsible_waiter.name : " - NONE - " }}</td>
             <td>{{ meal.total_price_preview }}</td>
             <td>
-                <a class="btn btn-sm btn-primary" v-on:click.prevent="getMealOrders(meal.id)">Details</a> 
+                <a class="btn btn-sm btn-warning" v-on:click.prevent="getMealOrders(meal.id)">Details</a> 
             </td>
         </tbody>
     </table>
