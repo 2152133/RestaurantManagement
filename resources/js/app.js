@@ -9,7 +9,8 @@ import VueSocketio from 'vue-socket.io';
 import Toasted from 'vue-toasted';
 import swal from 'sweetalert';
 import VeeValidate from 'vee-validate';
- 
+import Vue from 'vue';
+
 Vue.use(Toasted, {
     theme: "bubble",
     position: 'bottom-center',
@@ -24,7 +25,6 @@ Vue.use(new VueSocketio({
 
 
 Vue.use(VeeValidate);
-
 
 
 // Para manter o utilizador logado depois de refrescar a pagina
@@ -71,8 +71,11 @@ axios.interceptors.response.use(
             else
                 swal(error.response.status.toString(), 'Invalid data.', 'error')
         }
-        else if (error.status == 500) {
-            swal(error.response.status.toString(), 'We are expiriencing an internal problem.', 'error')
+        else if (error.response.status == 500) {
+            if (error.response.data.error)
+                swal(error.response.status.toString(), error.response.data.error, 'error')
+            else
+                swal(error.response.status.toString(), 'We are expiriencing an internal problem.', 'error')
         }
     }
 );

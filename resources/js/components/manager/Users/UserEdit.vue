@@ -51,7 +51,7 @@
             </div>
 	    </div>
 	    <div class="form-group">
-	        <a class="btn btn-primary" @click.prevent="saveUser()">Save</a>
+	        <a class="btn btn-success" @click.prevent="saveUser()">Save</a>
 	        <a class="btn btn-light" @click.prevent="cancelEdit()">Cancel</a>
 	    </div>
     </div>

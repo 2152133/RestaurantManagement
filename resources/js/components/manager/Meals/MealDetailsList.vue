@@ -1,6 +1,6 @@
 <template>
     <div class="jumbotron">
-    <h1>{{ subTitle }} {{ mealId }} <a class="btn btn-warning" v-on:click.prevent="closeMealOrdersDetails()">Close</a></h1> 
+    <h1>{{ subTitle }} {{ mealId }} <button class="btn btn-sm btn-danger" v-on:click.prevent="closeMealOrdersDetails()">Close</button></h1> 
     <table class="table">
         <thead>
             <tr>

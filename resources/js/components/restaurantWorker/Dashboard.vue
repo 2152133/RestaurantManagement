@@ -4,11 +4,12 @@
         <div class="jumbotron">
             <h1>{{title}}</h1>
         </div>
-        <button class="btn btn-success" @click.prevent="sendMessageToActiveManagers">Send Manager message</button>
-        <button class="btn btn-warning"><router-link to="profileEdit">Edit Profile</router-link></button>
-        <button v-if="isManager" class="btn btn-warning"><router-link to="managerUsers">Users</router-link></button>
-        <button v-if="isManager" class="btn btn-warning"><router-link to="managerMeals">Meals</router-link></button>
-        <button v-if="isManager" class="btn btn-warning"><router-link to="managerInvoices">Invoices</router-link></button>
+        <button class="btn btn-primary" @click.prevent="sendMessageToActiveManagers">Send Manager message</button>
+        <button class="btn btn-dark"><router-link to="profileEdit">Edit Profile</router-link></button>
+        <button v-if="isManager" class="btn btn-dark"><router-link to="managerUsers">Users</router-link></button>
+        <button v-if="isManager" class="btn btn-dark"><router-link to="managerMeals">Meals</router-link></button>
+        <button v-if="isManager" class="btn btn-dark"><router-link to="managerInvoices">Invoices</router-link></button>
+        <button v-if="isManager" class="btn btn-dark"><router-link to="statistics">Statistics</router-link></button>
     </div>
     <br>
     <div>
@@ -30,7 +31,6 @@
     <br>
     <button v-if="!isShiftActive" @click.prevent="startShift()" class="btn btn-success">Start Shift</button>
     <button v-else @click.prevent="endShift()" class="btn btn-danger">End Shift</button>
-    <br>
   </div>
 </template>
 <script>
