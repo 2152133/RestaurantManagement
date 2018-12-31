@@ -172,10 +172,14 @@ Route::middleware('auth:api')->group(function () {
     //Get filtered meals
     Route::get('/invoices/filtered', 'InvoiceController@getFiltered');
 
-    // Statistcs
+    // Statistcs US39
     Route::get('/ordersHandledCook/{id}/dates/{dates}', 'Statistics@getAVGNumberOfOrdersHandledOnGivenDatesForEachCook');
     Route::get('/ordersHandledWaiter/{id}/dates/{dates}', 'Statistics@getAVGNumberOfOrdersHandledOnGivenDatesForEachWaiter');
     Route::get('/mealsHandledWaiter/{id}/dates/{dates}', 'Statistics@getAVGNumberOfMealsHandledOnGivenDatesForEachWaiter');
+
+    // Statistics US40
+    Route::get('/test/id/{id}/dates/{dates}', 'Statistics@test');
+
 // List all items
 Route::get('/items', 'ItemController@index');
 Route::get('/items/all', 'ItemController@all');

@@ -8,6 +8,7 @@ use Carbon\Carbon;
 
 class Statistics extends Controller
 {
+    // US39
     public function getAVGNumberOfOrdersHandledOnGivenDatesForEachCook(Request $request, $id, $dates) {
         $arrayOfDatesANdAVG = array();
         $datesToCompare = explode(',', $dates);
@@ -61,6 +62,7 @@ class Statistics extends Controller
         return $arrayOfDatesANdAVG;
     }
 
+    // US40
     public function getAVGNumberOfMealsHandledOnGivenDatesForEachWaiter(Request $request, $id, $dates) {
         $arrayOfDatesANdAVG = array();
         $datesToCompare = explode(',', $dates);
@@ -88,16 +90,36 @@ class Statistics extends Controller
     }
 
     public function getTotalOrdersFromGivenMonth(Request $request, $dates) {
-        $arrayOfDatesANdAVG = array();
+        $arrayOfDatesAndAVG = array();
         $datesToCompare = explode(',', $dates);
 
         foreach ($datesToCompare as $date) {
             try {
-                $totalOrdersFromGivenDay = 
+                $totalOrdersFromGivenMonth = 
                     DB::table('orders')
-                        ->whereDate('start', Carbon::parse($date))
+                        ->whereYear('start', '=', Carbon::parse($date)->format('Y'))
+                        ->whereMonth('start', '=', Carbon::parse($date)->format('m'))
                         ->count();
-                array_push($arrayOfDatesANdAVG, ['date' => $date, 'Total Orders' => $totalOrdersFromGivenDay]);
+                array_push($arrayOfDatesAndAVG, ['date' => $date, 'Total Orders' => $totalOrdersFromGivenMonth]);
+            }catch (\Exception $e){
+                return response()->json(['error' => 'Invalid date format.'], 500);
+            }
+        }
+        return $arrayOfDatesANdAVG;
+    }
+
+    public function getTotalMealsFromGivenMonth(Request $request, $dates) {
+        $arrayOfDatesAndAVG = array();
+        $datesToCompare = explode(',', $dates);
+
+        foreach ($datesToCompare as $date) {
+            try {
+                $totalMealsFromGivenMonth = 
+                    DB::table('meals')
+                        ->whereYear('start', '=', Carbon::parse($date)->format('Y'))
+                        ->whereMonth('start', '=', Carbon::parse($date)->format('m'))
+                        ->count();
+                array_push($arrayOfDatesAndAVG, ['date' => $date, 'Total Meals' => $totalMealsFromGivenMonth]);
             }catch (\Exception $e){
                 return response()->json(['error' => 'Invalid date format.'], 500);
             }
