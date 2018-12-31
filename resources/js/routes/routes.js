@@ -34,9 +34,9 @@ Vue.component('invoice-details', require('../components/cashier/InvoiceDetails.v
 
 
 //-----------------------------Waiter---------------------------
-const meals_of_waiter = Vue.component('waiterMeals', require('../components/Meals.vue'));
-Vue.component('meals-list', require('../components/MealsList.vue'));
-const create_meal = Vue.component('create-meal', require('../components/CreateMeals.vue'));
+const meals_of_waiter = Vue.component('waiterMeals', require('../components/waiter/Meals.vue'));
+Vue.component('meals-list', require('../components/waiter/MealsList.vue'));
+const create_meal = Vue.component('create-meal', require('../components/waiter/CreateMeals.vue'));
 
 
 
@@ -67,6 +67,8 @@ const logout = Vue.component('logout', require('../components/auth/logout.vue'))
 
 
 
+const statisticsComponent = Vue.component('statistics', require('../components/manager/Statistics.vue'));
+
 const routes = [
     //--------------Items---------------------
     {
@@ -82,6 +84,13 @@ const routes = [
 
 
     //-------------------Cooks-------------------
+    {
+        path: '/statistics', 
+        component: statisticsComponent,
+        meta: {
+            forManager: true,
+        }
+    },
     {
         path: '/orders', 
         component: ordersComponent,

@@ -133,6 +133,15 @@ Route::middleware('auth:api')->group(function () {
     // Get all managers
     Route::get('managers', 'UserControllerAPI@getManagers');
 
+    // Get all cooks
+    Route::get('cooks', 'UserControllerAPI@getCooks');
+
+    // Get all waiters
+    Route::get('waiters', 'UserControllerAPI@getWaiters');
+
+    // Get all cashiers
+    Route::get('cashiers', 'UserControllerAPI@getCashiers');
+
     // Declare as start/ end shift
     Route::patch('shift/{id}', 'UserControllerAPI@startEndShift');
 
@@ -175,7 +184,10 @@ Route::middleware('auth:api')->group(function () {
     //Get filtered meals
     Route::get('/invoices/filtered', 'InvoiceController@getFiltered');
 
-
+    // Statistcs
+    Route::get('/ordersHandledCook/{id}/dates/{dates}', 'Statistics@getAVGNumberOfOrdersHandledOnGivenDatesForEachCook');
+    Route::get('/ordersHandledWaiter/{id}/dates/{dates}', 'Statistics@getAVGNumberOfOrdersHandledOnGivenDatesForEachWaiter');
+    Route::get('/mealsHandledWaiter/{id}/dates/{dates}', 'Statistics@getAVGNumberOfMealsHandledOnGivenDatesForEachWaiter');
 // List all items
 Route::get('/items', 'ItemController@index');
 Route::get('/items/all', 'ItemController@all');

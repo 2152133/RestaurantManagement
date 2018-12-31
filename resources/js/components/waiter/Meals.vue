@@ -200,8 +200,22 @@ module.exports = {
       axios
         .post("/api/meal/addOrder/" + meal_number + "/" + item_number)
         .then(response => {
-          this.successMessage = "Success";
-          this.showSuccess = true;
+            this.successMessage = "Success";
+            this.showSuccess = true;
+            axios.get("/api/cooks")
+            .then(response => {
+                let cooks = []
+                response.data.forEach(cook => {
+                    if (cook.shift_active) {
+                        cooks.push(cook)
+                    }
+                })
+                let msg = 'New order: meal ' + meal_number + ' item ' + item_number
+                cooks.forEach(cook => {
+                    console.log('Sending Message "' + msg + '" to "' + cook.name + '"');
+                    this.$socket.emit('newOrderToCooks', msg, this.$store.state.user, cook);
+                });
+            })
         })
         .catch(error => {
           this.showFailure = true;

@@ -2,11 +2,11 @@
 <div>
     <nav aria-label="Page navigation example">
         <div>
-            <a class="btn btn-primary" @click.prevent="reset()">Pending</a>
-            <a class="btn btn-primary" @click.prevent="filterByState('paid')">Paid</a>
-            <a class="btn btn-primary" @click.prevent="filterByState('not paid')">Not Paid</a>
+            <a class="btn btn-info" @click.prevent="reset()">Pending</a>
+            <a class="btn btn-info" @click.prevent="filterByState('paid')">Paid</a>
+            <a class="btn btn-info" @click.prevent="filterByState('not paid')">Not Paid</a>
         </div>
-        <br>
+        <hr>
         <ul class="pagination">
             <li v-bind:class="[{disabled: !pagination.prev_page_url}]" 
             class="page-item"><a class="page-link" href="#"
@@ -37,7 +37,7 @@
             <td>{{ invoice.responsible_waiter ? invoice.responsible_waiter.name : " - NONE - " }}</td>
             <td>{{ invoice.total_price }}</td>
             <td>
-                <a class="btn btn-sm btn-primary" v-on:click.prevent="getInvoiceDetails(invoice)">Details</a> 
+                <a class="btn btn-sm btn-warning" v-on:click.prevent="getInvoiceDetails(invoice)">Details</a> 
             </td>
         </tbody>
     </table>
@@ -60,13 +60,13 @@ export default {
                 let page_url = url || '/api/invoices/pending'
                 axios.get(page_url)
                 .then(response => {
-                    Object.assign(this.invoices, response.data.data);
+                    this.invoices = response.data.data
                     this.makePagination(response.data.meta, response.data.links)
                 })
             }else {
                 axios.get(url)
                 .then(response => {
-                    Object.assign(this.invoices, response.data.data)
+                    this.invoices = response.data.data
                     this.makeFilteredPagination(response.data)
                 })
             }
