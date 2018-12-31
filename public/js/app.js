@@ -76659,7 +76659,16 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
         inPreparationUserOrders: [],
         inPreparationUserOrdersMeta: [],
         inPreparationUserOrdersLinks: [],
-        currentOrder: {}
+        currentOrder: {},
+        //---------------Management---------------------
+        tables: [],
+        currentTable: {},
+        tablesMeta: {},
+        tablesLinks: {},
+        editingTable: false,
+        creatingTable: false,
+        currentItem: null,
+        items: []
     },
     getters: __WEBPACK_IMPORTED_MODULE_2__getters__["a" /* default */],
     mutations: __WEBPACK_IMPORTED_MODULE_3__mutations__["a" /* default */],
@@ -77692,6 +77701,32 @@ var index_esm = {
     },
     currentOrder: function currentOrder(state) {
         return state.currentOrder;
+    },
+
+    //---------------------Management----------------------
+    tables: function tables(state) {
+        return state.tables;
+    },
+    currentTable: function currentTable(state) {
+        return state.currentTable;
+    },
+    tablesMeta: function tablesMeta(state) {
+        return state.tablesMeta;
+    },
+    tablesLinks: function tablesLinks(state) {
+        return state.tablesLinks;
+    },
+    editingTable: function editingTable(state) {
+        return state.editingTable;
+    },
+    creatingTable: function creatingTable(state) {
+        return state.creatingTable;
+    },
+    currentItem: function currentItem(state) {
+        return state.currentItem;
+    },
+    items: function items(state) {
+        return state.items;
     }
 });
 
@@ -77765,6 +77800,11 @@ var index_esm = {
         state.inPreparationUserOrders = payload.newInPreparationUserOrders;
         state.inPreparationUserOrdersMeta = payload.newInPreparationUserOrdersMeta;
         state.inPreparationUserOrdersLinks = payload.newInPreparationUserOrdersLinks;
+    },
+    refreshTablesPagination: function refreshTablesPagination(state, response) {
+        state.tables = response.data.data;
+        state.tablesMeta = response.data.meta;
+        state.tablesLinks = response.data.links;
     }
 });
 
@@ -77831,6 +77871,18 @@ var index_esm = {
         }).then(function () {
             // always executed
         });
+    },
+    loadTables: function loadTables(context) {
+        axios.get('/api/tables/all').then(function (response) {
+            // handle success
+            context.commit('refreshTablesPagination', response);
+            console.log(response);
+        }).catch(function (error) {
+            // handle error
+            console.log(error);
+        }).then(function () {
+            // always executed
+        });
     }
 });
 
@@ -77847,53 +77899,67 @@ var index_esm = {
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
 
-// Vue.component('example-component', require('./components/ExampleComponent.vue'));
+//-----------------Restaurant worker-------------------------
+var dashboard = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('dashboard', __webpack_require__(161));
+var profileEdit = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('profileEdit', __webpack_require__(192));
+
+//-----------------------Items--------------------------------
 var itemsComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('items', __webpack_require__(146));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('navbar', __webpack_require__(149));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemsList', __webpack_require__(189));
+var editItemComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemEdit', __webpack_require__(195));
+var itemAddComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemAdd', __webpack_require__(216));
+
+//------------------------Orders-------------------------------------
 var ordersComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('orders', __webpack_require__(152));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('orders-list', __webpack_require__(155));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('pagination', __webpack_require__(158));
-var dashboard = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('dashboard', __webpack_require__(161));
+
+//---------------------Cashier--------------------------------------
 var invoicesComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('pending-invoices', __webpack_require__(164));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoices-list', __webpack_require__(167));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('edit-nif-name', __webpack_require__(64));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoice-details', __webpack_require__(172));
+
+//-----------------------------Waiter---------------------------
 var meals_of_waiter = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('waiterMeals', __webpack_require__(180));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('meals-list', __webpack_require__(183));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('edit-nif-name', __webpack_require__(64));
 var create_meal = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('create-meal', __webpack_require__(186));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemsList', __webpack_require__(189));
-var profileEdit = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('profileEdit', __webpack_require__(192));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemEdit', __webpack_require__(195));
-var login = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('login', __webpack_require__(198));
-var logout = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('logout', __webpack_require__(201));
+
+//-------------------------Manager---------------------------
+var tablesComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('tables', __webpack_require__(364));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('tables-list', __webpack_require__(358));
+var addEditTableComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('add-edit-table', __webpack_require__(361));
 var managerUsersComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('users', __webpack_require__(204));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('userEdit', __webpack_require__(207));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('usersList', __webpack_require__(210));
 var userAddComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('userAdd', __webpack_require__(213));
-var itemAddComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('itemAdd', __webpack_require__(216));
-//Vue.component('edit-nif-name', require('./components/cashier/PendingInvoicesNifName.vue'));
-
 var managerMealsComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('meals', __webpack_require__(219));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('mealsListManager', __webpack_require__(222));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('mealDetailsList', __webpack_require__(225));
-
 var managerInvoicesComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoices', __webpack_require__(228));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoicesListManager', __webpack_require__(231));
-//Vue.component('mealDetailsList', require('../components/manager/MealDetailsList.vue'));
+
+//-------------------------Utils-------------------------
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('navbar', __webpack_require__(149));
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('pagination', __webpack_require__(158));
+
+//----------------------Auth---------------------------
+var login = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('login', __webpack_require__(198));
+var logout = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('logout', __webpack_require__(201));
 
 var statisticsComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('statistics', __webpack_require__(234));
 
-var routes = [{
+var routes = [
+//--------------Items---------------------
+{
     path: '/',
     redirect: '/items'
 }, {
-    path: '/managerMeals',
-    component: managerMealsComponent,
-    meta: {
-        forManager: true
-    }
-}, {
+    path: '/items',
+    component: itemsComponent
+},
+
+//-------------------Cooks-------------------
+{
     path: '/statistics',
     component: statisticsComponent,
     meta: {
@@ -77905,9 +77971,69 @@ var routes = [{
     meta: {
         forAuth: true
     }
+},
+
+//-------------------Cashiers-------------------
+{
+    path: '/invoices',
+    component: invoicesComponent,
+    meta: {
+        forAuth: true
+    }
+},
+
+//------------------Waiters---------------------
+{
+    path: '/mealsOfWaiter',
+    component: meals_of_waiter,
+    meta: {
+        forAuth: true
+    }
 }, {
-    path: '/items',
-    component: itemsComponent
+    path: '/createMeal',
+    component: create_meal,
+    name: 'create_meal',
+    meta: {
+        forAuth: true
+    }
+},
+
+//----------------------Managers-----------------------
+{
+    path: '/tables',
+    component: tablesComponent,
+    meta: {
+        forAuth: true
+    }
+}, {
+    path: '/addTable',
+    component: addEditTableComponent,
+    name: 'addTable',
+    meta: {
+        forAuth: true
+    },
+    props: true
+}, {
+    path: '/editTable',
+    component: addEditTableComponent,
+    name: 'editTable',
+    meta: {
+        forAuth: true
+    },
+    props: true
+}, {
+    path: '/managerMeals',
+    component: managerMealsComponent,
+    meta: {
+        forManager: true
+    }
+}, {
+    path: '/managerUsers',
+    component: managerUsersComponent,
+    meta: {
+        forAuth: true,
+        forManager: true
+    }
 }, {
     path: '/newUser',
     component: userAddComponent,
@@ -77923,12 +78049,13 @@ var routes = [{
         forManager: true
     }
 }, {
-    path: '/managerUsers',
-    component: managerUsersComponent,
+    path: '/editItem',
+    component: editItemComponent,
+    name: 'editItem',
     meta: {
-        forAuth: true,
-        forManager: true
-    }
+        forAuth: true
+    },
+    props: true
 }, {
     path: '/managerInvoices',
     component: managerInvoicesComponent,
@@ -77936,7 +78063,10 @@ var routes = [{
         forAuth: true,
         forManager: true
     }
-}, {
+},
+
+//-----------------Restaurant worker-----------------------
+{
     path: '/profileEdit',
     component: profileEdit,
     meta: {
@@ -77949,26 +78079,10 @@ var routes = [{
     meta: {
         forAuth: true
     }
-}, {
-    path: '/invoices',
-    component: invoicesComponent,
-    meta: {
-        forAuth: true
-    }
-}, {
-    path: '/mealsOfWaiter',
-    component: meals_of_waiter,
-    meta: {
-        forAuth: true
-    }
-}, {
-    path: '/createMeal',
-    component: create_meal,
-    name: 'create_meal',
-    meta: {
-        forAuth: true
-    }
-}, {
+},
+
+//---------------Auth----------------------
+{
     path: '/login',
     component: login,
     name: 'login',
@@ -80909,6 +81023,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     computed: {
@@ -81031,6 +81148,25 @@ var render = function() {
                           attrs: { to: "dashboard" }
                         },
                         [_vm._v("Dashboard")]
+                      )
+                    : _vm._e()
+                ],
+                1
+              )
+            ]),
+            _vm._v(" "),
+            _c("li", { staticClass: "nav-item" }, [
+              _c(
+                "a",
+                [
+                  this.$store.getters.isAuthenticated
+                    ? _c(
+                        "router-link",
+                        {
+                          staticClass: "nav-item nav-link",
+                          attrs: { to: "tables" }
+                        },
+                        [_vm._v("Tables")]
                       )
                     : _vm._e()
                 ],
@@ -82911,7 +83047,7 @@ var content = __webpack_require__(174);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(176)("80d289ce", content, false, {});
+var update = __webpack_require__(176)("43c06ff3", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -84670,6 +84806,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['items'],
@@ -84733,6 +84873,8 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _c("h3", [_vm._v("Items")]),
+    _vm._v(" "),
     _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
       _c("ul", { staticClass: "pagination" }, [
         _c(
@@ -84867,7 +85009,13 @@ var render = function() {
         })
       ],
       2
-    )
+    ),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br")
   ])
 }
 var staticRenderFns = []
@@ -85599,9 +85747,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -85632,7 +85780,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Dish\n            "),
+        _vm._v(" Dish\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -85653,7 +85801,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Drink\n            "),
+        _vm._v(" Drink\r\n            "),
         _c(
           "div",
           {
@@ -85669,9 +85817,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("type")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -85730,9 +85878,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("description")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -85790,9 +85938,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("price")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -85828,9 +85976,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("image")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -86660,9 +86808,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -86719,9 +86867,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("username")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -86752,7 +86900,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cook\n            "),
+        _vm._v(" Cook\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -86773,7 +86921,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Waiter\n            "),
+        _vm._v(" Waiter\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -86794,7 +86942,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cashier\n            "),
+        _vm._v(" Cashier\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -86815,7 +86963,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Manager\n            "),
+        _vm._v(" Manager\r\n            "),
         _c(
           "div",
           {
@@ -86831,9 +86979,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("role")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -86890,9 +87038,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("email")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -87642,9 +87790,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -87701,9 +87849,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("username")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -87734,7 +87882,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cook\n            "),
+        _vm._v(" Cook\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -87755,7 +87903,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Waiter\n            "),
+        _vm._v(" Waiter\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -87776,7 +87924,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cashier\n            "),
+        _vm._v(" Cashier\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -87797,7 +87945,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Manager\n            "),
+        _vm._v(" Manager\r\n            "),
         _c(
           "div",
           {
@@ -87813,9 +87961,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("role")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -87872,9 +88020,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("email")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88178,9 +88326,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88211,7 +88359,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Dish\n            "),
+        _vm._v(" Dish\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -88232,7 +88380,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Drink\n            "),
+        _vm._v(" Drink\r\n            "),
         _c(
           "div",
           {
@@ -88248,9 +88396,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("type")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88309,9 +88457,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("description")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88369,9 +88517,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("price")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88407,9 +88555,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("image")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -118678,6 +118826,639 @@ var install = VeeValidate$1.install;
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 343 */,
+/* 344 */,
+/* 345 */,
+/* 346 */,
+/* 347 */,
+/* 348 */,
+/* 349 */,
+/* 350 */,
+/* 351 */,
+/* 352 */,
+/* 353 */,
+/* 354 */,
+/* 355 */,
+/* 356 */,
+/* 357 */,
+/* 358 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(359)
+/* template */
+var __vue_template__ = __webpack_require__(360)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/manager/TablesList.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4c752b70", Component.options)
+  } else {
+    hotAPI.reload("data-v-4c752b70", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 359 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    props: ["tables", "meta", "links", "user"],
+    data: function data() {
+        return {};
+    },
+    methods: {
+        create: function create() {
+            this.$emit('createTable');
+        },
+        editTable: function editTable(table) {
+            this.$emit('editTable', table);
+        },
+        deleteTable: function deleteTable(table) {
+            this.$emit('deleteTable', table);
+        },
+        refreshTables: function refreshTables(tables, meta, links) {
+            this.$emit('refreshTables', tables, meta, links);
+        }
+    }
+};
+
+/***/ }),
+/* 360 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("h3", [_vm._v("Tables")]),
+      _vm._v(" "),
+      _c("pagination", {
+        attrs: { objects: _vm.tables, meta: _vm.meta, links: _vm.links },
+        on: { refreshObjects: _vm.refreshTables }
+      }),
+      _vm._v(" "),
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.tables, function(table, index) {
+            return _c("tr", { key: table.table_number }, [
+              _c("td", [_vm._v(_vm._s(table.table_number))]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger btn-sm btn-block",
+                    attrs: { type: "Submit" },
+                    on: {
+                      click: function($event) {
+                        _vm.deleteTable(table, index)
+                      }
+                    }
+                  },
+                  [_vm._v("Delete")]
+                )
+              ])
+            ])
+          })
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            on: {
+              click: function($event) {
+                _vm.create()
+              }
+            }
+          },
+          [_vm._v("New Table")]
+        )
+      ]),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br")
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Table Number")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Actions")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4c752b70", module.exports)
+  }
+}
+
+/***/ }),
+/* 361 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(362)
+/* template */
+var __vue_template__ = __webpack_require__(363)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/manager/AddEditTable.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4d4ff9d0", Component.options)
+  } else {
+    hotAPI.reload("data-v-4d4ff9d0", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 362 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    props: ['table', 'title'],
+    data: function data() {
+        return {
+            newTableNumber: -1
+        };
+    },
+
+    methods: {
+        save: function save() {
+            var _this = this;
+
+            this.newTableNumber = document.getElementById("newTableNumber").value;
+            console.log(this.newTableNumber);
+            //this.$emit('save', this.table, this.newTableNumber);
+            axios.post('/api/tables/' + this.newTableNumber).then(function (response) {
+                // handle success
+                _this.$store.state.tables = {};
+                _this.$store.dispatch('loadTables');
+                _this.$router.go(-1);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        cancel: function cancel() {
+            this.$store.state.currentTable = {};
+            this.$router.go(-1);
+        }
+    }
+};
+
+/***/ }),
+/* 363 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { staticClass: "jumbotron" }, [
+      _c("h1", [_vm._v(_vm._s(_vm.title))])
+    ]),
+    _vm._v(" "),
+    _c(
+      "form",
+      {
+        staticClass: "mb-3",
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+          }
+        }
+      },
+      [
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Table Number:")]),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-control",
+            attrs: { id: "newTableNumber", type: "text", name: "tableNumber" },
+            domProps: { value: _vm.table.table_number }
+          })
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            on: {
+              click: function($event) {
+                _vm.save()
+              }
+            }
+          },
+          [_vm._v("Save")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-danger",
+            on: {
+              click: function($event) {
+                _vm.cancel()
+              }
+            }
+          },
+          [_vm._v("Cancel")]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4d4ff9d0", module.exports)
+  }
+}
+
+/***/ }),
+/* 364 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(365)
+/* template */
+var __vue_template__ = __webpack_require__(366)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/manager/Tables.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-61419a9c", Component.options)
+  } else {
+    hotAPI.reload("data-v-61419a9c", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 365 */
+/***/ (function(module, exports) {
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = {
+    data: function data() {
+        return {
+            title: 'Tables'
+        };
+    },
+
+    methods: {
+        loadTables: function loadTables() {
+            this.$store.dispatch('loadTables');
+        },
+        editTable: function editTable(table) {
+            this.$store.state.currentTable = table;
+            this.$router.push({ name: 'editTable', params: { table: this.currentTable, title: 'Edit table' } });
+        },
+        deleteTable: function deleteTable(table) {
+            var _this = this;
+
+            axios.delete('/api/tables/' + table.table_number).then(function (response) {
+                // handle success
+                _this.$store.state.tables = {};
+                _this.loadTables();
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        refreshTables: function refreshTables(newTables, newMeta, newLinks) {
+            this.$store.state.tables = newTables;
+            this.$store.state.tablesMeta = newMeta;
+            this.$store.state.tablesLinks = newLinks;
+        },
+        saveTable: function saveTable(table, newTableNumber) {
+            var _this2 = this;
+
+            axios.patch('/api/tables/' + table.table_number, { table: JSON.stringify(table), newTableNumber: newTableNumber, user: this.currentUser }).then(function (response) {
+                // handle success
+                _this2.$store.state.tables = {};
+                _this2.loadTables();
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+            endEditingTable();
+        },
+        endEditingTable: function endEditingTable() {
+            this.$store.state.editingTable = false;
+            this.$store.state.currentTable = {};
+        },
+        openCreateTable: function openCreateTable() {
+            this.$store.state.creatingTable = true;
+            this.$router.push({ name: 'addTable', params: { table: this.currentTable, title: 'Add table' } });
+        },
+        createTable: function createTable(table, newTableNumber) {
+            var _this3 = this;
+
+            axios.post('/api/tables/' + newTableNumber).then(function (response) {
+                // handle success
+                _this3.$store.state.tables = {};
+                _this3.loadTables();
+                _this3.$store.state.creatingTable = false;
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        },
+        endCreatingTable: function endCreatingTable() {
+            this.$store.state.creatingTable = false;
+        }
+    },
+    computed: {
+        tables: function tables() {
+            return this.$store.getters.tables;
+        },
+        currentTable: function currentTable() {
+            return this.$store.getters.currentTable;
+        },
+        tablesMeta: function tablesMeta() {
+            return this.$store.getters.tablesMeta;
+        },
+        tablesLinks: function tablesLinks() {
+            return this.$store.getters.tablesLinks;
+        },
+        editingTable: function editingTable() {
+            return this.$store.getters.editingTable;
+        },
+        creatingTable: function creatingTable() {
+            return this.$store.getters.creatingTable;
+        }
+    },
+    mounted: function mounted() {
+        this.loadTables();
+    }
+};
+
+/***/ }),
+/* 366 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("div", { staticClass: "jumbotron" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.title))])
+      ]),
+      _vm._v(" "),
+      _vm.showSuccess || _vm.showFailure
+        ? _c(
+            "div",
+            {
+              staticClass: "alert",
+              class: {
+                "alert-success": _vm.showSuccess,
+                "alert-danger": _vm.showFailure
+              }
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "close-btn",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.showSuccess = false
+                      _vm.showFailure = false
+                    }
+                  }
+                },
+                [_vm._v("×")]
+              ),
+              _vm._v(" "),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
+              _vm._v(" "),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
+            ]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _c("tables-list", {
+        attrs: {
+          tables: _vm.tables,
+          meta: _vm.tablesMeta,
+          links: _vm.tablesLinks
+        },
+        on: {
+          createTable: _vm.openCreateTable,
+          editTable: _vm.editTable,
+          deleteTable: _vm.deleteTable,
+          refreshTables: _vm.refreshTables
+        }
+      })
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-61419a9c", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
