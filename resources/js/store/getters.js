@@ -75,6 +75,30 @@ export default {
     },
     currentOrder(state){
         return state.currentOrder;
-    }
-
+    },
+    //---------------------Management----------------------
+    tables(state){
+        return state.tables;
+    },
+    currentTable(state){
+        return state.currentTable;
+    },
+    tablesMeta(state){
+        return state.tablesMeta;
+    },
+    tablesLinks(state){
+        return state.tablesLinks;
+    },
+    editingTable(state){
+        return state.editingTable;
+    },
+    creatingTable(state){
+        return state.creatingTable;
+    },
+    currentItem(state){
+        return state.currentItem;
+    },
+    items(state){
+        return state.items;
+    },
 }
