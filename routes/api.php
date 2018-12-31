@@ -169,6 +169,18 @@ Route::middleware('auth:api')->group(function () {
     // Declare a invoice as paid
     Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
 
+    //Get all restaurant tables
+    Route::get('/tables/all', 'RestaurantTableController@all');
+
+    //Create a new restaurant table
+    Route::post('/tables/{id}', 'RestaurantTableController@create');
+
+    //Update a restaurant table
+    Route::patch('/tables/{id}', 'RestaurantTableController@update');
+
+    //Delete restaurant table by id
+    Route::delete('/tables/{id}', 'RestaurantTableController@delete');
+    
     //Get filtered meals
     Route::get('/invoices/filtered', 'InvoiceController@getFiltered');
 

@@ -3,8 +3,9 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+
 import store from './store/store';
-import router from './routes/routes'
+import router from './routes/routes';
 import VueSocketio from 'vue-socket.io';
 import Toasted from 'vue-toasted';
 import swal from 'sweetalert';
