@@ -84837,7 +84837,7 @@ var render = function() {
                   _c(
                     "a",
                     {
-                      staticClass: "btn btn-sm btn-info",
+                      staticClass: "btn btn-sm btn-warning",
                       on: {
                         click: function($event) {
                           $event.preventDefault()
@@ -87049,8 +87049,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     //props: ['users'],
@@ -87155,7 +87153,7 @@ var render = function() {
         _c(
           "a",
           {
-            staticClass: "btn btn-primary",
+            staticClass: "btn btn-info",
             on: {
               click: function($event) {
                 $event.preventDefault()
@@ -87169,7 +87167,7 @@ var render = function() {
         _c(
           "a",
           {
-            staticClass: "btn btn-primary",
+            staticClass: "btn btn-info",
             on: {
               click: function($event) {
                 $event.preventDefault()
@@ -87183,7 +87181,7 @@ var render = function() {
         _c(
           "a",
           {
-            staticClass: "btn btn-primary",
+            staticClass: "btn btn-info",
             on: {
               click: function($event) {
                 $event.preventDefault()
@@ -87197,7 +87195,7 @@ var render = function() {
         _c(
           "a",
           {
-            staticClass: "btn btn-primary",
+            staticClass: "btn btn-info",
             on: {
               click: function($event) {
                 $event.preventDefault()
@@ -87211,7 +87209,7 @@ var render = function() {
         _c(
           "a",
           {
-            staticClass: "btn btn-primary",
+            staticClass: "btn btn-info",
             on: {
               click: function($event) {
                 $event.preventDefault()
@@ -87223,7 +87221,7 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
-      _c("br"),
+      _c("hr"),
       _vm._v(" "),
       _c("ul", { staticClass: "pagination" }, [
         _c(
@@ -87318,7 +87316,7 @@ var render = function() {
                   _c(
                     "a",
                     {
-                      staticClass: "btn btn-sm btn-primary",
+                      staticClass: "btn btn-sm btn-warning",
                       on: {
                         click: function($event) {
                           $event.preventDefault()
@@ -87330,53 +87328,51 @@ var render = function() {
                   ),
                   _vm._v(" "),
                   !_vm.isAuthUser(user)
-                    ? _c("div", [
-                        _c(
-                          "a",
-                          {
-                            staticClass: "btn btn-sm btn-danger",
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                _vm.deleteUser(user)
-                              }
+                    ? _c(
+                        "a",
+                        {
+                          staticClass: "btn btn-sm btn-danger",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.deleteUser(user)
                             }
-                          },
-                          [_vm._v("Delete")]
-                        ),
-                        _vm._v(" "),
-                        !user.blocked
-                          ? _c(
-                              "a",
-                              {
-                                staticClass: "btn btn-sm btn-danger",
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    _vm.blockUser(user)
-                                  }
-                                }
-                              },
-                              [_vm._v("Block")]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        user.blocked
-                          ? _c(
-                              "a",
-                              {
-                                staticClass: "btn btn-sm btn-danger",
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    _vm.unblockUser(user)
-                                  }
-                                }
-                              },
-                              [_vm._v("Unblock")]
-                            )
-                          : _vm._e()
-                      ])
+                          }
+                        },
+                        [_vm._v("Delete")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.isAuthUser(user) && !user.blocked
+                    ? _c(
+                        "a",
+                        {
+                          staticClass: "btn btn-sm btn-danger",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.blockUser(user)
+                            }
+                          }
+                        },
+                        [_vm._v("Block")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.isAuthUser(user) && user.blocked
+                    ? _c(
+                        "a",
+                        {
+                          staticClass: "btn btn-sm btn-danger",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.unblockUser(user)
+                            }
+                          }
+                        },
+                        [_vm._v("Unblock")]
+                      )
                     : _vm._e()
                 ])
               : _c("td", [_c("a", [_vm._v("- NONE -")])])

@@ -2,13 +2,13 @@
 <div>
     <nav aria-label="Page navigation example">
         <div>
-            <a class="btn btn-primary" @click.prevent="getUsers()">All</a>
-            <a class="btn btn-primary" @click.prevent="getBlocked(1)">Blocked</a>
-            <a class="btn btn-primary" @click.prevent="getBlocked(0)">Not Blocked</a>
-            <a class="btn btn-primary" @click.prevent="getDeleted(1)">Deleted</a>
-            <a class="btn btn-primary" @click.prevent="getDeleted(0)">Not Deleted</a>
+            <a class="btn btn-info" @click.prevent="getUsers()">All</a>
+            <a class="btn btn-info" @click.prevent="getBlocked(1)">Blocked</a>
+            <a class="btn btn-info" @click.prevent="getBlocked(0)">Not Blocked</a>
+            <a class="btn btn-info" @click.prevent="getDeleted(1)">Deleted</a>
+            <a class="btn btn-info" @click.prevent="getDeleted(0)">Not Deleted</a>
         </div>
-        <br>
+        <hr>
         <ul class="pagination">
             <li v-bind:class="[{disabled: !pagination.prev_page_url}]" 
             class="page-item"><a class="page-link" href="#"
@@ -41,12 +41,10 @@
             <td>{{ user.type }}</td>
             <td>{{ user.deleted_at ? 'Yes':'No' }}</td>
             <td v-if="!user.deleted_at"> 
-                <a @click.prevent="edituser(user)" class="btn btn-sm btn-primary">Edit</a>
-                <div v-if="!isAuthUser(user)">
-                    <a @click.prevent="deleteUser(user)" class="btn btn-sm btn-danger">Delete</a>
-                    <a v-if="!user.blocked" @click.prevent="blockUser(user)" class="btn btn-sm btn-danger">Block</a>
-                    <a v-if="user.blocked" @click.prevent="unblockUser(user)" class="btn btn-sm btn-danger">Unblock</a>
-                </div>
+                <a @click.prevent="edituser(user)" class="btn btn-sm btn-warning">Edit</a>
+                <a v-if="!isAuthUser(user)" @click.prevent="deleteUser(user)" class="btn btn-sm btn-danger">Delete</a>
+                <a v-if="!isAuthUser(user) && !user.blocked" @click.prevent="blockUser(user)" class="btn btn-sm btn-danger">Block</a>
+                <a v-if="!isAuthUser(user) && user.blocked" @click.prevent="unblockUser(user)" class="btn btn-sm btn-danger">Unblock</a>
             </td>
             <td v-else>
                 <a >- NONE -</a>
