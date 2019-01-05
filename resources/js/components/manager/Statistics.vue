@@ -7,7 +7,11 @@
             <div v-if="toggleWorkerTotalBool">
                 <a @click.prevent="toggleWorkerTotal()" class="btn btn-info">Workers</a>
                 <a v-if="toggleMealsOrdersBool" @click.prevent="toggleMealsOrders()" class="btn btn-info">Meals</a>
+                <a v-if="toggleMealsOrdersBool && toggleTotalAvgHandledBool" @click.prevent="toggleTotalAvgHandled()" class="btn btn-info">Average Handled</a>
+                <a v-if="toggleMealsOrdersBool && !toggleTotalAvgHandledBool" @click.prevent="toggleTotalAvgHandled()" class="btn btn-info">Total</a>
                 <a v-if="!toggleMealsOrdersBool" @click.prevent="toggleMealsOrders()" class="btn btn-info">Orders</a>
+                <a v-if="!toggleMealsOrdersBool && toggleTotalAvgHandledBool" @click.prevent="toggleTotalAvgHandled()" class="btn btn-info">Average Handled</a>
+                <a v-if="!toggleMealsOrdersBool && !toggleTotalAvgHandledBool" @click.prevent="toggleTotalAvgHandled()" class="btn btn-info">Total</a>
             </div>
             <div v-else>
                 <a v-if="!toggleWorkerTotalBool" @click.prevent="toggleWorkerTotal()" class="btn btn-info">Meals/Orders</a>
@@ -43,7 +47,8 @@
         <input class="form-control" type="text" v-model="data.dates">
         <br>
         <div v-if="toggleWorkerTotalBool">
-            <button v-if="toggleMealsOrdersBool" type="button" class="btn btn-success" @click.prevent="getTotalOrdersFromGivenMonth(data.dates)">Confirm</button>
+            <button v-if="toggleMealsOrdersBool && toggleTotalAvgHandledBool" type="button" class="btn btn-success" @click.prevent="getTotalOrdersFromGivenMonth(data.dates)">Confirm</button>
+            <button v-if="toggleMealsOrdersBool && !toggleTotalAvgHandledBool" type="button" class="btn btn-success" @click.prevent="getAVGTimeToHandleEachMealOnGivenMonth(data.dates)">Confirm</button>
             <button v-if="!toggleMealsOrdersBool" type="button" class="btn btn-success" @click.prevent="getTotalMealsFromGivenMonth(data.dates)">Confirm</button>
         </div>
         <div v-else>
@@ -67,6 +72,7 @@ export default {
             toggleOrderMealBool: true,
             toggleWorkerTotalBool: true,
             toggleMealsOrdersBool: true,
+            toggleTotalAvgHandledBool: true,
             cooksIds: [],
             waitersIds: [],
             data: {
@@ -102,16 +108,23 @@ export default {
             })
         },
         getTotalOrdersFromGivenMonth(dates) {
-            axios.get('/api/totalOrders/dates/' + dates)
+            axios.get('/api/totalOrders/' + dates)
             .then(response => {
                 this.chartData.columns = ['date', 'Total Orders']
                 this.chartData.rows = response.data
             })
         },
         getTotalMealsFromGivenMonth(dates) {
-            axios.get('/api/totalMeals/dates/' + dates)
+            axios.get('/api/totalMeals/' + dates)
             .then(response => {
                 this.chartData.columns = ['date', 'Total Meals']
+                this.chartData.rows = response.data
+            })
+        },
+        getAVGTimeToHandleEachMealOnGivenMonth(dates) {
+            axios.get('/api/timeToHandleMeal/' + dates)
+            .then(response => {
+                this.chartData.columns = ['date', 'AVG time to handle Meal']
                 this.chartData.rows = response.data
             })
         },
@@ -142,6 +155,9 @@ export default {
         },
         toggleMealsOrders() {
             this.toggleMealsOrdersBool = this.toggleMealsOrdersBool ? false : true
+        },
+        toggleTotalAvgHandled() {
+            this.toggleTotalAvgHandledBool = this.toggleTotalAvgHandledBool ? false : true
         }
     },
     mounted() {

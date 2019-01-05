@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Meal;
+use App\Order;
 
 class Statistics extends Controller
 {
@@ -145,30 +146,71 @@ class Statistics extends Controller
                             ->get();
                 $totalMealsFromGivenMonth = $mealIDs->count();
 
-                $timeItTakesTOHandleAMeal = 0;
-                for ($i=0; $i < $totalMealsFromGivenMonth; $i++) { 
-                    $aux = 
+                $allMealIDs = 
                         Meal::select(DB::raw('(TIMEDIFF(meals.end, meals.start)) as total'))
                             ->distinct()
+                            //->orderBy('id', 'ASC')
                             ->join('orders', 'orders.meal_id', '=', 'meals.id')
                             //->where('meals.id', '=', $mealIDs[$i]->only('id'))
-                            ->where('meals.id', '=', 1)
                             ->whereYear('meals.start', '=', Carbon::parse($date)->format('Y'))
                             ->whereMonth('meals.start', '=', Carbon::parse($date)->format('m'))
                             ->get();
-                    if (($aux[0])->only('total')['total'] != null)
-                    {
-                        // get date diference in secounds
-                        $aux = ($aux[0])->only('total')['total'];
-                        list($hours, $minutes, $seconds) = explode(':', $aux, 3);
-                        $timeItTakesTOHandleAMeal += (int)$minutes * 60 + (int)$hours * 3600 + (int)$seconds;
-                    }
+                $totalMealIDs = $allMealIDs->count();
+                $timeItTakesTOHandleAMeal = 0;
+                for ($i=0; $i < $totalMealIDs; $i++) {
+                    list($hours, $minutes, $seconds) = explode(':', (($allMealIDs[$i])->only('total')['total']), 3);
+                    $timeItTakesTOHandleAMeal += ((int)$minutes * 60 + (int)$hours * 3600 + (int)$seconds);
                 }
                 if ($totalMealsFromGivenMonth > 0)
                     array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Meal' => gmdate("H:i:s", ($timeItTakesTOHandleAMeal/$totalMealsFromGivenMonth))]);
                 else
                     array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Meal' => gmdate("H:i:s", $totalMealsFromGivenMonth)]);
             }catch (\Exception $e){
+                return $e;
+                return response()->json(['error' => 'Invalid date format.'], 500);
+            }
+        }
+        return response()->json($arrayOfDatesANdAVG, 200);
+    }
+
+    //TODO
+    public function getAVGTimeToHandleEachOrderOnGivenMonth(Request $request, $dates) {
+        $arrayOfDatesANdAVG = array();
+        $datesToCompare = explode(',', $dates);
+        
+        foreach ($datesToCompare as $date) {
+            try {
+                // $OrdersIDs = 
+                //         Order::select('id')
+                //             ->whereYear('orders.start', '=', Carbon::parse($date)->format('Y'))
+                //             ->whereMonth('orders.start', '=', Carbon::parse($date)->format('m'))
+                //             ->orderBy('id', 'ASC')
+                //             ->get();
+                // $totalOrdersFromGivenMonth = $OrdersIDs->count(); //73517
+                // //dd($totalOrdersFromGivenMonth);
+                $allOrdersIDs = 
+                        Order::select(DB::raw('(TIMEDIFF(orders.end, orders.start)) as total'))
+                            //->distinct()
+                            //->orderBy('id', 'ASC')
+                            //->join('orders', 'orders.meal_id', '=', 'meals.id')
+                            //->where('meals.id', '=', $OrdersIDs[$i]->only('id'))
+                            ->whereYear('orders.start', '=', Carbon::parse($date)->format('Y'))
+                            ->whereMonth('orders.start', '=', Carbon::parse($date)->format('m'))
+                            ->get();
+                $totalOrdersIDs = $allOrdersIDs->count(); //73517
+                $totalOrdersFromGivenMonth = $totalOrdersIDs; 
+                //dd($totalOrdersIDs);
+                $timeItTakesTOHandleAMeal = 0;
+                for ($i=0; $i < $totalOrdersIDs; $i++) {
+                    list($hours, $minutes, $seconds) = explode(':', (($allOrdersIDs[$i])->only('total')['total']), 3);
+                    $timeItTakesTOHandleAMeal += ((int)$minutes * 60 + (int)$hours * 3600 + (int)$seconds);
+                }
+                if ($totalOrdersFromGivenMonth > 0)
+                    array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Order' => gmdate("H:i:s", ($timeItTakesTOHandleAMeal/$totalOrdersFromGivenMonth))]);
+                else
+                    array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Order' => gmdate("H:i:s", $totalOrdersFromGivenMonth)]);
+            }catch (\Exception $e){
+                return $e;
                 return response()->json(['error' => 'Invalid date format.'], 500);
             }
         }

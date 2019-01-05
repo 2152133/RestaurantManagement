@@ -90508,6 +90508,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -90519,6 +90524,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             toggleOrderMealBool: true,
             toggleWorkerTotalBool: true,
             toggleMealsOrdersBool: true,
+            toggleTotalAvgHandledBool: true,
             cooksIds: [],
             waitersIds: [],
             data: {
@@ -90560,7 +90566,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         getTotalOrdersFromGivenMonth: function getTotalOrdersFromGivenMonth(dates) {
             var _this4 = this;
 
-            axios.get('/api/totalOrders/dates/' + dates).then(function (response) {
+            axios.get('/api/totalOrders/' + dates).then(function (response) {
                 _this4.chartData.columns = ['date', 'Total Orders'];
                 _this4.chartData.rows = response.data;
             });
@@ -90568,26 +90574,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         getTotalMealsFromGivenMonth: function getTotalMealsFromGivenMonth(dates) {
             var _this5 = this;
 
-            axios.get('/api/totalMeals/dates/' + dates).then(function (response) {
+            axios.get('/api/totalMeals/' + dates).then(function (response) {
                 _this5.chartData.columns = ['date', 'Total Meals'];
                 _this5.chartData.rows = response.data;
             });
         },
-        getCooksIds: function getCooksIds() {
+        getAVGTimeToHandleEachMealOnGivenMonth: function getAVGTimeToHandleEachMealOnGivenMonth(dates) {
             var _this6 = this;
+
+            axios.get('/api/timeToHandleMeal/' + dates).then(function (response) {
+                _this6.chartData.columns = ['date', 'AVG time to handle Meal'];
+                _this6.chartData.rows = response.data;
+            });
+        },
+        getCooksIds: function getCooksIds() {
+            var _this7 = this;
 
             axios.get('/api/cooks').then(function (response) {
                 response.data.forEach(function (cook) {
-                    _this6.cooksIds.push(cook.id);
+                    _this7.cooksIds.push(cook.id);
                 });
             });
         },
         getWaitersIds: function getWaitersIds() {
-            var _this7 = this;
+            var _this8 = this;
 
             axios.get('/api/waiters').then(function (response) {
                 response.data.forEach(function (cook) {
-                    _this7.waitersIds.push(cook.id);
+                    _this8.waitersIds.push(cook.id);
                 });
             });
         },
@@ -90602,6 +90616,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         toggleMealsOrders: function toggleMealsOrders() {
             this.toggleMealsOrdersBool = this.toggleMealsOrdersBool ? false : true;
+        },
+        toggleTotalAvgHandled: function toggleTotalAvgHandled() {
+            this.toggleTotalAvgHandledBool = this.toggleTotalAvgHandledBool ? false : true;
         }
     },
     mounted: function mounted() {
@@ -110459,6 +110476,38 @@ var render = function() {
                   )
                 : _vm._e(),
               _vm._v(" "),
+              _vm.toggleMealsOrdersBool && _vm.toggleTotalAvgHandledBool
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-info",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.toggleTotalAvgHandled()
+                        }
+                      }
+                    },
+                    [_vm._v("Average Handled")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.toggleMealsOrdersBool && !_vm.toggleTotalAvgHandledBool
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-info",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.toggleTotalAvgHandled()
+                        }
+                      }
+                    },
+                    [_vm._v("Total")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
               !_vm.toggleMealsOrdersBool
                 ? _c(
                     "a",
@@ -110472,6 +110521,38 @@ var render = function() {
                       }
                     },
                     [_vm._v("Orders")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.toggleMealsOrdersBool && _vm.toggleTotalAvgHandledBool
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-info",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.toggleTotalAvgHandled()
+                        }
+                      }
+                    },
+                    [_vm._v("Average Handled")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.toggleMealsOrdersBool && !_vm.toggleTotalAvgHandledBool
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-info",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.toggleTotalAvgHandled()
+                        }
+                      }
+                    },
+                    [_vm._v("Total")]
                   )
                 : _vm._e()
             ])
@@ -110692,7 +110773,7 @@ var render = function() {
       _vm._v(" "),
       _vm.toggleWorkerTotalBool
         ? _c("div", [
-            _vm.toggleMealsOrdersBool
+            _vm.toggleMealsOrdersBool && _vm.toggleTotalAvgHandledBool
               ? _c(
                   "button",
                   {
@@ -110702,6 +110783,25 @@ var render = function() {
                       click: function($event) {
                         $event.preventDefault()
                         _vm.getTotalOrdersFromGivenMonth(_vm.data.dates)
+                      }
+                    }
+                  },
+                  [_vm._v("Confirm")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.toggleMealsOrdersBool && !_vm.toggleTotalAvgHandledBool
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.getAVGTimeToHandleEachMealOnGivenMonth(
+                          _vm.data.dates
+                        )
                       }
                     }
                   },

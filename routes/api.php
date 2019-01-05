@@ -138,7 +138,8 @@ Route::middleware('auth:api')->group(function () {
     // Statistics US40
     Route::get('/totalMeals/{dates}', 'Statistics@getTotalMealsFromGivenMonth');
     Route::get('/totalOrders/{dates}', 'Statistics@getTotalOrdersFromGivenMonth');
-    Route::get('/timeToHandleMeal/dates/{dates}', 'Statistics@getAVGTimeToHandleEachMealOnGivenMonth');
+    Route::get('/timeToHandleMeal/{dates}', 'Statistics@getAVGTimeToHandleEachMealOnGivenMonth');
+    Route::get('/timeToHandleOrder/{dates}', 'Statistics@getAVGTimeToHandleEachOrderOnGivenMonth');
 
     // List all items
 Route::get('/items', 'ItemController@index');
