@@ -89454,7 +89454,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             invoices: [],
             pagination: {},
             filter: [],
-            filteredSearch: false
+            filteredSearch: false,
+            currentInvoice: {}
         };
     },
 
@@ -89514,8 +89515,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this3 = this;
 
             axios.patch('/api/invoice/' + invoice.id + '/declareNotPaid').then(function (response) {
+                sendInvoiceNotPaid(invoice);
                 _this3.getInvoices();
             });
+        },
+        sendInvoiceNotPaid: function sendInvoiceNotPaid(invoice) {
+            this.$socket.emit('invoice_not_paid', invoice);
         }
     },
     mounted: function mounted() {

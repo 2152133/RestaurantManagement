@@ -54,7 +54,8 @@ export default {
             invoices: [],
             pagination: {},
             filter: [],
-            filteredSearch: false
+            filteredSearch: false,
+            currentInvoice: {},
         }
     },
     methods: {
@@ -111,8 +112,12 @@ export default {
         declareInvoiceAsNotPaid(invoice){
             axios.patch('/api/invoice/' + invoice.id + '/declareNotPaid')
             .then(response => {
+                sendInvoiceNotPaid(invoice);
                 this.getInvoices();
             })
+        },
+        sendInvoiceNotPaid(invoice){
+            this.$socket.emit('invoice_not_paid', invoice);
         }
     },
     mounted() {
