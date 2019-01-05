@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Meal;
 use App\Invoice;
+use App\Order;
 use App\Http\Resources\Meal as MealResource;
 use App\Http\Resources\Order as OrderResource;
 use Illuminate\Support\Facades\DB;
@@ -137,6 +138,35 @@ class MealController extends Controller
                 'unit_price'
             ])
             */
+        }
+    }
+
+
+    public function declareMealAsNotPaid($mealId){
+        try{
+            $meal = Meal::findOrFail($mealId);
+            
+            $invoice = Invoice::findOrFail($meal->invoice->id);
+
+            $orders = Order::where('meal_id', $meal->id)->get();
+            
+            $invoice->state = "not paid";
+
+            $meal->state = "not paid";
+
+            foreach ($orders as $order) {
+                if($order->state != 'delivered'){
+                    $order->state = 'not delivered';
+                }
+                $order->save();
+            }
+
+            if($invoice->save() && $meal->save())
+            {
+                return new MealResource($meal);
+            }
+        } catch (Exception $e) {
+            Debugbar::addThrowable($e);
         }
     }
 }

@@ -22,6 +22,7 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Invoice id</th>
                 <th>State</th>
                 <th>Table</th>
                 <th>Date</th>
@@ -31,6 +32,7 @@
             </tr>
         </thead>
         <tbody v-for="invoice in invoices" v-bind:key="invoice.id">
+            <td>{{ invoice.id }}</td>
             <td>{{ invoice.state }}</td>
             <td>{{ invoice.table_number }}</td>
             <td>{{ invoice.created_at.date }}</td>
@@ -38,6 +40,7 @@
             <td>{{ invoice.total_price }}</td>
             <td>
                 <a class="btn btn-sm btn-warning" v-on:click.prevent="getInvoiceDetails(invoice)">Details</a> 
+                <a v-if="invoice.state == 'pending'" class="btn btn-sm btn-warning" v-on:click.prevent="declareInvoiceAsNotPaid(invoice)">Not Paid</a> 
             </td>
         </tbody>
     </table>
@@ -105,6 +108,12 @@ export default {
             console.log(invoice)
             this.$emit('invoice-details-click', invoice);
         },
+        declareInvoiceAsNotPaid(invoice){
+            axios.patch('/api/invoice/' + invoice.id + '/declareNotPaid')
+            .then(response => {
+                this.getInvoices();
+            })
+        }
     },
     mounted() {
         this.getInvoices()

@@ -88710,6 +88710,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -88776,6 +88779,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         reset: function reset() {
             this.filteredSearch = false;
             this.getMeals();
+        },
+        declareMealAsNotPaid: function declareMealAsNotPaid(meal) {
+            var _this4 = this;
+
+            axios.patch('/api/meals/' + meal.id + '/declareNotPaid').then(function (response) {
+                _this4.filterByState('terminated');
+            });
         }
     },
     mounted: function mounted() {
@@ -88935,6 +88945,8 @@ var render = function() {
         _vm._v(" "),
         _vm._l(_vm.meals, function(meal) {
           return _c("tbody", { key: meal.id }, [
+            _c("td", [_vm._v(_vm._s(meal.id))]),
+            _vm._v(" "),
             _c("td", [_vm._v(_vm._s(meal.state))]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(meal.table_number))]),
@@ -88966,7 +88978,23 @@ var render = function() {
                   }
                 },
                 [_vm._v("Details")]
-              )
+              ),
+              _vm._v(" "),
+              meal.state == "terminated"
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-warning",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.declareMealAsNotPaid(meal)
+                        }
+                      }
+                    },
+                    [_vm._v("Not Paid")]
+                  )
+                : _vm._e()
             ])
           ])
         })
@@ -88982,6 +89010,8 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
+        _c("th", [_vm._v("Id")]),
+        _vm._v(" "),
         _c("th", [_vm._v("State")]),
         _vm._v(" "),
         _c("th", [_vm._v("Table")]),
@@ -89414,6 +89444,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -89476,6 +89509,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         getInvoiceDetails: function getInvoiceDetails(invoice) {
             console.log(invoice);
             this.$emit('invoice-details-click', invoice);
+        },
+        declareInvoiceAsNotPaid: function declareInvoiceAsNotPaid(invoice) {
+            var _this3 = this;
+
+            axios.patch('/api/invoice/' + invoice.id + '/declareNotPaid').then(function (response) {
+                _this3.getInvoices();
+            });
         }
     },
     mounted: function mounted() {
@@ -89607,6 +89647,8 @@ var render = function() {
         _vm._v(" "),
         _vm._l(_vm.invoices, function(invoice) {
           return _c("tbody", { key: invoice.id }, [
+            _c("td", [_vm._v(_vm._s(invoice.id))]),
+            _vm._v(" "),
             _c("td", [_vm._v(_vm._s(invoice.state))]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(invoice.table_number))]),
@@ -89638,7 +89680,23 @@ var render = function() {
                   }
                 },
                 [_vm._v("Details")]
-              )
+              ),
+              _vm._v(" "),
+              invoice.state == "pending"
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-warning",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.declareInvoiceAsNotPaid(invoice)
+                        }
+                      }
+                    },
+                    [_vm._v("Not Paid")]
+                  )
+                : _vm._e()
             ])
           ])
         })
@@ -89654,6 +89712,8 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
+        _c("th", [_vm._v("Invoice id")]),
+        _vm._v(" "),
         _c("th", [_vm._v("State")]),
         _vm._v(" "),
         _c("th", [_vm._v("Table")]),
