@@ -88,6 +88,7 @@ const routes = [
         path: '/statistics', 
         component: statisticsComponent,
         meta: {
+            forAuth: true,
             forManager: true,
         }
     },
@@ -95,7 +96,8 @@ const routes = [
         path: '/orders', 
         component: ordersComponent,
         meta: {
-            forAuth: true
+            forAuth: true,
+            forCook: true,
         }
     },
 
@@ -107,7 +109,9 @@ const routes = [
         path: '/invoices', 
         component: invoicesComponent,
         meta: {
-            forAuth: true
+            forAuth: true,
+            forCashier: true,
+            forManager: true,
         }
     },
     {
@@ -135,7 +139,8 @@ const routes = [
         path: '/mealsOfWaiter', 
         component: meals_of_waiter,
         meta: {
-            forAuth: true
+            forAuth: true,
+            forWaiter: true,
         }
     },
     {
@@ -143,7 +148,8 @@ const routes = [
         component: create_meal,
         name: 'create_meal',
         meta: {
-            forAuth: true
+            forAuth: true,
+            forWaiter: true,
         }
     },
 
@@ -155,7 +161,8 @@ const routes = [
         path: '/tables', 
         component: tablesComponent,
         meta: {
-            forAuth: true
+            forAuth: true,
+            forManager: true,
         }
     },
     {
@@ -163,7 +170,8 @@ const routes = [
         component: addEditTableComponent,
         name: 'addTable',
         meta: {
-            forAuth: true
+            forAuth: true,
+            forManager: true,
         },
         props: true,
     },
@@ -172,7 +180,8 @@ const routes = [
         component: addEditTableComponent,
         name: 'editTable',
         meta: {
-            forAuth: true
+            forAuth: true,
+            forManager: true,
         },
         props: true,
     },
@@ -180,7 +189,8 @@ const routes = [
         path: '/managerMeals', 
         component: managerMealsComponent,
         meta: {
-            forManager: true,
+            forAuth: true,
+            forManager: true
         }
     },
     {
@@ -212,7 +222,8 @@ const routes = [
         component: editItemComponent,
         name: 'editItem',
         meta: {
-            forAuth: true
+            forAuth: true,
+            forManager: true
         },
         props: true,
     },

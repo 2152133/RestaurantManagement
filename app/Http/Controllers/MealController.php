@@ -27,7 +27,7 @@ class MealController extends Controller
             }
         }
 
-        return MealResource::collection($meals->paginate(5))->appends($queries);
+        return (MealResource::collection($meals->paginate(5))->appends($queries))->response()->setStatusCode(200);
     }
 
     public function getActiveAndTerminated(Request $request) {
@@ -44,7 +44,7 @@ class MealController extends Controller
         $meals = Meal::where('state', 'active')->orderBy('created_at', 'asc')->paginate(5);
 
         // Return collection of orders as a resource
-        return MealResource::collection($meals);
+        return (MealResource::collection($meals))->response()->setStatusCode(200);
     }
 
     public function createMeal($table_number, $responsible_waiter_id){
@@ -65,7 +65,7 @@ class MealController extends Controller
                     ->where('meals.responsible_waiter_id', '=', $user_id)
                     ->where('meals.state', '=', 'active')
                     ->paginate(5);
-        return $waiterMeals;
+        return response()->json($waiterMeals, 201);
     }
 
     public function getTablesWitoutActiveMeals(){
@@ -77,7 +77,7 @@ class MealController extends Controller
                                 })
                                 ->select('table_number')
                                 ->get();
-        return $tablesWithActiveMeals;
+        return response()->json($tablesWithActiveMeals, 200);
     }
 
     public function terminateMeal($meal_id){

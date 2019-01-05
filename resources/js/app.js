@@ -97,6 +97,27 @@ router.beforeEach((to, from, next) => {
             })
         } else next()
     }
+    else if (to.matched.some(record => record.meta.forCook)) {
+        if (!store.getters.isCook) {
+            next({
+                path: '/dashboard'
+            })
+        } else next()
+    }
+    else if (to.matched.some(record => record.meta.forWaiter)) {
+        if (!store.getters.isWaiter) {
+            next({
+                path: '/dashboard'
+            })
+        } else next()
+    }
+    else if (to.matched.some(record => record.meta.forCashier)) {
+        if (!store.getters.isCashier) {
+            next({
+                path: '/dashboard'
+            })
+        } else next()
+    }
     else if (to.matched.some(record => record.meta.forAuth)) {
         if (!store.getters.isAuthenticated) {
             next({
@@ -123,6 +144,7 @@ const app = new Vue({
             let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
             this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"');        
         },
+
         managerMessage_unavailable(destUser){
             this.$toasted.error('User "' + destUser.name + '" is not available');       
         },
@@ -194,6 +216,11 @@ const app = new Vue({
         },
         cashierMessage_sent(dataFromServer){
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+        msg_from_server_type(dataFromServer){
+            console.log('Receiving this message from Server: "' + dataFromServer + '"');
+            let sourceName = dataFromServer[0] === null ? 'Unknown': dataFromServer[0];
+            this.$toasted.show('Message "' + dataFromServer[1] + '" sent from "' + sourceName + '"');
         },
         refresh_invoices(data){
             this.$store.dispatch('loadPendingInvoices');

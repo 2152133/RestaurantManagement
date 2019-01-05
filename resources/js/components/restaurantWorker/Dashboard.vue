@@ -4,7 +4,7 @@
         <div class="jumbotron">
             <h1>{{title}}</h1>
         </div>
-        <button class="btn btn-primary" @click.prevent="sendMessageToActiveManagers">Send Manager message</button>
+        <button class="btn btn-primary" @click.prevent="sendManagerMessage">Send Manager message</button>
         <button class="btn btn-dark"><router-link to="profileEdit">Edit Profile</router-link></button>
         <button v-if="isManager" class="btn btn-dark"><router-link to="managerUsers">Users</router-link></button>
         <button v-if="isManager" class="btn btn-dark"><router-link to="managerMeals">Meals</router-link></button>
@@ -51,6 +51,7 @@ export default {
                 .then(response=>{
                     this.timeElapsed(this.getAutenticatedUser.last_shift_start)
                     this.$store.dispatch('setAuthUser', this.getAutenticatedUser)
+                    this.$socket.emit('user_enter', this.getAutenticatedUser)
                 })
             
         },
@@ -63,22 +64,7 @@ export default {
                 .then(response=>{
                     this.timeElapsed(this.getAutenticatedUser.last_shift_end)
                     this.$store.dispatch('setAuthUser', this.getAutenticatedUser)
-                })
-        },
-        sendMessageToActiveManagers(){
-            axios.get("/api/managers")
-                .then(response => {
-                    let managers = []
-                    response.data.forEach(manager => {
-                        if (this.getAutenticatedUser.id != manager.id && manager.shift_active) {
-                            managers.push(manager)
-                        }
-                    })
-                    let msg = window.prompt('What do you want to say to the managers?');
-                    managers.forEach(manager => {
-                        console.log('Sending Message "' + msg + '" to "' + manager.name + '"');
-                        this.$socket.emit('managerMessage', msg, this.$store.state.user, manager);
-                    });
+                        this.$socket.emit('user_exit', this.getAutenticatedUser)
                 })
         },
         timeElapsed(date) {
@@ -93,6 +79,15 @@ export default {
             message += m + " minutes"
             return message
         },
+        sendManagerMessage(){
+            let msg = window.prompt('What do you want to say to the managers?')
+            console.log('Sending to the server (only same type) this message: "' + msg + '"')
+            if (this.getAutenticatedUser === null) {
+                this.$toasted.error('User is not logged in. Type is unknown!');            
+            } else {
+                this.$socket.emit('msg_from_client_type_manager', msg, this.getAutenticatedUser);
+            }
+        }
     },
     computed: {
         getAutenticatedUser() {
@@ -113,6 +108,13 @@ export default {
         isManager() {
             return this.$store.getters.isManager
         },
+    },
+    beforeCreated() {
+        this.$store.state.user = this.$store.getters.getAuthUser
+        this.$store.state.token = this.$store.getters.getToken
+        this.$store.state.tokenType = this.$store.getters.getTokenType
+        this.$store.state.getExpiration = this.$store.getters.getExpiration
+
     }
 }
 </script>

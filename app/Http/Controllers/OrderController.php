@@ -27,7 +27,7 @@ class OrderController extends Controller
                             ->paginate(5);
 
         // Return collection of orders as a resource
-        return OrderResource::collection($orders);
+        return (OrderResource::collection($orders))->response()->setStatusCode(201);
     }
 
     public function inPreparationWhereUser($userId)
@@ -39,7 +39,7 @@ class OrderController extends Controller
                             ->paginate(5);
 
         // Return collection of orders as a resource
-        return OrderResource::collection($orders);
+        return (OrderResource::collection($orders))->response()->setStatusCode(201);
     }
 
     public function assignOrderToCook($orderId, $userId)
@@ -51,7 +51,7 @@ class OrderController extends Controller
             $order->responsible_cook_id = $userId;
 
             if ($order->save()) {
-                return new OrderResource($order);
+                return (new OrderResource($order))->response()->setStatusCode(201);
             }
         } catch (Exception $e) {
             Debugbar::addThrowable($e);
@@ -69,7 +69,7 @@ class OrderController extends Controller
             $order->responsible_cook_id = $userId;
 
             if ($order->save()) {
-                return new OrderResource($order);
+                return (new OrderResource($order))->response()->setStatusCode(200);
             }
         } catch (Exception $e) {
             Debugbar::addThrowable($e);
@@ -84,7 +84,7 @@ class OrderController extends Controller
             ->where('orders.state', '=', 'pending')
             ->select('orders.state', 'orders.id', 'orders.meal_id', 'orders.responsible_cook_id', 'orders.start', 'orders.end', 'orders.item_id', 'orders.created_at')
             ->paginate(10);
-        return $pendingOrdersOfMeal;
+        return response()->json($pendingOrdersOfMeal, 200);
     }
 
     public function getConfirmedOrdersForMeal($meal_id)
@@ -95,7 +95,7 @@ class OrderController extends Controller
             ->where('orders.state', '=', 'confirmed')
             ->select('orders.state', 'orders.id', 'orders.meal_id', 'orders.responsible_cook_id', 'orders.start', 'orders.end', 'orders.item_id', 'orders.created_at')
             ->paginate(10);
-        return $confirmedOrdersOfMeal;
+        return response()->json($confirmedOrdersOfMeal, 200);
     }
 
     public function addOrderToMeal($meal_number, $item_id)
@@ -136,6 +136,7 @@ class OrderController extends Controller
         $current_date = date('Y-m-d H:i:s');
         if (strtotime($current_date) - strtotime($orderToDeleteDate) < 5) {
             $orderToDelete->delete();
+            return response()->json($orderToDelete, 204);
         } else {
             return response()->json(['error' => 'Unable to delete order.'], 401);
         }
@@ -148,7 +149,7 @@ class OrderController extends Controller
             ->where('orders.state', '=', 'prepared')
             ->select('orders.state', 'orders.id', 'orders.meal_id', 'orders.responsible_cook_id', 'orders.start', 'orders.end', 'orders.item_id', 'orders.created_at')
             ->paginate(10);
-        return $preparedOrdersOfMeal;
+        return response()->json($preparedOrdersOfMeal, 200);
     }
 
     public function markPreparedOrderAsDelivered($order_id){
@@ -166,13 +167,13 @@ class OrderController extends Controller
             ->where('meals.id', '=', $meal_id)
             ->select('meals.table_number', 'meals.total_price_preview', 'items.name', 'items.price', 'orders.id', 'orders.meal_id')
             ->paginate(30);
-        return $allOrders;
+        return response()->json($allOrders, 200);
     }
 
     public function getAllOrdersForMeal($meal_id){
         $allOrders = DB::table('orders')
                     ->where('orders.meal_id', '=', $meal_id)
                     ->paginate(30);
-        return $allOrders;
+        return response()->json($allOrders, 200);
     }
 }
