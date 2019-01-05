@@ -90489,6 +90489,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -90498,6 +90517,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             title: 'Statistics',
             toggleWorkerBool: true,
             toggleOrderMealBool: true,
+            toggleWorkerTotalBool: true,
+            toggleMealsOrdersBool: true,
             cooksIds: [],
             waitersIds: [],
             data: {
@@ -90536,21 +90557,37 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this3.chartData.rows = response.data;
             });
         },
-        getCooksIds: function getCooksIds() {
+        getTotalOrdersFromGivenMonth: function getTotalOrdersFromGivenMonth(dates) {
             var _this4 = this;
+
+            axios.get('/api/totalOrders/dates/' + dates).then(function (response) {
+                _this4.chartData.columns = ['date', 'Total Orders'];
+                _this4.chartData.rows = response.data;
+            });
+        },
+        getTotalMealsFromGivenMonth: function getTotalMealsFromGivenMonth(dates) {
+            var _this5 = this;
+
+            axios.get('/api/totalMeals/dates/' + dates).then(function (response) {
+                _this5.chartData.columns = ['date', 'Total Meals'];
+                _this5.chartData.rows = response.data;
+            });
+        },
+        getCooksIds: function getCooksIds() {
+            var _this6 = this;
 
             axios.get('/api/cooks').then(function (response) {
                 response.data.forEach(function (cook) {
-                    _this4.cooksIds.push(cook.id);
+                    _this6.cooksIds.push(cook.id);
                 });
             });
         },
         getWaitersIds: function getWaitersIds() {
-            var _this5 = this;
+            var _this7 = this;
 
             axios.get('/api/waiters').then(function (response) {
                 response.data.forEach(function (cook) {
-                    _this5.waitersIds.push(cook.id);
+                    _this7.waitersIds.push(cook.id);
                 });
             });
         },
@@ -90559,6 +90596,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         toggleOrderMeal: function toggleOrderMeal() {
             this.toggleOrderMealBool = this.toggleOrderMealBool ? false : true;
+        },
+        toggleWorkerTotal: function toggleWorkerTotal() {
+            this.toggleWorkerTotalBool = this.toggleWorkerTotalBool ? false : true;
+        },
+        toggleMealsOrders: function toggleMealsOrders() {
+            this.toggleMealsOrdersBool = this.toggleMealsOrdersBool ? false : true;
         }
     },
     mounted: function mounted() {
@@ -110384,165 +110427,239 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("div", [
-        _vm.toggleWorkerBool
-          ? _c(
-              "a",
-              {
-                staticClass: "btn btn-info",
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    _vm.toggleWorker()
+        _vm.toggleWorkerTotalBool
+          ? _c("div", [
+              _c(
+                "a",
+                {
+                  staticClass: "btn btn-info",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.toggleWorkerTotal()
+                    }
                   }
-                }
-              },
-              [_vm._v("Waiter")]
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        !_vm.toggleWorkerBool
-          ? _c(
-              "a",
-              {
-                staticClass: "btn btn-info",
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    _vm.toggleWorker()
-                  }
-                }
-              },
-              [_vm._v("Cook")]
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        !_vm.toggleWorkerBool && !_vm.toggleOrderMealBool
-          ? _c(
-              "a",
-              {
-                staticClass: "btn btn-info",
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    _vm.toggleOrderMeal()
-                  }
-                }
-              },
-              [_vm._v("Order")]
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        !_vm.toggleWorkerBool && _vm.toggleOrderMealBool
-          ? _c(
-              "a",
-              {
-                staticClass: "btn btn-info",
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    _vm.toggleOrderMeal()
-                  }
-                }
-              },
-              [_vm._v("Meal")]
-            )
-          : _vm._e()
+                },
+                [_vm._v("Workers")]
+              ),
+              _vm._v(" "),
+              _vm.toggleMealsOrdersBool
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-info",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.toggleMealsOrders()
+                        }
+                      }
+                    },
+                    [_vm._v("Meals")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.toggleMealsOrdersBool
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-info",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.toggleMealsOrders()
+                        }
+                      }
+                    },
+                    [_vm._v("Orders")]
+                  )
+                : _vm._e()
+            ])
+          : _c("div", [
+              !_vm.toggleWorkerTotalBool
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-info",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.toggleWorkerTotal()
+                        }
+                      }
+                    },
+                    [_vm._v("Meals/Orders")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.toggleWorkerBool
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-info",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.toggleWorker()
+                        }
+                      }
+                    },
+                    [_vm._v("Waiter")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.toggleWorkerBool
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-info",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.toggleWorker()
+                        }
+                      }
+                    },
+                    [_vm._v("Cook")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.toggleWorkerBool && !_vm.toggleOrderMealBool
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-info",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.toggleOrderMeal()
+                        }
+                      }
+                    },
+                    [_vm._v("Order")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.toggleWorkerBool && _vm.toggleOrderMealBool
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-info",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.toggleOrderMeal()
+                        }
+                      }
+                    },
+                    [_vm._v("Meal")]
+                  )
+                : _vm._e()
+            ])
       ]),
       _vm._v(" "),
       _c("hr"),
       _vm._v(" "),
-      _vm.toggleWorkerBool
-        ? _c("div", [
-            _c("label", [_vm._v("Cook ID (Orders)")]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.data.id,
-                    expression: "data.id"
-                  }
-                ],
-                staticClass: "form-control",
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.$set(
-                      _vm.data,
-                      "id",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
-                  }
-                }
-              },
-              [
-                _c("option", { attrs: { disabled: "", selected: "" } }, [
-                  _vm._v("-- Select an ID --")
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.cooksIds, function(id) {
-                  return _c("option", { key: id }, [_vm._v(_vm._s(id))])
-                })
-              ],
-              2
-            )
-          ])
+      _vm.toggleWorkerTotalBool
+        ? _c("div")
         : _c("div", [
-            _vm.toggleOrderMealBool
-              ? _c("label", [_vm._v("Waiter ID (Orders)")])
-              : _c("label", [_vm._v("Waiter ID (Meals)")]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.data.id,
-                    expression: "data.id"
-                  }
-                ],
-                staticClass: "form-control",
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
+            _vm.toggleWorkerBool
+              ? _c("div", [
+                  _c("label", [_vm._v("Cook ID (Orders)")]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.data.id,
+                          expression: "data.id"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.$set(
+                            _vm.data,
+                            "id",
+                            $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          )
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { disabled: "", selected: "" } }, [
+                        _vm._v("-- Select an ID --")
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.cooksIds, function(id) {
+                        return _c("option", { key: id }, [_vm._v(_vm._s(id))])
                       })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
+                    ],
+                    2
+                  )
+                ])
+              : _c("div", [
+                  _vm.toggleOrderMealBool
+                    ? _c("label", [_vm._v("Waiter ID (Orders)")])
+                    : _c("label", [_vm._v("Waiter ID (Meals)")]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.data.id,
+                          expression: "data.id"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.$set(
+                            _vm.data,
+                            "id",
+                            $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          )
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { disabled: "", selected: "" } }, [
+                        _vm._v("-- Select an ID --")
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.waitersIds, function(id) {
+                        return _c("option", { key: id }, [_vm._v(_vm._s(id))])
                       })
-                    _vm.$set(
-                      _vm.data,
-                      "id",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
-                  }
-                }
-              },
-              [
-                _c("option", { attrs: { disabled: "", selected: "" } }, [
-                  _vm._v("-- Select an ID --")
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.waitersIds, function(id) {
-                  return _c("option", { key: id }, [_vm._v(_vm._s(id))])
-                })
-              ],
-              2
-            )
+                    ],
+                    2
+                  )
+                ])
           ]),
       _vm._v(" "),
       _c("label", { attrs: { for: "Date" } }, [
@@ -110573,65 +110690,103 @@ var render = function() {
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
-      _vm.toggleWorkerBool
-        ? _c(
-            "button",
-            {
-              staticClass: "btn btn-success",
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  _vm.getAVGNumberOfOrdersHandledOnGivenDatesForEachCook(
-                    _vm.data.id,
-                    _vm.data.dates
-                  )
-                }
-              }
-            },
-            [_vm._v("Confirm")]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.toggleWorkerBool && _vm.toggleOrderMealBool
-        ? _c(
-            "button",
-            {
-              staticClass: "btn btn-success",
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  _vm.getAVGNumberOfOrdersHandledOnGivenDatesForEachWaiter(
-                    _vm.data.id,
-                    _vm.data.dates
-                  )
-                }
-              }
-            },
-            [_vm._v("Confirm")]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.toggleWorkerBool && !_vm.toggleOrderMealBool
-        ? _c(
-            "button",
-            {
-              staticClass: "btn btn-success",
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  _vm.getAVGNumberOfMealsHandledOnGivenDatesForEachWaiter(
-                    _vm.data.id,
-                    _vm.data.dates
-                  )
-                }
-              }
-            },
-            [_vm._v("Confirm")]
-          )
-        : _vm._e(),
+      _vm.toggleWorkerTotalBool
+        ? _c("div", [
+            _vm.toggleMealsOrdersBool
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.getTotalOrdersFromGivenMonth(_vm.data.dates)
+                      }
+                    }
+                  },
+                  [_vm._v("Confirm")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.toggleMealsOrdersBool
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.getTotalMealsFromGivenMonth(_vm.data.dates)
+                      }
+                    }
+                  },
+                  [_vm._v("Confirm")]
+                )
+              : _vm._e()
+          ])
+        : _c("div", [
+            _vm.toggleWorkerBool
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.getAVGNumberOfOrdersHandledOnGivenDatesForEachCook(
+                          _vm.data.id,
+                          _vm.data.dates
+                        )
+                      }
+                    }
+                  },
+                  [_vm._v("Confirm")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.toggleWorkerBool && _vm.toggleOrderMealBool
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.getAVGNumberOfOrdersHandledOnGivenDatesForEachWaiter(
+                          _vm.data.id,
+                          _vm.data.dates
+                        )
+                      }
+                    }
+                  },
+                  [_vm._v("Confirm")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.toggleWorkerBool && !_vm.toggleOrderMealBool
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.getAVGNumberOfMealsHandledOnGivenDatesForEachWaiter(
+                          _vm.data.id,
+                          _vm.data.dates
+                        )
+                      }
+                    }
+                  },
+                  [_vm._v("Confirm")]
+                )
+              : _vm._e()
+          ]),
       _vm._v(" "),
       _c("hr"),
       _vm._v(" "),
