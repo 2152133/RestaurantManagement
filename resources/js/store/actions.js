@@ -99,39 +99,7 @@ export default {
                 // always executed
             });
     },
-    declareInvoiceAsPaid(context, payload){
-        /*if(!(this.invoice.name && this.invoice.nif)){
-            alert("Nif and name required");
-            return;
-        }
-        if(/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)){*/
-            axios.patch('/api/invoice/declarePaid', {invoice: JSON.stringify(payload.invoice), user: payload.userId})
-            .then((response) => {
-                axios.get('/api/invoices/pending')
-                    .then((response) => {
-                        // handle success
-                        context.dispatch('loadPendingInvoices');
-                        context.dispatch('loadPaidInvoices');
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        alert(error);
-                        console.log(error);
-                    })
-                    .then(function () {
-                        // always executed
-                    });
-                
-            })
-            .catch(function (error) {
-                // handle error
-                console.log(error);
-            })
-            .then(function () {
-                // always executed
-            });
-        },
+    
 
 
     //------------------------Tables--------------------------------------

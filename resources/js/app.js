@@ -195,5 +195,9 @@ const app = new Vue({
         cashierMessage_sent(dataFromServer){
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
         },
+        refresh_invoices(data){
+            this.$store.dispatch('loadPendingInvoices');
+            this.$store.dispatch('loadPaidInvoices');
+        },
     },
 })

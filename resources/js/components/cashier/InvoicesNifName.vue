@@ -26,13 +26,29 @@
             },
             methods: {
                 declareInvoiceAsPaid(){
-                    this.$store.dispatch('declareInvoiceAsPaid', {invoice: this.getCurrentInvoice, userId: this.$store.getters.getAuthUser.id})
-                    this.$router.go(-1);
+                    /*if(!(this.invoice.name && this.invoice.nif)){
+                        alert("Nif and name required");
+                        return;
+                    }
+                    if(/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)){*/
+                        axios.patch('/api/invoice/declarePaid', {invoice: JSON.stringify(this.getCurrentInvoice), user: this.$store.getters.getAuthUser.id})
+                        .then((response) => {
+                            // handle success
+                            this.sendInvoicePaid();
+                            this.$router.go(-1);
+                            console.log(response);
+                        })
+                    //}
+                    
                 },
                     
                 cancel(){
                     this.$router.go(-1);
                 },
+
+                sendInvoicePaid(){
+                    this.$socket.emit('invoice_paid', this.getCurrentInvoice);
+                },  
             },
             computed: {
                 getCurrentInvoice(){

@@ -54352,6 +54352,10 @@ var app = new __WEBPACK_IMPORTED_MODULE_6_vue___default.a({
         },
         cashierMessage_sent: function cashierMessage_sent(dataFromServer) {
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+        refresh_invoices: function refresh_invoices(data) {
+            this.$store.dispatch('loadPendingInvoices');
+            this.$store.dispatch('loadPaidInvoices');
         }
     }
 });
@@ -78003,32 +78007,6 @@ var index_esm = {
             // always executed
         });
     },
-    declareInvoiceAsPaid: function declareInvoiceAsPaid(context, payload) {
-        /*if(!(this.invoice.name && this.invoice.nif)){
-            alert("Nif and name required");
-            return;
-        }
-        if(/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)){*/
-        axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(payload.invoice), user: payload.userId }).then(function (response) {
-            axios.get('/api/invoices/pending').then(function (response) {
-                // handle success
-                context.dispatch('loadPendingInvoices');
-                context.dispatch('loadPaidInvoices');
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                alert(error);
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-        }).catch(function (error) {
-            // handle error
-            console.log(error);
-        }).then(function () {
-            // always executed
-        });
-    },
 
 
     //------------------------Tables--------------------------------------
@@ -84334,11 +84312,26 @@ module.exports = {
     },
     methods: {
         declareInvoiceAsPaid: function declareInvoiceAsPaid() {
-            this.$store.dispatch('declareInvoiceAsPaid', { invoice: this.getCurrentInvoice, userId: this.$store.getters.getAuthUser.id });
-            this.$router.go(-1);
+            var _this = this;
+
+            /*if(!(this.invoice.name && this.invoice.nif)){
+                alert("Nif and name required");
+                return;
+            }
+            if(/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)){*/
+            axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.getCurrentInvoice), user: this.$store.getters.getAuthUser.id }).then(function (response) {
+                // handle success
+                _this.sendInvoicePaid();
+                _this.$router.go(-1);
+                console.log(response);
+            });
+            //}
         },
         cancel: function cancel() {
             this.$router.go(-1);
+        },
+        sendInvoicePaid: function sendInvoicePaid() {
+            this.$socket.emit('invoice_paid', this.getCurrentInvoice);
         }
     },
     computed: {

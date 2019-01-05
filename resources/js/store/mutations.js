@@ -1,11 +1,11 @@
 export default {
     setToken(state, {token, tokenType, expiration}) {
         state.token = token;
-        state.tokenType = tokenType
+        state.tokenType = tokenType;
         state.expiration = expiration;
-        localStorage.setItem('token_type', tokenType)
-        localStorage.setItem('access_token', token)
-        localStorage.setItem('expiration_time', expiration)
+        localStorage.setItem('token_type', tokenType);
+        localStorage.setItem('access_token', token);
+        localStorage.setItem('expiration_time', expiration);
         axios.defaults.headers.common.Authorization = "Bearer " + token;
     },
     clearToken(state) {
