@@ -55,6 +55,21 @@ export default {
             return state.user.type == "manager" ? true : false;
         return false    
     },
+    isCook(state) {
+        if(state.user)
+            return state.user.type == "cook" ? true : false;
+        return false    
+    },
+    isCashier(state) {
+        if(state.user)
+            return state.user.type == "cashier" ? true : false;
+        return false    
+    },
+    isWaiter(state) {
+        if(state.user)
+            return state.user.type == "waiter" ? true : false;
+        return false    
+    },
     confirmedOrders(state){
         return state.confirmedOrders;
     },

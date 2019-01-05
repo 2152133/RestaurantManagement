@@ -97,6 +97,27 @@ router.beforeEach((to, from, next) => {
             })
         } else next()
     }
+    else if (to.matched.some(record => record.meta.forCook)) {
+        if (!store.getters.isCook) {
+            next({
+                path: '/dashboard'
+            })
+        } else next()
+    }
+    else if (to.matched.some(record => record.meta.forWaiter)) {
+        if (!store.getters.isWaiter) {
+            next({
+                path: '/dashboard'
+            })
+        } else next()
+    }
+    else if (to.matched.some(record => record.meta.forCashier)) {
+        if (!store.getters.isCashier) {
+            next({
+                path: '/dashboard'
+            })
+        } else next()
+    }
     else if (to.matched.some(record => record.meta.forAuth)) {
         if (!store.getters.isAuthenticated) {
             next({

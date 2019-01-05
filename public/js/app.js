@@ -54245,6 +54245,30 @@ __WEBPACK_IMPORTED_MODULE_1__routes_routes__["a" /* default */].beforeEach(funct
             });
         } else next();
     } else if (to.matched.some(function (record) {
+        return record.meta.forCook;
+    })) {
+        if (!__WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].getters.isCook) {
+            next({
+                path: '/dashboard'
+            });
+        } else next();
+    } else if (to.matched.some(function (record) {
+        return record.meta.forWaiter;
+    })) {
+        if (!__WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].getters.isWaiter) {
+            next({
+                path: '/dashboard'
+            });
+        } else next();
+    } else if (to.matched.some(function (record) {
+        return record.meta.forCashier;
+    })) {
+        if (!__WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].getters.isCashier) {
+            next({
+                path: '/dashboard'
+            });
+        } else next();
+    } else if (to.matched.some(function (record) {
         return record.meta.forAuth;
     })) {
         if (!__WEBPACK_IMPORTED_MODULE_0__store_store__["a" /* default */].getters.isAuthenticated) {
@@ -77567,6 +77591,18 @@ var index_esm = {
         if (state.user) return state.user.type == "manager" ? true : false;
         return false;
     },
+    isCook: function isCook(state) {
+        if (state.user) return state.user.type == "cook" ? true : false;
+        return false;
+    },
+    isCashier: function isCashier(state) {
+        if (state.user) return state.user.type == "cashier" ? true : false;
+        return false;
+    },
+    isWaiter: function isWaiter(state) {
+        if (state.user) return state.user.type == "waiter" ? true : false;
+        return false;
+    },
     confirmedOrders: function confirmedOrders(state) {
         return state.confirmedOrders;
     },
@@ -77849,13 +77885,15 @@ var routes = [
     path: '/statistics',
     component: statisticsComponent,
     meta: {
+        forAuth: true,
         forManager: true
     }
 }, {
     path: '/orders',
     component: ordersComponent,
     meta: {
-        forAuth: true
+        forAuth: true,
+        forCook: true
     }
 },
 
@@ -77864,7 +77902,9 @@ var routes = [
     path: '/invoices',
     component: invoicesComponent,
     meta: {
-        forAuth: true
+        forAuth: true,
+        forCashier: true,
+        forManager: true
     }
 },
 
@@ -77873,14 +77913,16 @@ var routes = [
     path: '/mealsOfWaiter',
     component: meals_of_waiter,
     meta: {
-        forAuth: true
+        forAuth: true,
+        forWaiter: true
     }
 }, {
     path: '/createMeal',
     component: create_meal,
     name: 'create_meal',
     meta: {
-        forAuth: true
+        forAuth: true,
+        forWaiter: true
     }
 },
 
@@ -77889,14 +77931,16 @@ var routes = [
     path: '/tables',
     component: tablesComponent,
     meta: {
-        forAuth: true
+        forAuth: true,
+        forManager: true
     }
 }, {
     path: '/addTable',
     component: addEditTableComponent,
     name: 'addTable',
     meta: {
-        forAuth: true
+        forAuth: true,
+        forManager: true
     },
     props: true
 }, {
@@ -77904,13 +77948,15 @@ var routes = [
     component: addEditTableComponent,
     name: 'editTable',
     meta: {
-        forAuth: true
+        forAuth: true,
+        forManager: true
     },
     props: true
 }, {
     path: '/managerMeals',
     component: managerMealsComponent,
     meta: {
+        forAuth: true,
         forManager: true
     }
 }, {
@@ -77939,7 +77985,8 @@ var routes = [
     component: editItemComponent,
     name: 'editItem',
     meta: {
-        forAuth: true
+        forAuth: true,
+        forManager: true
     },
     props: true
 }, {
