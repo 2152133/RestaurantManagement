@@ -105,7 +105,7 @@ class Statistics extends Controller
                 return response()->json(['error' => 'Invalid date format.'], 500);
             }
         }
-        return $arrayOfDatesANdAVG;
+        return esponse()->json($arrayOfDatesANdAVG, 200);
     }
 
     public function getTotalMealsFromGivenMonth(Request $request, $dates) {
@@ -124,7 +124,7 @@ class Statistics extends Controller
                 return response()->json(['error' => 'Invalid date format.'], 500);
             }
         }
-        return $arrayOfDatesANdAVG;
+        return esponse()->json($arrayOfDatesANdAVG, 200);
     }
     
 }
