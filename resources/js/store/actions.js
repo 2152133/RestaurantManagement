@@ -35,8 +35,7 @@ export default {
                 // always executed
             });
     },
-    assignOrderToCook(context, payload){
-        console.log("2: " + payload.userId);
+    /*assignOrderToCook(context, payload){
         axios.patch('/api/orders/' + payload.orderId + '/assignTo/' + payload.userId)
             .then((response) => {
                 // handle success
@@ -44,15 +43,8 @@ export default {
                 context.dispatch('loadConfirmedOrders');
                 context.dispatch('loadInPreparationUserOrders', payload.userId);
             })
-            .catch(function (error) {
-                // handle error
-                console.log(error);
-            })
-            .then(function () {
-                // always executed
-            });
-    },
-    declareOrderAsPrepared(context, payload){
+    },*/
+    /*declareOrderAsPrepared(context, payload){
         axios.patch('/api/orders/' + payload.orderId + '/preparedBy/' + payload.userId)
             .then((response) => {
                 // handle success
@@ -67,7 +59,7 @@ export default {
             .then(function () {
                 // always executed
             });
-    },
+    },*/
     loadTables(context){
         axios.get('/api/tables/all')
                 .then((response) => {

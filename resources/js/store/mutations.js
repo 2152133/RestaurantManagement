@@ -64,4 +64,52 @@ export default {
         state.tablesMeta = response.data.meta;
         state.tablesLinks = response.data.links;
     },
+
+    //------------------Setters-----------------------
+    setConfirmedOrders(state, confirmedOrders){
+        state.confirmedOrders = confirmedOrders;
+    },
+    setConfirmedOrdersMeta(state, confirmedOrdersMeta){
+        state.confirmedOrdersMeta = confirmedOrdersMeta;
+    },
+    setConfirmedOrdersLinks(state, confirmedOrdersLinks){
+        state.confirmedOrdersLinks = confirmedOrdersLinks;
+    },
+    setInPreparationUserOrders(state, inPreparationUserOrders){
+        state.inPreparationUserOrders = inPreparationUserOrders;
+    },
+    setInPreparationUserOrdersMeta(state, inPreparationUserOrdersMeta){
+        state.inPreparationUserOrdersMeta = inPreparationUserOrdersMeta;
+    },
+    setInPreparationUserOrdersLinks(state, inPreparationUserOrdersLinks){
+        state.inPreparationUserOrdersLinks = inPreparationUserOrdersLinks;
+    },
+    setCurrentOrder(state, order){
+        state.currentOrder = order;
+    },
+
+    setTables(state, tables){
+        state.tables = tables;
+    },
+    setCurrentTable(state, table){
+        state.currentTable = table;
+    },
+    setTablesMeta(state, tablesMeta){
+        state.tablesMeta = tablesMeta;
+    },
+    setTablesLinks(state, tablesLinks){
+        state.tablesLinks = tablesLinks;
+    },
+    setEditingTable(state, table){
+        state.editingTable = table;
+    },
+    setCreatingTable(state, table){
+        state.creatingTable = table;
+    },
+    setCurrentItem(state, item){
+        state.currentItem = item;
+    },
+    setItems(state, items){
+        state.items = items;
+    },
 }

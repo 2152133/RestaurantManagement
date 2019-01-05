@@ -21,7 +21,7 @@ Vue.use(Toasted, {
 
 Vue.use(new VueSocketio({
     debug: true,
-    connection: 'http://192.168.10.10:8080'
+    connection: 'http://127.0.0.1:8080'
 })); 
 
 
@@ -147,6 +147,15 @@ const app = new Vue({
         },
         cookMessage_sent(dataFromServer){
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+        refresh_orders_assignment_update(dataFromServer){
+            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
+            this.$store.dispatch('loadConfirmedOrders');
+            
+        },
+        refresh_prepared_orders(order){
+            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
+            this.$store.dispatch('loadConfirmedOrders');
         },
         // waiter of meal
         responsableWaiterMessage(dataFromServer){
