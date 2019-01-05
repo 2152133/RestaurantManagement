@@ -54301,7 +54301,7 @@ module.exports = {
   data: function data() {
     return {
       title: "My meals",
-      currentUser: 13,
+      currentUserId: this.$store.state.user.id,
       usersMeals: [],
       confirmedMealOrders: [],
       pendingMealOrders: [],
@@ -54319,62 +54319,130 @@ module.exports = {
       showFailure: false,
       currentMeal: {},
       mealDetails: [],
-      allMealOrders: []
+      allMealOrders: [],
+      notDeliveredOrdersOfMeal: [],
+      currentOrder: {},
+      counter: 0
     };
   },
 
   methods: {
-    terminateMeal: function terminateMeal(meal, index) {
+    getTerminatedOrdersOfMeal: function getTerminatedOrdersOfMeal(meal) {
       var _this = this;
 
-      axios.put("api/meals/" + meal.id + "/terminate").then(function (response) {
-        _this.showSuccess = "Meal terminated Successfully";
-        _this.showSuccess = true;
-      }).catch(function (error) {
-        _this.failMessage = "Error terminating meal";
-        _this.showFailure = true;
+      return new Promise(function (resolve) {
+        axios.get("/api/meals/" + meal.id + "/notDeliveredOrders").then(function (response) {
+          _this.notDeliveredOrdersOfMeal = response.data.data;
+          resolve(response);
+        }).catch(function (error) {});
       });
-      this.usersMeals.splice(index, 1);
     },
-    markDelivered: function markDelivered(order, index) {
+
+    terminateMeal: function terminateMeal(meal, index) {
       var _this2 = this;
 
+      this.getTerminatedOrdersOfMeal(meal).then(function (var_aux) {
+        if (var_aux != 0) {
+          var response = confirm("There are orders not delivered, do you wish to continue?");
+          if (response) {
+
+            axios.put("api/meals/" + meal.id + "/terminate").then(function (response) {
+              _this2.showSuccess = "Meal terminated Successfully";
+              _this2.showSuccess = true;
+            }).catch(function (error) {
+              _this2.failMessage = "Error terminating meal";
+              _this2.showFailure = true;
+            });
+            _this2.usersMeals.splice(index, 1);
+          } else {
+            console.log("CANCEL");
+          }
+        } else {
+          axios.put("api/meals/" + meal.id + "/terminate").then(function (response) {
+            _this2.showSuccess = "Meal terminated Successfully";
+            _this2.showSuccess = true;
+          }).catch(function (error) {
+            _this2.failMessage = "Error terminating meal";
+            _this2.showFailure = true;
+          });
+          _this2.usersMeals.splice(index, 1);
+        }
+      });
+    },
+
+    createConfirmedOrder: function createConfirmedOrder(meal_id, item_number) {
+      var _this3 = this;
+
+      if (!isNaN(this.currentOrder.id)) {
+
+        axios.post("/api/meal/addOrder/" + meal_id + "/" + item_number).then(function (response) {
+          _this3.successMessage = "Success creating order!";
+          _this3.showSuccess = true;
+        }).catch(function (error) {
+          _this3.showFailure = true;
+          _this3.failMessage = "Fail";
+        });
+      } else {
+        return;
+      }
+    },
+
+    createPendingMeal: function createPendingMeal(meal_number, item_number) {
+      var meal_order_timeout = meal_number;
+      var item_number_timeout = item_number;
+
+      this.counter++;
+
+      var currentdate = new Date();
+      var datetimeToOrder = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
+      this.currentOrder.id = this.counter;
+      this.currentOrder.state = "pending";
+      this.currentOrder.item_id = item_number;
+      this.currentOrder.meal_id = meal_number;
+      this.currentOrder.responsible_cook_id = null;
+      this.currentOrder.start = datetimeToOrder;
+      this.pendingMealOrders.push(this.currentOrder);
+
+      var self = this;
+
+      setTimeout(function () {
+        self.createConfirmedOrder(meal_order_timeout, item_number_timeout);
+        self.pendingMealOrders.splice(self.pendingMealOrders.findIndex(function (o) {
+          return o.id === self.counter;
+        }));
+      }, 5000);
+    },
+
+    markDelivered: function markDelivered(order, index) {
+      var _this4 = this;
+
       axios.put("/api/meals/" + order.id + "/markPreparedOrderAsDelivered").then(function (response) {
-        _this2.successMessage = "Success";
-        _this2.showSuccess = true;
+        _this4.successMessage = "Success marking delivered";
+        _this4.showSuccess = true;
+        _this4.preapredMealsOrders.splice(index, 1);
       }).catch(function (error) {});
     },
     deleteOrder: function deleteOrder(order, index) {
-      var _this3 = this;
-
-      axios.delete("/api/meal/deleteOrderOfMeal/" + order.id + "/delete").then(function (response) {
-        _this3.pendingMealOrders.splice(index, 1);
-        _this3.successMessage = "Success";
-        _this3.showSuccess = true;
-      }).catch(function (error) {
-        _this3.showFailure = true;
-        _this3.failMessage = "Fail";
-      });
+      this.pendingMealOrders.splice(index, 1);
+      this.currentOrder = order;
+      this.currentOrder = {};
+      this.failMessage = "Order Deleted!";
     },
 
     showOrdersOfMeal: function showOrdersOfMeal(meal) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.isToggled = true;
 
       axios.get("/api/meals/" + meal.id + "/confirmedOrders").then(function (response) {
-        _this4.confirmedMealOrders = response.data.data;
-      }).catch(function (error) {
-        console.log(error);
-      });
-      axios.get("/api/meals/" + meal.id + "/pendingOrders").then(function (response) {
-        _this4.pendingMealOrders = response.data.data;
+        _this5.confirmedMealOrders = response.data.data;
       }).catch(function (error) {
         console.log(error);
       });
 
       axios.get("/api/meals/" + meal.id + "/preparedOrders").then(function (response) {
-        _this4.preapredMealsOrders = response.data.data;
+        _this5.preapredMealsOrders = response.data.data;
       }).catch(function (error) {
         console.log(error);
       });
@@ -54385,10 +54453,10 @@ module.exports = {
       this.isMealSummaryToggled = false;
     },
     showMealSummary: function showMealSummary(meal) {
-      var _this5 = this;
+      var _this6 = this;
 
       axios.get("/api/meals/" + meal.id + "/mealDetails").then(function (response) {
-        _this5.mealDetails = response.data.data;
+        _this6.mealDetails = response.data.data;
       }).catch(function (error) {});
 
       this.actualMealDetails = [];
@@ -54397,22 +54465,12 @@ module.exports = {
       this.isToggled = false;
       this.isUpdateToggled = false;
     },
-    addOrderToMeal: function addOrderToMeal(meal_number, item_number) {
-      var _this6 = this;
 
-      axios.post("/api/meal/addOrder/" + meal_number + "/" + item_number).then(function (response) {
-        _this6.successMessage = "Success";
-        _this6.showSuccess = true;
-      }).catch(function (error) {
-        _this6.showFailure = true;
-        _this6.failMessage = "Fail";
-      });
-    },
     getMealsOfWaiter: function getMealsOfWaiter() {
       var _this7 = this;
 
       //GET MEALS OF WAITER
-      axios.get("/api/meals/waiterMeals/" + this.currentUser).then(function (response) {
+      axios.get("/api/meals/waiterMeals/" + this.currentUserId).then(function (response) {
         _this7.usersMeals = response.data.data;
       }).catch(function (error) {
         console.log(error);
@@ -54601,9 +54659,11 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _vm._l(_vm.allItems, function(item) {
-                  return _c("option", { key: item.id }, [
-                    _vm._v(_vm._s(item.id))
-                  ])
+                  return _c(
+                    "option",
+                    { key: item.id, domProps: { value: item.id } },
+                    [_vm._v(_vm._s(item.name))]
+                  )
                 })
               ],
               2
@@ -54623,10 +54683,9 @@ var render = function() {
                 on: {
                   click: function($event) {
                     $event.preventDefault()
-                    _vm.addOrderToMeal(
+                    _vm.createPendingMeal(
                       _vm.selectedOptionMeal,
-                      _vm.selectedOptionItem,
-                      _vm.currentUser
+                      _vm.selectedOptionItem
                     )
                   }
                 }

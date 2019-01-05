@@ -90,9 +90,6 @@ Route::middleware('auth:api')->group(function () {
     //For a meal from a waiter, get it's orders
     Route::get('/meals/{mealId}/confirmedOrders', 'OrderController@getConfirmedOrdersForMeal');
 
-    //For a meal from a waiter, get it's orders
-    Route::get('/meals/{mealId}/pendingOrders', 'OrderController@getPendingOrdersForMeal');
-
     //Get all restaurant tables
     Route::get('/restaurantTables/all', 'RestaurantTableController@all');
 
@@ -126,9 +123,6 @@ Route::middleware('auth:api')->group(function () {
     // Logout
     Route::post('/logout', 'AuthController@logout');
 
-    //Delete an order 5 seconds after creation
-    Route::delete('/meal/deleteOrderOfMeal/{order_id}/delete', 'OrderController@deleteOrderUpTo5SecondsAfterCreation');
-
     //Get prepared orders of Meal
     Route::get('/meals/{mealId}/preparedOrders', 'OrderController@getPreparedOrdersForMeal');
 
@@ -141,11 +135,15 @@ Route::middleware('auth:api')->group(function () {
     //Get all orders for meal
     Route::get('/meals/{mealId}/allOrders', 'OrderController@getAllOrdersForMeal');
 
+    //Get not delivered orders of meal
+    Route::get('/meals/{mealId}/notDeliveredOrders', 'OrderController@getNotDeliveredOrdersOfMeal');
+
     //Terminate meal
     Route::put('/meals/{mealId}/terminate', 'MealController@terminateMeal');
 
     // Declare a invoice as paid
     Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
+
 });
 
 // List all items

@@ -80,7 +80,23 @@ module.exports = {
     },
     markDelivered(order, index) {
       this.$emit("mark-delivered", order, index);
+    },
+    /*
+    getDiferenceBetweenNowAndDateCreation(order){
+     var d = new Date,
+     dformat = [d.getMonth()+1,
+               d.getDate(),
+               d.getFullYear()].join('/')+' '+
+              [d.getHours(),
+               d.getMinutes(),
+               d.getSeconds()].join(':');
+      if(d-order.created_at <5){
+        return true;
+      }
+      return false;
+      //return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
     }
+    */
   }
 };
 </script>

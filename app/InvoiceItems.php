@@ -4,30 +4,24 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Invoice extends Model
+class InvoiceItems extends Model
 {
+
+    public $timestamps = false;
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'state', 'meal_id', 'nif', 'name', 'date', 'total_price'
+        'invoice_id', 'item_id', 'quantity', 'unit_price', 'sub_total_price'
     ];
 
-    /**
+     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
     protected $hidden = [
-        'created_at', 'updated_at',
     ];
-
-    public function meal()
-    {
-        return $this->belongsTo(Meal::class);
-    }
-
-
 }

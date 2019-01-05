@@ -43,7 +43,7 @@
       <label for="items">Items</label>
       <select class="custom-select" v-model="selectedOptionItem">
         <option disabled selected>-- Select an item --</option>
-        <option v-for="item in allItems" v-bind:key="item.id">{{item.id}}</option>
+        <option v-for="item in allItems" v-bind:key="item.id" :value="item.id">{{item.name}}</option>
       </select>
     </div>
     <div v-if="isUpdateToggled">
@@ -51,7 +51,7 @@
       <button
         type="button"
         class="btn btn-outline-success"
-        v-on:click.prevent="addOrderToMeal(selectedOptionMeal, selectedOptionItem, currentUser)"
+        v-on:click.prevent="createPendingMeal(selectedOptionMeal, selectedOptionItem)"
       >Add order</button>
       <div
         class="alert"
@@ -90,7 +90,7 @@ module.exports = {
   data() {
     return {
       title: "My meals",
-      currentUser: 13,
+      currentUserId: this.$store.state.user.id,
       usersMeals: [],
       confirmedMealOrders: [],
       pendingMealOrders: [],
@@ -108,44 +108,135 @@ module.exports = {
       showFailure: false,
       currentMeal: {},
       mealDetails: [],
-      allMealOrders: []
+      allMealOrders: [],
+      notDeliveredOrdersOfMeal: [],
+      currentOrder: {},
+      counter: 0
     };
   },
   methods: {
-    terminateMeal: function(meal, index) {
-      axios
-        .put("api/meals/" + meal.id + "/terminate")
-        .then(response => {
-          this.showSuccess = "Meal terminated Successfully";
-          this.showSuccess = true;
-        })
-        .catch(error => {
-          this.failMessage = "Error terminating meal";
-          this.showFailure = true;
-        });
-      this.usersMeals.splice(index, 1);
+    getTerminatedOrdersOfMeal: function(meal) {
+      return new Promise(resolve => {
+        axios
+          .get("/api/meals/" + meal.id + "/notDeliveredOrders")
+          .then(response => {
+            this.notDeliveredOrdersOfMeal = response.data.data;
+            resolve(response);
+          })
+          .catch(error => {});
+      });
     },
+
+    terminateMeal: function(meal, index) {
+      this.getTerminatedOrdersOfMeal(meal).then(var_aux => {
+        if (var_aux != 0) {
+          let response = confirm(
+            "There are orders not delivered, do you wish to continue?"
+          );
+          if (response) {
+            
+            axios
+              .put("api/meals/" + meal.id + "/terminate")
+              .then(response => {
+                this.showSuccess = "Meal terminated Successfully";
+                this.showSuccess = true;
+              })
+              .catch(error => {
+                this.failMessage = "Error terminating meal";
+                this.showFailure = true;
+              });
+            this.usersMeals.splice(index, 1);
+          } else {
+            console.log("CANCEL");
+          }
+        } else {
+          axios
+            .put("api/meals/" + meal.id + "/terminate")
+            .then(response => {
+              this.showSuccess = "Meal terminated Successfully";
+              this.showSuccess = true;
+            })
+            .catch(error => {
+              this.failMessage = "Error terminating meal";
+              this.showFailure = true;
+            });
+          this.usersMeals.splice(index, 1);
+        }
+      });
+    },
+
+    createConfirmedOrder: function(meal_id, item_number) {
+      if (!isNaN(this.currentOrder.id)) {
+
+        axios
+          .post("/api/meal/addOrder/" + meal_id + "/" + item_number)
+          .then(response => {
+            this.successMessage = "Success creating order!";
+            this.showSuccess = true;
+          })
+          .catch(error => {
+            this.showFailure = true;
+            this.failMessage = "Fail";
+          });
+      } else {
+        return;
+      }
+    },
+
+    createPendingMeal: function(meal_number, item_number) {
+      var meal_order_timeout = meal_number;
+      var item_number_timeout = item_number;
+
+      this.counter++;
+
+      var currentdate = new Date();
+      var datetimeToOrder =
+        currentdate.getFullYear() +
+        "-" +
+        (currentdate.getMonth() + 1) +
+        "-" +
+        currentdate.getDate() +
+        " " +
+        currentdate.getHours() +
+        ":" +
+        currentdate.getMinutes() +
+        ":" +
+        currentdate.getSeconds();
+
+      this.currentOrder.id = this.counter;
+      this.currentOrder.state = "pending";
+      this.currentOrder.item_id = item_number;
+      this.currentOrder.meal_id = meal_number;
+      this.currentOrder.responsible_cook_id = null;
+      this.currentOrder.start = datetimeToOrder;
+      this.pendingMealOrders.push(this.currentOrder);
+
+      var self = this;
+
+      setTimeout(function() {
+        self.createConfirmedOrder(meal_order_timeout, item_number_timeout);
+        self.pendingMealOrders.splice(
+          self.pendingMealOrders.findIndex(o => o.id === self.counter)
+        );
+      }, 5000);
+
+    },
+
     markDelivered: function(order, index) {
       axios
         .put("/api/meals/" + order.id + "/markPreparedOrderAsDelivered")
         .then(response => {
-          this.successMessage = "Success";
+          this.successMessage = "Success marking delivered";
           this.showSuccess = true;
+          this.preapredMealsOrders.splice(index, 1);
         })
         .catch(error => {});
     },
     deleteOrder: function(order, index) {
-      axios
-        .delete("/api/meal/deleteOrderOfMeal/" + order.id + "/delete")
-        .then(response => {
-          this.pendingMealOrders.splice(index, 1);
-          this.successMessage = "Success";
-          this.showSuccess = true;
-        })
-        .catch(error => {
-          this.showFailure = true;
-          this.failMessage = "Fail";
-        });
+      this.pendingMealOrders.splice(index, 1);
+      this.currentOrder = order;
+      this.currentOrder = {};
+      this.failMessage="Order Deleted!"
     },
 
     showOrdersOfMeal: function(meal) {
@@ -155,14 +246,6 @@ module.exports = {
         .get("/api/meals/" + meal.id + "/confirmedOrders")
         .then(response => {
           this.confirmedMealOrders = response.data.data;
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-      axios
-        .get("/api/meals/" + meal.id + "/pendingOrders")
-        .then(response => {
-          this.pendingMealOrders = response.data.data;
         })
         .catch(function(error) {
           console.log(error);
@@ -196,22 +279,11 @@ module.exports = {
       this.isToggled = false;
       this.isUpdateToggled = false;
     },
-    addOrderToMeal: function(meal_number, item_number) {
-      axios
-        .post("/api/meal/addOrder/" + meal_number + "/" + item_number)
-        .then(response => {
-          this.successMessage = "Success";
-          this.showSuccess = true;
-        })
-        .catch(error => {
-          this.showFailure = true;
-          this.failMessage = "Fail";
-        });
-    },
+
     getMealsOfWaiter: function() {
       //GET MEALS OF WAITER
       axios
-        .get("/api/meals/waiterMeals/" + this.currentUser)
+        .get("/api/meals/waiterMeals/" + this.currentUserId)
         .then(response => {
           this.usersMeals = response.data.data;
         })

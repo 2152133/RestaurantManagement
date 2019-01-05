@@ -49,7 +49,7 @@ class OrderController extends Controller
             Debugbar::addThrowable($e);
         }
     }
-
+/*
     public function getPendingOrdersForMeal($meal_id)
     {
         $pendingOrdersOfMeal = DB::table('orders')
@@ -60,7 +60,7 @@ class OrderController extends Controller
             ->paginate(10);
         return $pendingOrdersOfMeal;
     }
-
+*/
     public function getConfirmedOrdersForMeal($meal_id)
     {
         $confirmedOrdersOfMeal = DB::table('orders')
@@ -75,7 +75,7 @@ class OrderController extends Controller
     public function addOrderToMeal($meal_number, $item_id)
     {
         Order::create([
-            'state' => 'pending',
+            'state' => 'confirmed',
             'item_id' => $item_id,
             'meal_id' => $meal_number,
             'responsible_cook_id' => null,
@@ -102,19 +102,13 @@ class OrderController extends Controller
             ->where('id', '=', $meal_number)
             ->update(['total_price_preview' => $p + $cp]);
     }
-
+/*
     public function deleteOrderUpTo5SecondsAfterCreation($order_id)
     {
         $orderToDelete = Order::findOrFail($order_id);
-        $orderToDeleteDate = $orderToDelete->start;
-        $current_date = date('Y-m-d H:i:s');
-        if (strtotime($current_date) - strtotime($orderToDeleteDate) < 5) {
-            $orderToDelete->delete();
-        } else {
-            return response()->json(['error' => 'Unable to delete order.'], 401);
-        }
+        $orderToDelete->delete();
     }
-
+*/
     public function getPreparedOrdersForMeal($meal_id){
         $preparedOrdersOfMeal = DB::table('orders')
             ->join('meals', 'meals.id', '=', 'orders.meal_id')
@@ -148,5 +142,13 @@ class OrderController extends Controller
                     ->where('orders.meal_id', '=', $meal_id)
                     ->paginate(30);
         return $allOrders;
+    }
+
+    public function getNotDeliveredOrdersOfMeal($meal_id){
+        $notDeliveredMealOrders = DB::table('orders')
+                            ->where('orders.meal_id', '=', $meal_id)
+                            ->where('orders.state', '!=', 'delivered')
+                            ->get();
+        return $notDeliveredMealOrders;
     }
 }
