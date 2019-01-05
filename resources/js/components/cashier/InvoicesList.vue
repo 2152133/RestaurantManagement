@@ -6,28 +6,26 @@
                 <tr>
                     <th>Id</th>
                     <th>State</th>
-                    <th>Meal Id</th>
-                    <th>Table Number</th>
-                    <th>responsible_waiter_id</th>
-                    <th>responsible_waiter_name</th>
+                    <th>Meal</th>
+                    <th>Table</th>
+                    <th>Waiter Name</th>
                     <th>nif</th>
                     <th>name</th>
-                    <th>Total Price</th>
-                    <th>created_at</th>
+                    <th>Total</th>
+                    <th>Date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(invoice,index) in invoices" :key="invoice.id">
+                <tr v-for="invoice in invoices" :key="invoice.id">
                     <td>{{invoice.id}}</td>
                     <td>{{invoice.state}}</td>
                     <td>{{invoice.meal_id}}</td>
                     <td>{{invoice.table_number}}</td>
-                    <td>{{invoice.responsible_waiter_id}}</td>
-                    <td>{{invoice.responsible_waiter_name}}</td>
+                    <td>{{invoice.responsible_waiter ? invoice.responsible_waiter.name : " - NONE - "}}</td>
                     <td>{{invoice.nif}}</td>
                     <td>{{invoice.name}}</td>
-                    <td>{{invoice.total_price}}</td>
+                    <td>{{invoice.total_price}} €</td>
                     <td>{{invoice.created_at.date}}</td>
                     <td>
                         <button v-if="invoice.state == 'pending'" class="btn btn-danger btn-sm btn-block" @click="fillNifName(invoice)">Paid</button>
@@ -44,8 +42,6 @@
         props: ["invoices", "meta", "links", "user"],
         data: function() {
             return {
-                
-                
                 currentInvoice: {},
             }
         },
@@ -54,10 +50,12 @@
                 this.$emit('refreshInvoices', invoices, meta, links);
             },
             fillNifName(invoice){
-                this.$emit('fillNifName', invoice);
+                this.$store.commit('setCurrentInvoice', invoice);
+                this.$router.push({name: 'editNifName'})
             },
             seeDetails(invoice){
-                this.$emit('seeDetails', invoice);
+                this.$store.commit('setCurrentInvoice', invoice);
+                this.$router.push({name: 'invoiceDetails'});
             }
         }
     }

@@ -128,7 +128,28 @@ class UserControllerAPI extends Controller {
         $managers = DB::table('users')
             ->where('users.type', '=', 'manager')
             ->get();
-        return $managers;
+        return response()->json($managers, 200);
+    }
+
+    public function getCooks(Request $request) {
+        $cooks = DB::table('users')
+            ->where('users.type', '=', 'cook')
+            ->get();
+        return response()->json($cooks, 200);
+    }
+
+    public function getWaiters(Request $request) {
+        $waiters = DB::table('users')
+            ->where('users.type', '=', 'waiter')
+            ->get();
+        return response()->json($waiters, 200);
+    }
+
+    public function getCashier(Request $request) {
+        $cashiers = DB::table('users')
+            ->where('users.type', '=', 'cashier')
+            ->get();
+        return response()->json($cashiers, 200);
     }
 
     public function startEndShift(Request $request, $id) {

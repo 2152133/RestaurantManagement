@@ -279,7 +279,18 @@ module.exports = {
       this.isToggled = false;
       this.isUpdateToggled = false;
     },
-
+    addOrderToMeal: function(meal_number, item_number) {
+      axios
+        .post("/api/meal/addOrder/" + meal_number + "/" + item_number)
+        .then(response => {
+            this.successMessage = "Success";
+            this.showSuccess = true;
+        })
+        .catch(error => {
+          this.showFailure = true;
+          this.failMessage = "Fail";
+        });
+    },
     getMealsOfWaiter: function() {
       //GET MEALS OF WAITER
       axios

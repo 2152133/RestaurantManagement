@@ -1,13 +1,10 @@
 <template>
 <div>
-    <div class="alert alert-success" v-if="showSuccess">			 
-        <strong>{{ successMessage }}</strong>
-    </div>
     <div class="jumbotron">
-	    <h2>Add User</h2>
+	    <h2>Edit User</h2>
 	    <div class="form-group">
 	        <label for="inputName">Name</label>
-	        <input type="text" class="form-control"  id="inputName" placeholder="Fullname"
+	        <input type="text" class="form-control"  id="inputName" placeholder="Fullname" 
                 name="name"
                 v-model="user.name"
                 v-validate="'required'"/>
@@ -19,7 +16,7 @@
         <div class="form-group">
 	        <label for="inputName">Username</label>
 	        <input
-	            type="text" class="form-control" id="inputUsername" placeholder="Username"
+	            type="text" class="form-control" id="inputUsername" placeholder="Username" 
 	            name="username"
                 v-model="user.username"
                 v-validate="'required'"/>
@@ -52,9 +49,9 @@
                 v-show="errors.has('email')">
                 {{ errors.first('email')}}
             </div>
-	    </div>	    
-        <div class="form-group">
-	        <a class="btn btn-primary" @click.prevent="saveUser()">Save</a>
+	    </div>
+	    <div class="form-group">
+	        <a class="btn btn-success" @click.prevent="saveUser()">Save</a>
 	        <a class="btn btn-light" @click.prevent="cancelEdit()">Cancel</a>
 	    </div>
     </div>
@@ -63,40 +60,26 @@
 
 <script>
 export default {
-    data() {
-        return {
-            showSuccess: false,
-            successMessage: '',
-            user: {
-                name: "",
-                username: "",
-                type: "",
-                email: ""
-            }
-        }
-    },
+    props: ['user'],
     methods: {
-        saveUser() {
+        saveUser(){
             this.$validator.validateAll().then((result) => {
                 if(result) {
-                    axios.post('api/register', this.user)
-                    .then(response => {
+                    axios.put('api/user/'+this.user.id, this.user)
+                    .then(response=>{
                         Object.assign(this.user, response.data.data);
                         this.$emit('user-saved', this.user)
-                        this.showSuccess = true;
-                        this.successMessage = 'User Created';
-                        setTimeout(() => {
-                            this.$router.push("/users")
-                        }, 1000);
-                    })
+                    });
                 }
             })
         },
-        cancelEdit() {
-            this.user = {}
-            this.showSuccess = false
-            this.$router.push("/users")
-        }
+        cancelEdit(){
+            axios.get('api/user/'+this.user.id)
+                .then(response=>{
+                    Object.assign(this.user, response.data.data);
+                    this.$emit('user-canceled', this.user);
+                });
+        },
     },
 }
 </script>

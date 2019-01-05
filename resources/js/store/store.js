@@ -14,6 +14,36 @@ export default new Vuex.Store({
         tokenType: "",
         token: "",
         expiration: 0,
+
+        //--------------Orders-------------------------
+        confirmedOrders: [],
+        confirmedOrdersMeta:[],
+        confirmedOrdersLinks:[],
+        inPreparationUserOrders: [],
+        inPreparationUserOrdersMeta:[],
+        inPreparationUserOrdersLinks:[],
+        currentOrder: {},
+
+        //----------------Invoices----------------------
+        currentInvoice: {},
+        pendingInvoices: [],
+        pendingInvoicesMeta:[],
+        pendingInvoicesLinks:[],
+        paidInvoices: [],
+        paidInvoicesMeta:[],
+        paidInvoicesLinks:[],
+        editingNifName: false,
+        viewingDetails: false,
+        
+        //---------------Management---------------------
+        tables:[],
+        currentTable:{},
+        tablesMeta:{},
+        tablesLinks:{},
+        editingTable: false,
+        creatingTable: false,
+        currentItem: null,
+        items: [],
     },
     getters,
     mutations,

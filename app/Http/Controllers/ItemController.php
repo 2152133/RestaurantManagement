@@ -105,7 +105,7 @@ class ItemController extends Controller
     public function all()
     {
         $allItems = DB::table('items')->get();
-        return $allItems;
+        return response()->json($allItems, 200);
     }
 
     public function show($id)

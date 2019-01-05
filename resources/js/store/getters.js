@@ -55,4 +55,100 @@ export default {
             return state.user.type == "manager" ? true : false;
         return false    
     },
+
+    isCook(state) {
+        if(state.user)
+            return state.user.type == "cook" ? true : false;
+        return false    
+    },
+    isCashier(state) {
+        if(state.user)
+            return state.user.type == "cashier" ? true : false;
+        return false    
+    },
+    isWaiter(state) {
+        if(state.user)
+            return state.user.type == "waiter" ? true : false;
+        return false    
+    },
+
+//-----------------Orders-----------------------
+    confirmedOrders(state){
+        return state.confirmedOrders;
+    },
+    confirmedOrdersMeta(state){
+        return state.confirmedOrdersMeta;
+    },
+    confirmedOrdersLinks(state){
+        return state.confirmedOrdersLinks;
+    },
+    inPreparationUserOrders(state){
+        return state.inPreparationUserOrders;
+    },
+    inPreparationUserOrdersMeta(state){
+        return state.inPreparationUserOrdersMeta;
+    },
+    inPreparationUserOrdersLinks(state){
+        return state.inPreparationUserOrdersLinks;
+    },
+    currentOrder(state){
+        return state.currentOrder;
+    },
+
+
+    //-----------------------Invoices----------------------
+    currentInvoice(state){
+        return state.currentInvoice;
+    },
+    pendingInvoices(state){
+        return state.pendingInvoices;
+    },
+    pendingInvoicesMeta(state){
+        return state.pendingInvoicesMeta;
+    },
+    pendingInvoicesLinks(state){
+        return state.pendingInvoicesLinks;
+    },
+    paidInvoices(state){
+        return state.paidInvoices;
+    },
+    paidInvoicesMeta(state){
+        return state.paidInvoicesMeta;
+    },
+    paidInvoicesLinks(state){
+        return state.paidInvoicesLinks;
+    },
+    editingNifName(state){
+        return state.editingNifName;
+    },
+    viewingDetails(state){
+        return state.viewingDetails;
+    },
+
+
+    //---------------------Management----------------------
+    tables(state){
+        return state.tables;
+    },
+    currentTable(state){
+        return state.currentTable;
+    },
+    tablesMeta(state){
+        return state.tablesMeta;
+    },
+    tablesLinks(state){
+        return state.tablesLinks;
+    },
+    editingTable(state){
+        return state.editingTable;
+    },
+    creatingTable(state){
+        return state.creatingTable;
+    },
+    currentItem(state){
+        return state.currentItem;
+    },
+    items(state){
+        return state.items;
+    },
 }

@@ -1,5 +1,6 @@
 <template>
 <div>
+    <h3>Items</h3>
     <nav aria-label="Page navigation example">
         <ul class="pagination">
             <li v-bind:class="[{disabled: !pagination.prev_page_url}]" 
@@ -29,11 +30,14 @@
             <td>{{ compactDescription(item.description) }}</td>
             <td>{{ item.price }} €</td>
             <td v-if="isManager"> 
-                <a @click.prevent="editItem(item)" class="btn btn-sm btn-primary">Edit</a>
+                <a @click.prevent="editItem(item)" class="btn btn-sm btn-warning">Edit</a>
                 <a @click.prevent="deleteItem(item)" class="btn btn-sm btn-danger">Delete</a>
             </td>
         </tbody>
     </table>
+    <br/>
+    <br/>
+    <br/>
 </div>
 </template>
 

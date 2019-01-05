@@ -19,7 +19,9 @@
         props: ["objects", "meta", "links"],
         data: function() {
             return {
-
+                newObjects:[],
+                newMeta:[],
+                newLinks:[],
             }
         }
         ,
@@ -28,15 +30,15 @@
                 axios.get(url)
                 .then(response => {
                     //this.objects = response.data.data;
-                    Object.assign(this.objects, response.data.data);
+                    this.newObjects = response.data.data;
                     this.makePagination(response.data.meta, response.data.links);
-                    this.$emit('refreshObjects', this.objects, this.meta, this.links);
+                    this.$emit('refreshObjects', this.newObjects, this.newMeta, this.newLinks);
                 })
                 .catch(error => console.log(error))
             },
             makePagination: function(meta, links) {
-                this.meta = meta;
-                this.links = links;
+                this.newMeta = meta;
+                this.newLinks = links;
             },
         },
     };

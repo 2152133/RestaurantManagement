@@ -1,11 +1,15 @@
 <template>
     <div>
         <div id="receipt">
-            <label>Date: {{invoice.date}}</label>
+            <label>Date: {{getCurrentInvoice.date}}</label>
             <br/>
-            <label>Table: {{invoice.table_number}}</label>
+            <label>Table: {{getCurrentInvoice.table_number}}</label>
             <br/>
-            <label>Responsible Waiter: {{invoice.responsible_waiter_name}}</label>
+            <label>Responsible Waiter: {{ getCurrentInvoice.responsible_waiter ? getCurrentInvoice.responsible_waiter.name : " - NONE - " }}</label>
+            <br/>
+            <label>Name: {{ getCurrentInvoice.name ? getCurrentInvoice.name : " - NONE - " }}</label>
+            <br/>
+            <label>NIF: {{ getCurrentInvoice.nif ? getCurrentInvoice.nif : " - NONE - " }}</label>
             <br/>
             <table>
                 <thead>
@@ -13,7 +17,7 @@
                     <th>Sub-total</th>
                 </thead>
                 <tbody>
-                    <tr v-for="item in invoice.items">
+                    <tr v-for="item in getCurrentInvoice.items" :key="item.id">
                         <td>
                             <label>{{item.name}}</label>
                             <br/>
@@ -24,10 +28,10 @@
                         </td>
                     </tr>
                 </tbody>
-                <tr><td><strong>Total:</strong></td><td><strong>{{invoice.total_price}}€</strong></td></tr>
+                <tr><td><strong>Total:</strong></td><td><strong>{{getCurrentInvoice.total_price}}€</strong></td></tr>
             </table>
         </div>
-        <button v-if="invoice.state == 'paid'" class="btn btn-primary btn-sm" @click="exportToPdf()">download</button>
+        <button v-if="getCurrentInvoice.state == 'paid'" class="btn btn-primary btn-sm" @click="exportToPdf()">download</button>
         <br/>
         <br/>
         <button class="btn btn-danger btn-sm" @click="endViewingDetails()">Back</button>
@@ -39,7 +43,6 @@
 
 <script>
     module.exports = {
-        props: ["invoice","user"],
         data: function() {
             return {
                 
@@ -47,12 +50,17 @@
         },
         methods: {
             endViewingDetails(){
-                this.$emit('endViewingDetails');
+                this.$router.go(-1);
             },
             exportToPdf(){
                 var doc = new jsPDF();
                 doc.fromHTML($('#receipt').get(0), 20, 20);
                 doc.save('receipt.pdf');
+            }
+        },
+        computed:{
+            getCurrentInvoice(){
+                return this.$store.getters.currentInvoice;
             }
         }
     }

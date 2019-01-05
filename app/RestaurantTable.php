@@ -3,9 +3,22 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RestaurantTable extends Model
 {
+
+    use SoftDeletes;
+
+    protected $primaryKey = 'table_number';
+    
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -22,4 +35,9 @@ class RestaurantTable extends Model
     protected $hidden = [
         'deleted_at','created_at', 'updated_at',
     ];
+
+    public function meals()
+    {
+        return $this->hasMany(Meal::class);
+    }
 }
