@@ -76614,6 +76614,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
         tokenType: "",
         token: "",
         expiration: 0,
+
+        //--------------Orders-------------------------
         confirmedOrders: [],
         confirmedOrdersMeta: [],
         confirmedOrdersLinks: [],
@@ -76621,6 +76623,18 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
         inPreparationUserOrdersMeta: [],
         inPreparationUserOrdersLinks: [],
         currentOrder: {},
+
+        //----------------Invoices----------------------
+        currentInvoice: {},
+        pendingInvoices: [],
+        pendingInvoicesMeta: [],
+        pendingInvoicesLinks: [],
+        paidInvoices: [],
+        paidInvoicesMeta: [],
+        paidInvoicesLinks: [],
+        editingNifName: false,
+        viewingDetails: false,
+
         //---------------Management---------------------
         tables: [],
         currentTable: {},
@@ -77642,6 +77656,9 @@ var index_esm = {
         if (state.user) return state.user.type == "manager" ? true : false;
         return false;
     },
+
+
+    //-----------------Orders-----------------------
     confirmedOrders: function confirmedOrders(state) {
         return state.confirmedOrders;
     },
@@ -77663,6 +77680,37 @@ var index_esm = {
     currentOrder: function currentOrder(state) {
         return state.currentOrder;
     },
+
+
+    //-----------------------Invoices----------------------
+    currentInvoice: function currentInvoice(state) {
+        return state.currentInvoice;
+    },
+    pendingInvoices: function pendingInvoices(state) {
+        return state.pendingInvoices;
+    },
+    pendingInvoicesMeta: function pendingInvoicesMeta(state) {
+        return state.pendingInvoicesMeta;
+    },
+    pendingInvoicesLinks: function pendingInvoicesLinks(state) {
+        return state.pendingInvoicesLinks;
+    },
+    paidInvoices: function paidInvoices(state) {
+        return state.paidInvoices;
+    },
+    paidInvoicesMeta: function paidInvoicesMeta(state) {
+        return state.paidInvoicesMeta;
+    },
+    paidInvoicesLinks: function paidInvoicesLinks(state) {
+        return state.paidInvoicesLinks;
+    },
+    editingNifName: function editingNifName(state) {
+        return state.editingNifName;
+    },
+    viewingDetails: function viewingDetails(state) {
+        return state.viewingDetails;
+    },
+
 
     //---------------------Management----------------------
     tables: function tables(state) {
@@ -77737,6 +77785,7 @@ var index_esm = {
         axios.defaults.headers.common.Authorization = undefined;
     },
 
+
     //-----------orders--------------------
     assignResponseToInPreparationUserOrders: function assignResponseToInPreparationUserOrders(state, response) {
         state.inPreparationUserOrders = response.data.data;
@@ -77769,7 +77818,21 @@ var index_esm = {
     },
 
 
-    //------------------Setters-----------------------
+    //-----------------------Invoices-------------------------------------------
+    refreshPendingInvoices: function refreshPendingInvoices(state, payload) {
+        state.pendingInvoices = payload.newPendingInvoices;
+        state.pendingInvoicesMeta = payload.newMeta;
+        state.pendingInvoicesLinks = payload.newLinks;
+    },
+    refreshPaidInvoices: function refreshPaidInvoices(state, payload) {
+        state.paidInvoices = payload.newPaidInvoices;
+        state.paidInvoicesMeta = payload.newMeta;
+        state.paidInvoicesLinks = payload.newLinks;
+    },
+
+
+    //------------------Setters---------------------------------------------------------------------------
+    //--------------------Order setters-------------------------------
     setConfirmedOrders: function setConfirmedOrders(state, confirmedOrders) {
         state.confirmedOrders = confirmedOrders;
     },
@@ -77791,6 +77854,33 @@ var index_esm = {
     setCurrentOrder: function setCurrentOrder(state, order) {
         state.currentOrder = order;
     },
+
+
+    //----------------------Invoice Setters-------------------------------------
+    setCurrentInvoice: function setCurrentInvoice(state, invoice) {
+        state.currentInvoice = invoice;
+    },
+    setPendingInvoices: function setPendingInvoices(state, pendingInvoices) {
+        state.pendingInvoices = pendingInvoices;
+    },
+    setPendingInvoicesMeta: function setPendingInvoicesMeta(state, pendingInvoicesMeta) {
+        state.pendingInvoicesMeta = pendingInvoicesMeta;
+    },
+    setPendingInvoicesLinks: function setPendingInvoicesLinks(state, pendingInvoicesLinks) {
+        state.pendingInvoicesLinks = pendingInvoicesLinks;
+    },
+    setPaidInvoices: function setPaidInvoices(state, paidInvoices) {
+        state.paidInvoices = paidInvoices;
+    },
+    setPaidInvoicesMeta: function setPaidInvoicesMeta(state, paidInvoicesMeta) {
+        state.paidInvoicesMeta = paidInvoicesMeta;
+    },
+    setPaidInvoicesLinks: function setPaidInvoicesLinks(state, paidInvoicesLinks) {
+        state.paidInvoicesLinks = paidInvoicesLinks;
+    },
+
+
+    //--------------------Table setters-----------------------------------------
     setTables: function setTables(state, tables) {
         state.tables = tables;
     },
@@ -77828,6 +77918,9 @@ var index_esm = {
 
         commit('setAuthUser', data);
     },
+
+
+    //--------------------Orders---------------------------------
     loadInPreparationUserOrders: function loadInPreparationUserOrders(context, userId) {
         axios.get('/api/orders/inPreparation/fromCook/' + userId).then(function (response) {
             // handle success
@@ -77880,6 +77973,65 @@ var index_esm = {
                 // always executed
             });
     },*/
+
+    //----------------------Invoices---------------------------------------
+    loadPendingInvoices: function loadPendingInvoices(context) {
+        axios.get('/api/invoices/pending/').then(function (response) {
+            // handle success
+            context.commit('setPendingInvoices', response.data.data);
+            context.commit('setPendingInvoicesMeta', response.data.meta);
+            context.commit('setPendingInvoicesLinks', response.data.links);
+            console.log(response);
+        }).catch(function (error) {
+            // handle error
+            console.log(error);
+        }).then(function () {
+            // always executed
+        });
+    },
+    loadPaidInvoices: function loadPaidInvoices(context) {
+        axios.get('/api/invoices/paid/').then(function (response) {
+            // handle success
+            context.commit('setPaidInvoices', response.data.data);
+            context.commit('setPaidInvoicesMeta', response.data.meta);
+            context.commit('setPaidInvoicesLinks', response.data.links);
+            console.log(response);
+        }).catch(function (error) {
+            // handle error
+            console.log(error);
+        }).then(function () {
+            // always executed
+        });
+    },
+    declareInvoiceAsPaid: function declareInvoiceAsPaid(context, payload) {
+        /*if(!(this.invoice.name && this.invoice.nif)){
+            alert("Nif and name required");
+            return;
+        }
+        if(/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)){*/
+        axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(payload.invoice), user: payload.userId }).then(function (response) {
+            axios.get('/api/invoices/pending').then(function (response) {
+                // handle success
+                context.dispatch('loadPendingInvoices');
+                context.dispatch('loadPaidInvoices');
+                console.log(response);
+            }).catch(function (error) {
+                // handle error
+                alert(error);
+                console.log(error);
+            }).then(function () {
+                // always executed
+            });
+        }).catch(function (error) {
+            // handle error
+            console.log(error);
+        }).then(function () {
+            // always executed
+        });
+    },
+
+
+    //------------------------Tables--------------------------------------
     loadTables: function loadTables(context) {
         axios.get('/api/tables/all').then(function (response) {
             // handle success
@@ -77924,8 +78076,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('orders-list', __webpack_r
 //---------------------Cashier--------------------------------------
 var invoicesComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('pending-invoices', __webpack_require__(169));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoices-list', __webpack_require__(172));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('edit-nif-name', __webpack_require__(175));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoice-details', __webpack_require__(178));
+var editNifNameComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('edit-nif-name', __webpack_require__(175));
+var invoiceDetailsComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoice-details', __webpack_require__(178));
 
 //-----------------------------Waiter---------------------------
 var meals_of_waiter = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('waiterMeals', __webpack_require__(186));
@@ -77985,6 +78137,20 @@ var routes = [
 {
     path: '/invoices',
     component: invoicesComponent,
+    meta: {
+        forAuth: true
+    }
+}, {
+    path: '/editNifName',
+    component: editNifNameComponent,
+    name: 'editNifName',
+    meta: {
+        forAuth: true
+    }
+}, {
+    path: '/invoiceDetails',
+    component: invoiceDetailsComponent,
+    name: 'invoiceDetails',
     meta: {
         forAuth: true
     }
@@ -83222,7 +83388,6 @@ module.exports = {
         };
     },
     methods: {
-
         loadInPreparationUserOrders: function loadInPreparationUserOrders() {
             this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
         },
@@ -83728,87 +83893,50 @@ module.exports = {
             showSuccess: false,
             showFailure: false,
             successMessage: '',
-            failMessage: '',
-            currentInvoice: {},
-            currentUser: '52',
-            pendingInvoices: [],
-            pendingInvoicesMeta: [],
-            pendingInvoicesLinks: [],
-            paidInvoices: [],
-            paidInvoicesMeta: [],
-            paidInvoicesLinks: [],
-            editingNifName: false,
-            viewingDetails: false
+            failMessage: ''
         };
     },
 
     methods: {
         loadPendingInvoices: function loadPendingInvoices() {
-            var _this = this;
-
-            axios.get('/api/invoices/pending/').then(function (response) {
-                // handle success
-                _this.pendingInvoices = response.data.data;
-                _this.pendingInvoicesMeta = response.data.meta;
-                _this.pendingInvoicesLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-            axios.get('/api/invoices/paid/').then(function (response) {
-                // handle success
-                _this.paidInvoices = response.data.data;
-                _this.paidInvoicesMeta = response.data.meta;
-                _this.paidInvoicesLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
+            this.$store.dispatch('loadPendingInvoices');
+        },
+        loadPaidInvoices: function loadPaidInvoices() {
+            this.$store.dispatch('loadPaidInvoices');
         },
         refreshPendingInvoices: function refreshPendingInvoices(newPendingInvoices, newMeta, newLinks) {
-            this.pendingInvoices = newPendingInvoices;
-            this.pendingInvoicesMeta = newMeta;
-            this.pendingInvoicesLinks = newLinks;
+            this.$store.commit('refreshPendingInvoices', { newPendingInvoices: newPendingInvoices, newMeta: newMeta, newLinks: newLinks });
         },
-        refreshPaidInvoices: function refreshPaidInvoices(newPendingInvoices, newMeta, newLinks) {
-            this.paidInvoices = newPendingInvoices;
-            this.paidInvoicesMeta = newMeta;
-            this.paidInvoicesLinks = newLinks;
+        refreshPaidInvoices: function refreshPaidInvoices(newPaidInvoices, newMeta, newLinks) {
+            this.$store.commit('refreshPaidInvoices', { newPaidInvoices: newPaidInvoices, newMeta: newMeta, newLinks: newLinks });
+        }
+    },
+    computed: {
+        getCurrentInvoice: function getCurrentInvoice() {
+            return this.$store.getters.currentInvoice;
         },
-        fillNifName: function fillNifName(invoice) {
-            if (invoice.state == 'pending') {
-                this.editingNifName = true;
-                this.currentInvoice = invoice;
-            }
+        getPendingInvoices: function getPendingInvoices() {
+            return this.$store.getters.pendingInvoices;
         },
-        endEditingSave: function endEditingSave($pendingInvoices, $meta, $links) {
-            this.invoices = $pendingInvoices;
-            this.meta = $meta;
-            this.links = $links;
-            this.editingNifName = false;
-            this.currentInvoice = {};
+        getPendingInvoicesMeta: function getPendingInvoicesMeta() {
+            return this.$store.getters.pendingInvoicesMeta;
         },
-        endEditingCancel: function endEditingCancel() {
-            this.editingNifName = false;
-            this.currentInvoice = {};
+        getPendingInvoicesLinks: function getPendingInvoicesLinks() {
+            return this.$store.getters.pendingInvoicesLinks;
         },
-        seeDetails: function seeDetails(invoice) {
-            this.viewingDetails = true;
-            this.currentInvoice = invoice;
+        getPaidInvoices: function getPaidInvoices() {
+            return this.$store.getters.paidInvoices;
         },
-        endViewingDetails: function endViewingDetails() {
-            this.viewingDetails = false;
-            this.currentInvoice = {};
+        getPaidInvoicesMeta: function getPaidInvoicesMeta() {
+            return this.$store.getters.paidInvoicesMeta;
+        },
+        getPaidInvoicesLinks: function getPaidInvoicesLinks() {
+            return this.$store.getters.paidInvoicesLinks;
         }
     },
     mounted: function mounted() {
         this.loadPendingInvoices();
+        this.loadPaidInvoices();
     }
 };
 
@@ -83827,89 +83955,56 @@ var render = function() {
         _c("h1", [_vm._v(_vm._s(_vm.title))])
       ]),
       _vm._v(" "),
-      _vm.editingNifName
-        ? _c("edit-nif-name", {
-            attrs: { invoice: _vm.currentInvoice },
-            on: {
-              declareAsPaid: _vm.endEditingSave,
-              cancelEditing: _vm.endEditingCancel
-            }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.viewingDetails
-        ? _c("invoice-details", {
-            attrs: { invoice: _vm.currentInvoice },
-            on: { endViewingDetails: _vm.endViewingDetails }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.editingNifName && !_vm.viewingDetails
+      _vm.showSuccess || _vm.showFailure
         ? _c(
             "div",
+            {
+              staticClass: "alert",
+              class: {
+                "alert-success": _vm.showSuccess,
+                "alert-danger": _vm.showFailure
+              }
+            },
             [
-              _c("invoices-list", {
-                attrs: {
-                  invoices: _vm.pendingInvoices,
-                  meta: _vm.pendingInvoicesMeta,
-                  links: _vm.pendingInvoicesLinks
+              _c(
+                "button",
+                {
+                  staticClass: "close-btn",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.showSuccess = false
+                      _vm.showFailure = false
+                    }
+                  }
                 },
-                on: {
-                  refreshInvoices: _vm.refreshPendingInvoices,
-                  declareAsPaid: _vm.loadPendingInvoices,
-                  fillNifName: _vm.fillNifName,
-                  seeDetails: _vm.seeDetails
-                }
-              }),
+                [_vm._v("×")]
+              ),
               _vm._v(" "),
-              _c("invoices-list", {
-                attrs: {
-                  invoices: _vm.paidInvoices,
-                  meta: _vm.paidInvoicesMeta,
-                  links: _vm.paidInvoicesLinks
-                },
-                on: {
-                  refreshInvoices: _vm.refreshPaidInvoices,
-                  seeDetails: _vm.seeDetails
-                }
-              }),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
               _vm._v(" "),
-              _vm.showSuccess || _vm.showFailure
-                ? _c(
-                    "div",
-                    {
-                      staticClass: "alert",
-                      class: {
-                        "alert-success": _vm.showSuccess,
-                        "alert-danger": _vm.showFailure
-                      }
-                    },
-                    [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "close-btn",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              _vm.showSuccess = false
-                              _vm.showFailure = false
-                            }
-                          }
-                        },
-                        [_vm._v("×")]
-                      ),
-                      _vm._v(" "),
-                      _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
-                      _vm._v(" "),
-                      _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
-                    ]
-                  )
-                : _vm._e()
-            ],
-            1
+              _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
+            ]
           )
-        : _vm._e()
+        : _vm._e(),
+      _vm._v(" "),
+      _c("invoices-list", {
+        attrs: {
+          invoices: _vm.getPendingInvoices,
+          meta: _vm.getPendingInvoicesMeta,
+          links: _vm.getPendingInvoicesLinks
+        },
+        on: { refreshInvoices: _vm.refreshPendingInvoices }
+      }),
+      _vm._v(" "),
+      _c("invoices-list", {
+        attrs: {
+          invoices: _vm.getPaidInvoices,
+          meta: _vm.getPaidInvoicesMeta,
+          links: _vm.getPaidInvoicesLinks
+        },
+        on: { refreshInvoices: _vm.refreshPaidInvoices }
+      })
     ],
     1
   )
@@ -84019,7 +84114,6 @@ module.exports = {
     props: ["invoices", "meta", "links", "user"],
     data: function data() {
         return {
-
             currentInvoice: {}
         };
     },
@@ -84028,10 +84122,12 @@ module.exports = {
             this.$emit('refreshInvoices', invoices, meta, links);
         },
         fillNifName: function fillNifName(invoice) {
-            this.$emit('fillNifName', invoice);
+            this.$store.commit('setCurrentInvoice', invoice);
+            this.$router.push({ name: 'editNifName' });
         },
         seeDetails: function seeDetails(invoice) {
-            this.$emit('seeDetails', invoice);
+            this.$store.commit('setCurrentInvoice', invoice);
+            this.$router.push({ name: 'invoiceDetails' });
         }
     }
 };
@@ -84233,45 +84329,21 @@ module.exports = Component.exports
 //
 
 module.exports = {
-    props: ['invoice', 'index'],
     data: function data() {
         return {};
     },
-
     methods: {
         declareInvoiceAsPaid: function declareInvoiceAsPaid() {
-            var _this = this;
-
-            if (!(this.invoice.name && this.invoice.nif)) {
-                alert("Nif and name required");
-                return;
-            }
-            if (/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)) {
-                axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.invoice), user: this.currentUser }).then(function (response) {
-                    axios.get('/api/invoices/pending').then(function (response) {
-                        // handle success
-                        $invoices = response.data.data;
-                        $meta = response.data.meta;
-                        $links = response.data.links;
-                        _this.$emit('declareAsPaid', $invoices, $meta, $links);
-                        console.log(response);
-                    }).catch(function (error) {
-                        // handle error
-                        alert(error);
-                        console.log(error);
-                    }).then(function () {
-                        // always executed
-                    });
-                }).catch(function (error) {
-                    // handle error
-                    console.log(error);
-                }).then(function () {
-                    // always executed
-                });
-            }
+            this.$store.dispatch('declareInvoiceAsPaid', { invoice: this.getCurrentInvoice, userId: this.$store.getters.getAuthUser.id });
+            this.$router.go(-1);
         },
         cancel: function cancel() {
-            this.$emit('cancelEditing');
+            this.$router.go(-1);
+        }
+    },
+    computed: {
+        getCurrentInvoice: function getCurrentInvoice() {
+            return this.$store.getters.currentInvoice;
         }
     }
 };
@@ -84304,8 +84376,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.invoice.nif,
-                expression: "invoice.nif"
+                value: _vm.getCurrentInvoice.nif,
+                expression: "getCurrentInvoice.nif"
               }
             ],
             staticClass: "form-control",
@@ -84315,13 +84387,13 @@ var render = function() {
               pattern: "[0-9]{9}",
               title: "9 numbers"
             },
-            domProps: { value: _vm.invoice.nif },
+            domProps: { value: _vm.getCurrentInvoice.nif },
             on: {
               input: function($event) {
                 if ($event.target.composing) {
                   return
                 }
-                _vm.$set(_vm.invoice, "nif", $event.target.value)
+                _vm.$set(_vm.getCurrentInvoice, "nif", $event.target.value)
               }
             }
           })
@@ -84335,8 +84407,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.invoice.name,
-                expression: "invoice.name"
+                value: _vm.getCurrentInvoice.name,
+                expression: "getCurrentInvoice.name"
               }
             ],
             staticClass: "form-control",
@@ -84346,13 +84418,13 @@ var render = function() {
               pattern: "[a-zA-Z\\s]*",
               title: "Only letters and spaces"
             },
-            domProps: { value: _vm.invoice.name },
+            domProps: { value: _vm.getCurrentInvoice.name },
             on: {
               input: function($event) {
                 if ($event.target.composing) {
                   return
                 }
-                _vm.$set(_vm.invoice, "name", $event.target.value)
+                _vm.$set(_vm.getCurrentInvoice, "name", $event.target.value)
               }
             }
           })
@@ -84880,18 +84952,22 @@ module.exports = function listToStyles (parentId, list) {
 //
 
 module.exports = {
-    props: ["invoice", "user"],
     data: function data() {
         return {};
     },
     methods: {
         endViewingDetails: function endViewingDetails() {
-            this.$emit('endViewingDetails');
+            this.$router.go(-1);
         },
         exportToPdf: function exportToPdf() {
             var doc = new jsPDF();
             doc.fromHTML($('#receipt').get(0), 20, 20);
             doc.save('receipt.pdf');
+        }
+    },
+    computed: {
+        getCurrentInvoice: function getCurrentInvoice() {
+            return this.$store.getters.currentInvoice;
         }
     }
 };
@@ -84906,11 +84982,13 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("div", { attrs: { id: "receipt" } }, [
-      _c("label", [_vm._v("Date: " + _vm._s(_vm.invoice.date))]),
+      _c("label", [_vm._v("Date: " + _vm._s(_vm.getCurrentInvoice.date))]),
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
-      _c("label", [_vm._v("Table: " + _vm._s(_vm.invoice.table_number))]),
+      _c("label", [
+        _vm._v("Table: " + _vm._s(_vm.getCurrentInvoice.table_number))
+      ]),
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
@@ -84918,8 +84996,8 @@ var render = function() {
         _vm._v(
           "Responsible Waiter: " +
             _vm._s(
-              _vm.invoice.responsible_waiter
-                ? _vm.invoice.responsible_waiter.name
+              _vm.getCurrentInvoice.responsible_waiter
+                ? _vm.getCurrentInvoice.responsible_waiter.name
                 : " - NONE - "
             )
         )
@@ -84929,7 +85007,12 @@ var render = function() {
       _vm._v(" "),
       _c("label", [
         _vm._v(
-          "Name: " + _vm._s(_vm.invoice.name ? _vm.invoice.name : " - NONE - ")
+          "Name: " +
+            _vm._s(
+              _vm.getCurrentInvoice.name
+                ? _vm.getCurrentInvoice.name
+                : " - NONE - "
+            )
         )
       ]),
       _vm._v(" "),
@@ -84937,7 +85020,12 @@ var render = function() {
       _vm._v(" "),
       _c("label", [
         _vm._v(
-          "NIF: " + _vm._s(_vm.invoice.nif ? _vm.invoice.nif : " - NONE - ")
+          "NIF: " +
+            _vm._s(
+              _vm.getCurrentInvoice.nif
+                ? _vm.getCurrentInvoice.nif
+                : " - NONE - "
+            )
         )
       ]),
       _vm._v(" "),
@@ -84948,7 +85036,7 @@ var render = function() {
         _vm._v(" "),
         _c(
           "tbody",
-          _vm._l(_vm.invoice.items, function(item) {
+          _vm._l(_vm.getCurrentInvoice.items, function(item) {
             return _c("tr", { key: item.id }, [
               _c("td", [
                 _c("label", [_vm._v(_vm._s(item.name))]),
@@ -84976,13 +85064,15 @@ var render = function() {
         _c("tr", [
           _vm._m(1),
           _c("td", [
-            _c("strong", [_vm._v(_vm._s(_vm.invoice.total_price) + "€")])
+            _c("strong", [
+              _vm._v(_vm._s(_vm.getCurrentInvoice.total_price) + "€")
+            ])
           ])
         ])
       ])
     ]),
     _vm._v(" "),
-    _vm.invoice.state == "paid"
+    _vm.getCurrentInvoice.state == "paid"
       ? _c(
           "button",
           {

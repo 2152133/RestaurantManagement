@@ -34,6 +34,8 @@ export default {
         localStorage.removeItem('expiration_time')
         axios.defaults.headers.common.Authorization = undefined;
     },
+
+
     //-----------orders--------------------
     assignResponseToInPreparationUserOrders(state, response){
         state.inPreparationUserOrders = response.data.data;
@@ -65,7 +67,22 @@ export default {
         state.tablesLinks = response.data.links;
     },
 
-    //------------------Setters-----------------------
+    //-----------------------Invoices-------------------------------------------
+    refreshPendingInvoices(state, payload){
+        state.pendingInvoices = payload.newPendingInvoices;
+        state.pendingInvoicesMeta = payload.newMeta;
+        state.pendingInvoicesLinks =  payload.newLinks;
+    },
+    refreshPaidInvoices(state, payload){
+        state.paidInvoices = payload.newPaidInvoices;
+        state.paidInvoicesMeta = payload.newMeta;
+        state.paidInvoicesLinks = payload.newLinks;
+    },
+
+
+
+    //------------------Setters---------------------------------------------------------------------------
+    //--------------------Order setters-------------------------------
     setConfirmedOrders(state, confirmedOrders){
         state.confirmedOrders = confirmedOrders;
     },
@@ -88,6 +105,37 @@ export default {
         state.currentOrder = order;
     },
 
+
+    
+
+
+    //----------------------Invoice Setters-------------------------------------
+    setCurrentInvoice(state, invoice){
+        state.currentInvoice = invoice;
+    },
+    setPendingInvoices(state, pendingInvoices){
+        state.pendingInvoices = pendingInvoices;
+    },
+    setPendingInvoicesMeta(state, pendingInvoicesMeta){
+        state.pendingInvoicesMeta = pendingInvoicesMeta;
+    },
+    setPendingInvoicesLinks(state, pendingInvoicesLinks){
+        state.pendingInvoicesLinks = pendingInvoicesLinks;
+    },
+    setPaidInvoices(state, paidInvoices){
+        state.paidInvoices = paidInvoices;
+    },
+    setPaidInvoicesMeta(state, paidInvoicesMeta){
+        state.paidInvoicesMeta = paidInvoicesMeta;
+    },
+    setPaidInvoicesLinks(state, paidInvoicesLinks){
+        state.paidInvoicesLinks = paidInvoicesLinks;
+    },
+
+
+
+
+    //--------------------Table setters-----------------------------------------
     setTables(state, tables){
         state.tables = tables;
     },

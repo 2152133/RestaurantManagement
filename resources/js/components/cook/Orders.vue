@@ -29,7 +29,6 @@
             }
         },
         methods: {
-            
             loadInPreparationUserOrders: function(){
                 this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
             },

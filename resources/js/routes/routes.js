@@ -27,8 +27,8 @@ Vue.component('orders-list', require('../components/cook/OrdersList.vue'));
 //---------------------Cashier--------------------------------------
 const invoicesComponent = Vue.component('pending-invoices', require('../components/cashier/Invoices.vue'));
 Vue.component('invoices-list', require('../components/cashier/InvoicesList.vue'));
-Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
-Vue.component('invoice-details', require('../components/cashier/InvoiceDetails.vue'));
+const editNifNameComponent = Vue.component('edit-nif-name', require('../components/cashier/InvoicesNifName.vue'));
+const invoiceDetailsComponent = Vue.component('invoice-details', require('../components/cashier/InvoiceDetails.vue'));
 
 
 
@@ -106,6 +106,22 @@ const routes = [
     {
         path: '/invoices', 
         component: invoicesComponent,
+        meta: {
+            forAuth: true
+        }
+    },
+    {
+        path: '/editNifName', 
+        component: editNifNameComponent,
+        name: 'editNifName',
+        meta: {
+            forAuth: true
+        }
+    },
+    {
+        path: '/invoiceDetails', 
+        component: invoiceDetailsComponent,
+        name: 'invoiceDetails',
         meta: {
             forAuth: true
         }
