@@ -89,8 +89,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/meals/waiterMeals/{responsibleWaiterId}', 'MealController@waiterMeals');
     //For a meal from a waiter, get it's orders
     Route::get('/meals/{mealId}/confirmedOrders', 'OrderController@getConfirmedOrdersForMeal');
-    //For a meal from a waiter, get it's orders
-    Route::get('/meals/{mealId}/pendingOrders', 'OrderController@getPendingOrdersForMeal');
     //Get all meals
     Route::get('/meals', 'MealController@index');
 
@@ -100,9 +98,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/meal/createMeal/{table_number}/{waiter_id}', 'MealController@createMeal');
     //Add an order to a meal (create order)
     Route::post('/meal/addOrder/{meal_id}/{item_id}', 'OrderController@addOrderToMeal');
-
-    //Delete an order 5 seconds after creation
-    Route::delete('/meal/deleteOrderOfMeal/{order_id}/delete', 'OrderController@deleteOrderUpTo5SecondsAfterCreation');
 
     //Get prepared orders of Meal
     Route::get('/meals/{mealId}/preparedOrders', 'OrderController@getPreparedOrdersForMeal');
@@ -115,6 +110,9 @@ Route::middleware('auth:api')->group(function () {
 
     //Get all orders for meal
     Route::get('/meals/{mealId}/allOrders', 'OrderController@getAllOrdersForMeal');
+
+    //Get not delivered orders of meal
+    Route::get('/meals/{mealId}/notDeliveredOrders', 'OrderController@getNotDeliveredOrdersOfMeal');
 
     //Terminate meal
     Route::put('/meals/{mealId}/terminate', 'MealController@terminateMeal');
@@ -137,7 +135,6 @@ Route::middleware('auth:api')->group(function () {
 
     //Delete restaurant table by id
     Route::delete('/tables/{id}', 'RestaurantTableController@delete');
-    
 
 
 

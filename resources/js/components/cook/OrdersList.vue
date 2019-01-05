@@ -99,7 +99,6 @@ module.exports = {
     markDelivered(order, index) {
       this.$emit("mark-delivered", order, index);
     },
-    
   }
 };
 </script>
