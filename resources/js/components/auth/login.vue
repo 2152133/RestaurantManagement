@@ -49,7 +49,7 @@
                     let expiration = response.data.expires_in + Date.now()
                     this.$store.dispatch('setAuthUser', this.user)
                     this.$store.commit('setToken', {token, tokenType, expiration})
-                    this.$socket.emit('user_enter', this.$store.state.user);
+                    this.$socket.emit('user_enter', this.$store.getters.getAuthUser);
                     this.typeofmsg = "alert-success";
                     this.message = "User authenticated correctly";
                     this.showMessage = true;
@@ -62,9 +62,6 @@
                     .then(response => {
                         let user = response.data
                         this.$store.dispatch('setAuthUser', user)
-                    })
-                    .catch(error => {
-                        console.log(error);
                     })
                 })
             },

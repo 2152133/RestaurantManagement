@@ -32,7 +32,7 @@ class Statistics extends Controller
                 return response()->json(['error' => 'Invalid date format.'], 500);
             }
         }
-        return $arrayOfDatesANdAVG;
+        return ($arrayOfDatesANdAVG)->response()->setStatusCode(200);
     }
 
     public function getAVGNumberOfOrdersHandledOnGivenDatesForEachWaiter(Request $request, $id, $dates) {
@@ -59,10 +59,9 @@ class Statistics extends Controller
                 return response()->json(['error' => 'Invalid date format.'], 500);
             }
         }
-        return $arrayOfDatesANdAVG;
+        return ($arrayOfDatesANdAVG)->response()->setStatusCode(200);
     }
 
-    // US40
     public function getAVGNumberOfMealsHandledOnGivenDatesForEachWaiter(Request $request, $id, $dates) {
         $arrayOfDatesANdAVG = array();
         $datesToCompare = explode(',', $dates);
@@ -86,9 +85,10 @@ class Statistics extends Controller
                 return response()->json(['error' => 'Invalid date format.'], 500);
             }
         }
-        return $arrayOfDatesANdAVG;
+        return ($arrayOfDatesANdAVG)->response()->setStatusCode(200);
     }
 
+    // US40
     public function getTotalOrdersFromGivenMonth(Request $request, $dates) {
         $arrayOfDatesAndAVG = array();
         $datesToCompare = explode(',', $dates);

@@ -13,14 +13,14 @@ class InvoiceController extends Controller
         // Get pending invoices
         $invoices = Invoice::where('state', 'pending')->orderBy('id', 'asc')->paginate(5);
         // Return collection of invoices as a resource
-        return InvoiceResource::collection($invoices);
+        return (InvoiceResource::collection($invoices))->response()->setStatusCode(200);
     }
 
     public function getPaid(){
         // Get pending invoices
         $invoices = Invoice::where('state', 'paid')->orderBy('id', 'asc')->paginate(5);
         // Return collection of invoices as a resource
-        return InvoiceResource::collection($invoices);
+        return (InvoiceResource::collection($invoices))->response()->setStatusCode(200);
     }
 
     public function getFiltered(Request $request) {
@@ -37,7 +37,7 @@ class InvoiceController extends Controller
             }
         }
 
-        return InvoiceResource::collection($invoices->paginate(5))->appends($queries);
+        return (InvoiceResource::collection($invoices->paginate(5))->appends($queries))->response()->setStatusCode(200);
     }
 
     public function declareInvoiceAsPaid(Request $request){
@@ -60,7 +60,7 @@ class InvoiceController extends Controller
 
             if($invoice->save() && $meal->save())
             {
-                return new InvoiceResource($invoice);
+                return (new InvoiceResource($invoice))->response()->setStatusCode(200);
             }
         } catch (Exception $e) {
             Debugbar::addThrowable($e);
