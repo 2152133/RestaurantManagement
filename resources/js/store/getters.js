@@ -55,6 +55,7 @@ export default {
             return state.user.type == "manager" ? true : false;
         return false    
     },
+
     isCook(state) {
         if(state.user)
             return state.user.type == "cook" ? true : false;
@@ -70,6 +71,8 @@ export default {
             return state.user.type == "waiter" ? true : false;
         return false    
     },
+
+//-----------------Orders-----------------------
     confirmedOrders(state){
         return state.confirmedOrders;
     },
@@ -91,6 +94,38 @@ export default {
     currentOrder(state){
         return state.currentOrder;
     },
+
+
+    //-----------------------Invoices----------------------
+    currentInvoice(state){
+        return state.currentInvoice;
+    },
+    pendingInvoices(state){
+        return state.pendingInvoices;
+    },
+    pendingInvoicesMeta(state){
+        return state.pendingInvoicesMeta;
+    },
+    pendingInvoicesLinks(state){
+        return state.pendingInvoicesLinks;
+    },
+    paidInvoices(state){
+        return state.paidInvoices;
+    },
+    paidInvoicesMeta(state){
+        return state.paidInvoicesMeta;
+    },
+    paidInvoicesLinks(state){
+        return state.paidInvoicesLinks;
+    },
+    editingNifName(state){
+        return state.editingNifName;
+    },
+    viewingDetails(state){
+        return state.viewingDetails;
+    },
+
+
     //---------------------Management----------------------
     tables(state){
         return state.tables;

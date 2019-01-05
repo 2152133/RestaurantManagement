@@ -54191,7 +54191,7 @@ __WEBPACK_IMPORTED_MODULE_6_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_3_vue_
 
 __WEBPACK_IMPORTED_MODULE_6_vue___default.a.use(new __WEBPACK_IMPORTED_MODULE_2_vue_socket_io___default.a({
     debug: true,
-    connection: 'http://192.168.10.10:8080'
+    connection: 'http://127.0.0.1:8080'
 }));
 
 __WEBPACK_IMPORTED_MODULE_6_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_5_vee_validate__["a" /* default */]);
@@ -54297,10 +54297,94 @@ var app = new __WEBPACK_IMPORTED_MODULE_6_vue___default.a({
             var sourceName = dataFromServer[1] === null ? 'Unknown' : dataFromServer[1].name;
             this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"');
         },
+        managerMessage_unavailable: function managerMessage_unavailable(destUser) {
+            this.$toasted.error('User "' + destUser.name + '" is not available');
+        },
+        managerMessage_sent: function managerMessage_sent(dataFromServer) {
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+
+        // cooks
+        cookMessage: function cookMessage(dataFromServer) {
+            var _this = this;
+
+            var sourceName = dataFromServer[1] === null ? 'Unknown' : dataFromServer[1].name;
+            this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"', {
+                action: {
+                    text: 'Go to Orders',
+                    onClick: function onClick(e, toastObject) {
+                        _this.$router.push("/orders");
+                        toastObject.goAway(0);
+                    }
+                }
+            });
+        },
+        cookMessage_unavailable: function cookMessage_unavailable(destUser) {
+            this.$toasted.error('User "' + destUser.name + '" is not available');
+        },
+        cookMessage_sent: function cookMessage_sent(dataFromServer) {
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+        refresh_orders_assignment_update: function refresh_orders_assignment_update(dataFromServer) {
+            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
+            this.$store.dispatch('loadConfirmedOrders');
+        },
+        refresh_prepared_orders: function refresh_prepared_orders(order) {
+            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
+            this.$store.dispatch('loadConfirmedOrders');
+        },
+
+        // waiter of meal
+        responsableWaiterMessage: function responsableWaiterMessage(dataFromServer) {
+            var _this2 = this;
+
+            var sourceName = dataFromServer[1] === null ? 'Unknown' : dataFromServer[1].name;
+            this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"', {
+                action: {
+                    text: 'Go to Meals',
+                    onClick: function onClick(e, toastObject) {
+                        _this2.$router.push("/mealsOfWaiter");
+                        toastObject.goAway(0);
+                    }
+                }
+            });
+        },
+        responsableWaiterMessage_unavailable: function responsableWaiterMessage_unavailable(destUser) {
+            this.$toasted.error('User "' + destUser.name + '" is not available');
+        },
+        responsableWaiterMessage_sent: function responsableWaiterMessage_sent(dataFromServer) {
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+
+        // cashiers
+        cashierMessage: function cashierMessage(dataFromServer) {
+            var _this3 = this;
+
+            var sourceName = dataFromServer[1] === null ? 'Unknown' : dataFromServer[1].name;
+            this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"', {
+                action: {
+                    text: 'Go to Invoices',
+                    onClick: function onClick(e, toastObject) {
+                        _this3.$router.push("/invoices");
+                        toastObject.goAway(0);
+                    }
+                }
+            });
+        },
+        cashierMessage_unavailable: function cashierMessage_unavailable(destUser) {
+            this.$toasted.error('User "' + destUser.name + '" is not available');
+        },
+        cashierMessage_sent: function cashierMessage_sent(dataFromServer) {
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
         msg_from_server_type: function msg_from_server_type(dataFromServer) {
             console.log('Receiving this message from Server: "' + dataFromServer + '"');
             var sourceName = dataFromServer[0] === null ? 'Unknown' : dataFromServer[0];
             this.$toasted.show('Message "' + dataFromServer[1] + '" sent from "' + sourceName + '"');
+        },
+        refresh_invoices: function refresh_invoices(data) {
+            this.$store.dispatch('loadPendingInvoices');
+            this.$store.dispatch('loadPaidInvoices');
         }
     }
 });
@@ -76563,6 +76647,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
         tokenType: "",
         token: "",
         expiration: 0,
+
+        //--------------Orders-------------------------
         confirmedOrders: [],
         confirmedOrdersMeta: [],
         confirmedOrdersLinks: [],
@@ -76570,6 +76656,18 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
         inPreparationUserOrdersMeta: [],
         inPreparationUserOrdersLinks: [],
         currentOrder: {},
+
+        //----------------Invoices----------------------
+        currentInvoice: {},
+        pendingInvoices: [],
+        pendingInvoicesMeta: [],
+        pendingInvoicesLinks: [],
+        paidInvoices: [],
+        paidInvoicesMeta: [],
+        paidInvoicesLinks: [],
+        editingNifName: false,
+        viewingDetails: false,
+
         //---------------Management---------------------
         tables: [],
         currentTable: {},
@@ -77603,6 +77701,9 @@ var index_esm = {
         if (state.user) return state.user.type == "waiter" ? true : false;
         return false;
     },
+
+
+    //-----------------Orders-----------------------
     confirmedOrders: function confirmedOrders(state) {
         return state.confirmedOrders;
     },
@@ -77624,6 +77725,37 @@ var index_esm = {
     currentOrder: function currentOrder(state) {
         return state.currentOrder;
     },
+
+
+    //-----------------------Invoices----------------------
+    currentInvoice: function currentInvoice(state) {
+        return state.currentInvoice;
+    },
+    pendingInvoices: function pendingInvoices(state) {
+        return state.pendingInvoices;
+    },
+    pendingInvoicesMeta: function pendingInvoicesMeta(state) {
+        return state.pendingInvoicesMeta;
+    },
+    pendingInvoicesLinks: function pendingInvoicesLinks(state) {
+        return state.pendingInvoicesLinks;
+    },
+    paidInvoices: function paidInvoices(state) {
+        return state.paidInvoices;
+    },
+    paidInvoicesMeta: function paidInvoicesMeta(state) {
+        return state.paidInvoicesMeta;
+    },
+    paidInvoicesLinks: function paidInvoicesLinks(state) {
+        return state.paidInvoicesLinks;
+    },
+    editingNifName: function editingNifName(state) {
+        return state.editingNifName;
+    },
+    viewingDetails: function viewingDetails(state) {
+        return state.viewingDetails;
+    },
+
 
     //---------------------Management----------------------
     tables: function tables(state) {
@@ -77698,6 +77830,7 @@ var index_esm = {
         axios.defaults.headers.common.Authorization = undefined;
     },
 
+
     //-----------orders--------------------
     assignResponseToInPreparationUserOrders: function assignResponseToInPreparationUserOrders(state, response) {
         state.inPreparationUserOrders = response.data.data;
@@ -77727,6 +77860,95 @@ var index_esm = {
         state.tables = response.data.data;
         state.tablesMeta = response.data.meta;
         state.tablesLinks = response.data.links;
+    },
+
+
+    //-----------------------Invoices-------------------------------------------
+    refreshPendingInvoices: function refreshPendingInvoices(state, payload) {
+        state.pendingInvoices = payload.newPendingInvoices;
+        state.pendingInvoicesMeta = payload.newMeta;
+        state.pendingInvoicesLinks = payload.newLinks;
+    },
+    refreshPaidInvoices: function refreshPaidInvoices(state, payload) {
+        state.paidInvoices = payload.newPaidInvoices;
+        state.paidInvoicesMeta = payload.newMeta;
+        state.paidInvoicesLinks = payload.newLinks;
+    },
+
+
+    //------------------Setters---------------------------------------------------------------------------
+    //--------------------Order setters-------------------------------
+    setConfirmedOrders: function setConfirmedOrders(state, confirmedOrders) {
+        state.confirmedOrders = confirmedOrders;
+    },
+    setConfirmedOrdersMeta: function setConfirmedOrdersMeta(state, confirmedOrdersMeta) {
+        state.confirmedOrdersMeta = confirmedOrdersMeta;
+    },
+    setConfirmedOrdersLinks: function setConfirmedOrdersLinks(state, confirmedOrdersLinks) {
+        state.confirmedOrdersLinks = confirmedOrdersLinks;
+    },
+    setInPreparationUserOrders: function setInPreparationUserOrders(state, inPreparationUserOrders) {
+        state.inPreparationUserOrders = inPreparationUserOrders;
+    },
+    setInPreparationUserOrdersMeta: function setInPreparationUserOrdersMeta(state, inPreparationUserOrdersMeta) {
+        state.inPreparationUserOrdersMeta = inPreparationUserOrdersMeta;
+    },
+    setInPreparationUserOrdersLinks: function setInPreparationUserOrdersLinks(state, inPreparationUserOrdersLinks) {
+        state.inPreparationUserOrdersLinks = inPreparationUserOrdersLinks;
+    },
+    setCurrentOrder: function setCurrentOrder(state, order) {
+        state.currentOrder = order;
+    },
+
+
+    //----------------------Invoice Setters-------------------------------------
+    setCurrentInvoice: function setCurrentInvoice(state, invoice) {
+        state.currentInvoice = invoice;
+    },
+    setPendingInvoices: function setPendingInvoices(state, pendingInvoices) {
+        state.pendingInvoices = pendingInvoices;
+    },
+    setPendingInvoicesMeta: function setPendingInvoicesMeta(state, pendingInvoicesMeta) {
+        state.pendingInvoicesMeta = pendingInvoicesMeta;
+    },
+    setPendingInvoicesLinks: function setPendingInvoicesLinks(state, pendingInvoicesLinks) {
+        state.pendingInvoicesLinks = pendingInvoicesLinks;
+    },
+    setPaidInvoices: function setPaidInvoices(state, paidInvoices) {
+        state.paidInvoices = paidInvoices;
+    },
+    setPaidInvoicesMeta: function setPaidInvoicesMeta(state, paidInvoicesMeta) {
+        state.paidInvoicesMeta = paidInvoicesMeta;
+    },
+    setPaidInvoicesLinks: function setPaidInvoicesLinks(state, paidInvoicesLinks) {
+        state.paidInvoicesLinks = paidInvoicesLinks;
+    },
+
+
+    //--------------------Table setters-----------------------------------------
+    setTables: function setTables(state, tables) {
+        state.tables = tables;
+    },
+    setCurrentTable: function setCurrentTable(state, table) {
+        state.currentTable = table;
+    },
+    setTablesMeta: function setTablesMeta(state, tablesMeta) {
+        state.tablesMeta = tablesMeta;
+    },
+    setTablesLinks: function setTablesLinks(state, tablesLinks) {
+        state.tablesLinks = tablesLinks;
+    },
+    setEditingTable: function setEditingTable(state, table) {
+        state.editingTable = table;
+    },
+    setCreatingTable: function setCreatingTable(state, table) {
+        state.creatingTable = table;
+    },
+    setCurrentItem: function setCurrentItem(state, item) {
+        state.currentItem = item;
+    },
+    setItems: function setItems(state, items) {
+        state.items = items;
     }
 });
 
@@ -77741,6 +77963,9 @@ var index_esm = {
 
         commit('setAuthUser', data);
     },
+
+
+    //--------------------Orders---------------------------------
     loadInPreparationUserOrders: function loadInPreparationUserOrders(context, userId) {
         axios.get('/api/orders/inPreparation/fromCook/' + userId).then(function (response) {
             // handle success
@@ -77767,13 +77992,41 @@ var index_esm = {
             // always executed
         });
     },
-    assignOrderToCook: function assignOrderToCook(context, payload) {
-        console.log("2: " + payload.userId);
-        axios.patch('/api/orders/' + payload.orderId + '/assignTo/' + payload.userId).then(function (response) {
+
+    /*assignOrderToCook(context, payload){
+        axios.patch('/api/orders/' + payload.orderId + '/assignTo/' + payload.userId)
+            .then((response) => {
+                // handle success
+                context.commit('cleanOrdersArrays');
+                context.dispatch('loadConfirmedOrders');
+                context.dispatch('loadInPreparationUserOrders', payload.userId);
+            })
+    },*/
+    /*declareOrderAsPrepared(context, payload){
+        axios.patch('/api/orders/' + payload.orderId + '/preparedBy/' + payload.userId)
+            .then((response) => {
+                // handle success
+                context.commit('cleanOrdersArrays');
+                context.dispatch('loadConfirmedOrders');
+                context.dispatch('loadInPreparationUserOrders', payload.userId);
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
+    },*/
+
+    //----------------------Invoices---------------------------------------
+    loadPendingInvoices: function loadPendingInvoices(context) {
+        axios.get('/api/invoices/pending/').then(function (response) {
             // handle success
-            context.commit('cleanOrdersArrays');
-            context.dispatch('loadConfirmedOrders');
-            context.dispatch('loadInPreparationUserOrders', payload.userId);
+            context.commit('setPendingInvoices', response.data.data);
+            context.commit('setPendingInvoicesMeta', response.data.meta);
+            context.commit('setPendingInvoicesLinks', response.data.links);
+            console.log(response);
         }).catch(function (error) {
             // handle error
             console.log(error);
@@ -77781,12 +78034,13 @@ var index_esm = {
             // always executed
         });
     },
-    declareOrderAsPrepared: function declareOrderAsPrepared(context, payload) {
-        axios.patch('/api/orders/' + payload.orderId + '/preparedBy/' + payload.userId).then(function (response) {
+    loadPaidInvoices: function loadPaidInvoices(context) {
+        axios.get('/api/invoices/paid/').then(function (response) {
             // handle success
-            context.commit('cleanOrdersArrays');
-            context.dispatch('loadConfirmedOrders');
-            context.dispatch('loadInPreparationUserOrders', payload.userId);
+            context.commit('setPaidInvoices', response.data.data);
+            context.commit('setPaidInvoicesMeta', response.data.meta);
+            context.commit('setPaidInvoicesLinks', response.data.links);
+            console.log(response);
         }).catch(function (error) {
             // handle error
             console.log(error);
@@ -77794,6 +78048,9 @@ var index_esm = {
             // always executed
         });
     },
+
+
+    //------------------------Tables--------------------------------------
     loadTables: function loadTables(context) {
         axios.get('/api/tables/all').then(function (response) {
             // handle success
@@ -77838,8 +78095,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('orders-list', __webpack_r
 //---------------------Cashier--------------------------------------
 var invoicesComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('pending-invoices', __webpack_require__(169));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoices-list', __webpack_require__(172));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('edit-nif-name', __webpack_require__(175));
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoice-details', __webpack_require__(178));
+var editNifNameComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('edit-nif-name', __webpack_require__(175));
+var invoiceDetailsComponent = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('invoice-details', __webpack_require__(178));
 
 //-----------------------------Waiter---------------------------
 var meals_of_waiter = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('waiterMeals', __webpack_require__(186));
@@ -77905,6 +78162,20 @@ var routes = [
         forAuth: true,
         forCashier: true,
         forManager: true
+    }
+}, {
+    path: '/editNifName',
+    component: editNifNameComponent,
+    name: 'editNifName',
+    meta: {
+        forAuth: true
+    }
+}, {
+    path: '/invoiceDetails',
+    component: invoiceDetailsComponent,
+    name: 'invoiceDetails',
+    meta: {
+        forAuth: true
     }
 },
 
@@ -82247,9 +82518,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82280,7 +82551,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Dish\n            "),
+        _vm._v(" Dish\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -82301,7 +82572,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Drink\n            "),
+        _vm._v(" Drink\r\n            "),
         _c(
           "div",
           {
@@ -82317,9 +82588,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("type")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82378,9 +82649,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("description")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82438,9 +82709,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("price")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82476,9 +82747,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("image")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82784,9 +83055,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82817,7 +83088,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Dish\n            "),
+        _vm._v(" Dish\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -82838,7 +83109,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Drink\n            "),
+        _vm._v(" Drink\r\n            "),
         _c(
           "div",
           {
@@ -82854,9 +83125,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("type")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82915,9 +83186,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("description")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82975,9 +83246,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("price")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -83013,9 +83284,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("image")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -83147,12 +83418,6 @@ module.exports = {
         };
     },
     methods: {
-        assignOrderToCook: function assignOrderToCook(order, index) {
-            this.$store.dispatch('assignOrderToCook', { orderId: order.id, userId: this.$store.getters.getAuthUser.id });
-        },
-        declareOrderAsPrepared: function declareOrderAsPrepared(order, index) {
-            this.$store.dispatch('declareOrderAsPrepared', { orderId: order.id, userId: this.$store.getters.getAuthUser.id });
-        },
         loadInPreparationUserOrders: function loadInPreparationUserOrders() {
             this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
         },
@@ -83216,10 +83481,7 @@ var render = function() {
           meta: _vm.inPreparationUserOrdersMeta,
           links: _vm.inPreparationUserOrdersLinks
         },
-        on: {
-          "declare-order-as-prepared": _vm.declareOrderAsPrepared,
-          refreshOrders: _vm.refreshInPreparationUserOrders
-        }
+        on: { refreshOrders: _vm.refreshInPreparationUserOrders }
       }),
       _vm._v(" "),
       _c("orders-list", {
@@ -83228,11 +83490,7 @@ var render = function() {
           meta: _vm.confirmedOrdersMeta,
           links: _vm.confirmedOrdersLinks
         },
-        on: {
-          "assign-to-cook": _vm.assignOrderToCook,
-          "declare-order-as-prepared": _vm.declareOrderAsPrepared,
-          refreshOrders: _vm.refreshConfirmedOrders
-        }
+        on: { refreshOrders: _vm.refreshConfirmedOrders }
       }),
       _vm._v(" "),
       _vm.showSuccess || _vm.showFailure
@@ -83393,12 +83651,6 @@ module.exports = Component.exports
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 module.exports = {
   props: ["orders", "meta", "links"],
@@ -83407,10 +83659,30 @@ module.exports = {
   },
   methods: {
     assignOrderToCook: function assignOrderToCook(order, index) {
-      this.$emit("assign-to-cook", order, index);
+      var _this = this;
+
+      this.$store.commit('setCurrentOrder', order);
+      axios.patch('/api/orders/' + order.id + '/assignTo/' + this.$store.getters.getAuthUser.id).then(function (response) {
+        // handle success
+        _this.sendOrderAssignment();
+      });
+    },
+    sendOrderAssignment: function sendOrderAssignment() {
+      this.$socket.emit('order_assignment_update', { order: this.$store.getters.currentOrder, user: this.$store.getters.getAuthUser });
+      this.$store.commit('setCurrentOrder', {});
     },
     declareOrderAsPrepared: function declareOrderAsPrepared(order, index) {
-      this.$emit("declare-order-as-prepared", order, index);
+      var _this2 = this;
+
+      this.$store.commit('setCurrentOrder', order);
+      axios.patch('/api/orders/' + order.id + '/preparedBy/' + this.$store.getters.getAuthUser.id).then(function (response) {
+        // handle success
+        _this2.sendOrderPrepared();
+      });
+    },
+    sendOrderPrepared: function sendOrderPrepared() {
+      this.$socket.emit('order_prepared', this.currentOrder);
+      this.$store.commit('setCurrentOrder', {});
     },
     refreshOrders: function refreshOrders(orders, meta, links) {
       this.$emit("refreshOrders", orders, meta, links);
@@ -83451,17 +83723,13 @@ var render = function() {
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(order.state))]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.item_id))]),
+              order.item != null
+                ? _c("td", [_vm._v(_vm._s(order.item.name))])
+                : _c("td"),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.meal_id))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.responsible_cook_id))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.start))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.end))]),
-              _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(order.created_at.date))]),
+              order.responsible_cook != null
+                ? _c("td", [_vm._v(_vm._s(order.responsible_cook.name))])
+                : _c("td"),
               _vm._v(" "),
               _c("td", [
                 order.state == "confirmed"
@@ -83559,15 +83827,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Item Name")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Meal Id")]),
-        _vm._v(" "),
         _c("th", [_vm._v("Responsable cook")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Start")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("End")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("created_at")]),
         _vm._v(" "),
         _c("th", [_vm._v("Actions")])
       ])
@@ -83663,87 +83923,50 @@ module.exports = {
             showSuccess: false,
             showFailure: false,
             successMessage: '',
-            failMessage: '',
-            currentInvoice: {},
-            currentUser: '52',
-            pendingInvoices: [],
-            pendingInvoicesMeta: [],
-            pendingInvoicesLinks: [],
-            paidInvoices: [],
-            paidInvoicesMeta: [],
-            paidInvoicesLinks: [],
-            editingNifName: false,
-            viewingDetails: false
+            failMessage: ''
         };
     },
 
     methods: {
         loadPendingInvoices: function loadPendingInvoices() {
-            var _this = this;
-
-            axios.get('/api/invoices/pending/').then(function (response) {
-                // handle success
-                _this.pendingInvoices = response.data.data;
-                _this.pendingInvoicesMeta = response.data.meta;
-                _this.pendingInvoicesLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
-            axios.get('/api/invoices/paid/').then(function (response) {
-                // handle success
-                _this.paidInvoices = response.data.data;
-                _this.paidInvoicesMeta = response.data.meta;
-                _this.paidInvoicesLinks = response.data.links;
-                console.log(response);
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            }).then(function () {
-                // always executed
-            });
+            this.$store.dispatch('loadPendingInvoices');
+        },
+        loadPaidInvoices: function loadPaidInvoices() {
+            this.$store.dispatch('loadPaidInvoices');
         },
         refreshPendingInvoices: function refreshPendingInvoices(newPendingInvoices, newMeta, newLinks) {
-            this.pendingInvoices = newPendingInvoices;
-            this.pendingInvoicesMeta = newMeta;
-            this.pendingInvoicesLinks = newLinks;
+            this.$store.commit('refreshPendingInvoices', { newPendingInvoices: newPendingInvoices, newMeta: newMeta, newLinks: newLinks });
         },
-        refreshPaidInvoices: function refreshPaidInvoices(newPendingInvoices, newMeta, newLinks) {
-            this.paidInvoices = newPendingInvoices;
-            this.paidInvoicesMeta = newMeta;
-            this.paidInvoicesLinks = newLinks;
+        refreshPaidInvoices: function refreshPaidInvoices(newPaidInvoices, newMeta, newLinks) {
+            this.$store.commit('refreshPaidInvoices', { newPaidInvoices: newPaidInvoices, newMeta: newMeta, newLinks: newLinks });
+        }
+    },
+    computed: {
+        getCurrentInvoice: function getCurrentInvoice() {
+            return this.$store.getters.currentInvoice;
         },
-        fillNifName: function fillNifName(invoice) {
-            if (invoice.state == 'pending') {
-                this.editingNifName = true;
-                this.currentInvoice = invoice;
-            }
+        getPendingInvoices: function getPendingInvoices() {
+            return this.$store.getters.pendingInvoices;
         },
-        endEditingSave: function endEditingSave($pendingInvoices, $meta, $links) {
-            this.invoices = $pendingInvoices;
-            this.meta = $meta;
-            this.links = $links;
-            this.editingNifName = false;
-            this.currentInvoice = {};
+        getPendingInvoicesMeta: function getPendingInvoicesMeta() {
+            return this.$store.getters.pendingInvoicesMeta;
         },
-        endEditingCancel: function endEditingCancel() {
-            this.editingNifName = false;
-            this.currentInvoice = {};
+        getPendingInvoicesLinks: function getPendingInvoicesLinks() {
+            return this.$store.getters.pendingInvoicesLinks;
         },
-        seeDetails: function seeDetails(invoice) {
-            this.viewingDetails = true;
-            this.currentInvoice = invoice;
+        getPaidInvoices: function getPaidInvoices() {
+            return this.$store.getters.paidInvoices;
         },
-        endViewingDetails: function endViewingDetails() {
-            this.viewingDetails = false;
-            this.currentInvoice = {};
+        getPaidInvoicesMeta: function getPaidInvoicesMeta() {
+            return this.$store.getters.paidInvoicesMeta;
+        },
+        getPaidInvoicesLinks: function getPaidInvoicesLinks() {
+            return this.$store.getters.paidInvoicesLinks;
         }
     },
     mounted: function mounted() {
         this.loadPendingInvoices();
+        this.loadPaidInvoices();
     }
 };
 
@@ -83762,89 +83985,56 @@ var render = function() {
         _c("h1", [_vm._v(_vm._s(_vm.title))])
       ]),
       _vm._v(" "),
-      _vm.editingNifName
-        ? _c("edit-nif-name", {
-            attrs: { invoice: _vm.currentInvoice },
-            on: {
-              declareAsPaid: _vm.endEditingSave,
-              cancelEditing: _vm.endEditingCancel
-            }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.viewingDetails
-        ? _c("invoice-details", {
-            attrs: { invoice: _vm.currentInvoice },
-            on: { endViewingDetails: _vm.endViewingDetails }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.editingNifName && !_vm.viewingDetails
+      _vm.showSuccess || _vm.showFailure
         ? _c(
             "div",
+            {
+              staticClass: "alert",
+              class: {
+                "alert-success": _vm.showSuccess,
+                "alert-danger": _vm.showFailure
+              }
+            },
             [
-              _c("invoices-list", {
-                attrs: {
-                  invoices: _vm.pendingInvoices,
-                  meta: _vm.pendingInvoicesMeta,
-                  links: _vm.pendingInvoicesLinks
+              _c(
+                "button",
+                {
+                  staticClass: "close-btn",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.showSuccess = false
+                      _vm.showFailure = false
+                    }
+                  }
                 },
-                on: {
-                  refreshInvoices: _vm.refreshPendingInvoices,
-                  declareAsPaid: _vm.loadPendingInvoices,
-                  fillNifName: _vm.fillNifName,
-                  seeDetails: _vm.seeDetails
-                }
-              }),
+                [_vm._v("×")]
+              ),
               _vm._v(" "),
-              _c("invoices-list", {
-                attrs: {
-                  invoices: _vm.paidInvoices,
-                  meta: _vm.paidInvoicesMeta,
-                  links: _vm.paidInvoicesLinks
-                },
-                on: {
-                  refreshInvoices: _vm.refreshPaidInvoices,
-                  seeDetails: _vm.seeDetails
-                }
-              }),
+              _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
               _vm._v(" "),
-              _vm.showSuccess || _vm.showFailure
-                ? _c(
-                    "div",
-                    {
-                      staticClass: "alert",
-                      class: {
-                        "alert-success": _vm.showSuccess,
-                        "alert-danger": _vm.showFailure
-                      }
-                    },
-                    [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "close-btn",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              _vm.showSuccess = false
-                              _vm.showFailure = false
-                            }
-                          }
-                        },
-                        [_vm._v("×")]
-                      ),
-                      _vm._v(" "),
-                      _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
-                      _vm._v(" "),
-                      _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
-                    ]
-                  )
-                : _vm._e()
-            ],
-            1
+              _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
+            ]
           )
-        : _vm._e()
+        : _vm._e(),
+      _vm._v(" "),
+      _c("invoices-list", {
+        attrs: {
+          invoices: _vm.getPendingInvoices,
+          meta: _vm.getPendingInvoicesMeta,
+          links: _vm.getPendingInvoicesLinks
+        },
+        on: { refreshInvoices: _vm.refreshPendingInvoices }
+      }),
+      _vm._v(" "),
+      _c("invoices-list", {
+        attrs: {
+          invoices: _vm.getPaidInvoices,
+          meta: _vm.getPaidInvoicesMeta,
+          links: _vm.getPaidInvoicesLinks
+        },
+        on: { refreshInvoices: _vm.refreshPaidInvoices }
+      })
     ],
     1
   )
@@ -83954,7 +84144,6 @@ module.exports = {
     props: ["invoices", "meta", "links", "user"],
     data: function data() {
         return {
-
             currentInvoice: {}
         };
     },
@@ -83963,10 +84152,12 @@ module.exports = {
             this.$emit('refreshInvoices', invoices, meta, links);
         },
         fillNifName: function fillNifName(invoice) {
-            this.$emit('fillNifName', invoice);
+            this.$store.commit('setCurrentInvoice', invoice);
+            this.$router.push({ name: 'editNifName' });
         },
         seeDetails: function seeDetails(invoice) {
-            this.$emit('seeDetails', invoice);
+            this.$store.commit('setCurrentInvoice', invoice);
+            this.$router.push({ name: 'invoiceDetails' });
         }
     }
 };
@@ -84168,45 +84359,36 @@ module.exports = Component.exports
 //
 
 module.exports = {
-    props: ['invoice', 'index'],
     data: function data() {
         return {};
     },
-
     methods: {
         declareInvoiceAsPaid: function declareInvoiceAsPaid() {
             var _this = this;
 
-            if (!(this.invoice.name && this.invoice.nif)) {
+            /*if(!(this.invoice.name && this.invoice.nif)){
                 alert("Nif and name required");
                 return;
             }
-            if (/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)) {
-                axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.invoice), user: this.currentUser }).then(function (response) {
-                    axios.get('/api/invoices/pending').then(function (response) {
-                        // handle success
-                        $invoices = response.data.data;
-                        $meta = response.data.meta;
-                        $links = response.data.links;
-                        _this.$emit('declareAsPaid', $invoices, $meta, $links);
-                        console.log(response);
-                    }).catch(function (error) {
-                        // handle error
-                        alert(error);
-                        console.log(error);
-                    }).then(function () {
-                        // always executed
-                    });
-                }).catch(function (error) {
-                    // handle error
-                    console.log(error);
-                }).then(function () {
-                    // always executed
-                });
-            }
+            if(/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)){*/
+            axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.getCurrentInvoice), user: this.$store.getters.getAuthUser.id }).then(function (response) {
+                // handle success
+                _this.sendInvoicePaid();
+                _this.$router.go(-1);
+                console.log(response);
+            });
+            //}
         },
         cancel: function cancel() {
-            this.$emit('cancelEditing');
+            this.$router.go(-1);
+        },
+        sendInvoicePaid: function sendInvoicePaid() {
+            this.$socket.emit('invoice_paid', this.getCurrentInvoice);
+        }
+    },
+    computed: {
+        getCurrentInvoice: function getCurrentInvoice() {
+            return this.$store.getters.currentInvoice;
         }
     }
 };
@@ -84239,8 +84421,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.invoice.nif,
-                expression: "invoice.nif"
+                value: _vm.getCurrentInvoice.nif,
+                expression: "getCurrentInvoice.nif"
               }
             ],
             staticClass: "form-control",
@@ -84250,13 +84432,13 @@ var render = function() {
               pattern: "[0-9]{9}",
               title: "9 numbers"
             },
-            domProps: { value: _vm.invoice.nif },
+            domProps: { value: _vm.getCurrentInvoice.nif },
             on: {
               input: function($event) {
                 if ($event.target.composing) {
                   return
                 }
-                _vm.$set(_vm.invoice, "nif", $event.target.value)
+                _vm.$set(_vm.getCurrentInvoice, "nif", $event.target.value)
               }
             }
           })
@@ -84270,8 +84452,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.invoice.name,
-                expression: "invoice.name"
+                value: _vm.getCurrentInvoice.name,
+                expression: "getCurrentInvoice.name"
               }
             ],
             staticClass: "form-control",
@@ -84281,13 +84463,13 @@ var render = function() {
               pattern: "[a-zA-Z\\s]*",
               title: "Only letters and spaces"
             },
-            domProps: { value: _vm.invoice.name },
+            domProps: { value: _vm.getCurrentInvoice.name },
             on: {
               input: function($event) {
                 if ($event.target.composing) {
                   return
                 }
-                _vm.$set(_vm.invoice, "name", $event.target.value)
+                _vm.$set(_vm.getCurrentInvoice, "name", $event.target.value)
               }
             }
           })
@@ -84394,7 +84576,7 @@ var content = __webpack_require__(180);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(182)("80d289ce", content, false, {});
+var update = __webpack_require__(182)("43c06ff3", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -84815,18 +84997,22 @@ module.exports = function listToStyles (parentId, list) {
 //
 
 module.exports = {
-    props: ["invoice", "user"],
     data: function data() {
         return {};
     },
     methods: {
         endViewingDetails: function endViewingDetails() {
-            this.$emit('endViewingDetails');
+            this.$router.go(-1);
         },
         exportToPdf: function exportToPdf() {
             var doc = new jsPDF();
             doc.fromHTML($('#receipt').get(0), 20, 20);
             doc.save('receipt.pdf');
+        }
+    },
+    computed: {
+        getCurrentInvoice: function getCurrentInvoice() {
+            return this.$store.getters.currentInvoice;
         }
     }
 };
@@ -84841,11 +85027,13 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("div", { attrs: { id: "receipt" } }, [
-      _c("label", [_vm._v("Date: " + _vm._s(_vm.invoice.date))]),
+      _c("label", [_vm._v("Date: " + _vm._s(_vm.getCurrentInvoice.date))]),
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
-      _c("label", [_vm._v("Table: " + _vm._s(_vm.invoice.table_number))]),
+      _c("label", [
+        _vm._v("Table: " + _vm._s(_vm.getCurrentInvoice.table_number))
+      ]),
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
@@ -84853,8 +85041,8 @@ var render = function() {
         _vm._v(
           "Responsible Waiter: " +
             _vm._s(
-              _vm.invoice.responsible_waiter
-                ? _vm.invoice.responsible_waiter.name
+              _vm.getCurrentInvoice.responsible_waiter
+                ? _vm.getCurrentInvoice.responsible_waiter.name
                 : " - NONE - "
             )
         )
@@ -84864,7 +85052,12 @@ var render = function() {
       _vm._v(" "),
       _c("label", [
         _vm._v(
-          "Name: " + _vm._s(_vm.invoice.name ? _vm.invoice.name : " - NONE - ")
+          "Name: " +
+            _vm._s(
+              _vm.getCurrentInvoice.name
+                ? _vm.getCurrentInvoice.name
+                : " - NONE - "
+            )
         )
       ]),
       _vm._v(" "),
@@ -84872,7 +85065,12 @@ var render = function() {
       _vm._v(" "),
       _c("label", [
         _vm._v(
-          "NIF: " + _vm._s(_vm.invoice.nif ? _vm.invoice.nif : " - NONE - ")
+          "NIF: " +
+            _vm._s(
+              _vm.getCurrentInvoice.nif
+                ? _vm.getCurrentInvoice.nif
+                : " - NONE - "
+            )
         )
       ]),
       _vm._v(" "),
@@ -84883,7 +85081,7 @@ var render = function() {
         _vm._v(" "),
         _c(
           "tbody",
-          _vm._l(_vm.invoice.items, function(item) {
+          _vm._l(_vm.getCurrentInvoice.items, function(item) {
             return _c("tr", { key: item.id }, [
               _c("td", [
                 _c("label", [_vm._v(_vm._s(item.name))]),
@@ -84911,13 +85109,15 @@ var render = function() {
         _c("tr", [
           _vm._m(1),
           _c("td", [
-            _c("strong", [_vm._v(_vm._s(_vm.invoice.total_price) + "€")])
+            _c("strong", [
+              _vm._v(_vm._s(_vm.getCurrentInvoice.total_price) + "€")
+            ])
           ])
         ])
       ])
     ]),
     _vm._v(" "),
-    _vm.invoice.state == "paid"
+    _vm.getCurrentInvoice.state == "paid"
       ? _c(
           "button",
           {
@@ -87076,9 +87276,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -87135,9 +87335,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("username")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -87168,7 +87368,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cook\n            "),
+        _vm._v(" Cook\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -87189,7 +87389,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Waiter\n            "),
+        _vm._v(" Waiter\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -87210,7 +87410,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cashier\n            "),
+        _vm._v(" Cashier\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -87231,7 +87431,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Manager\n            "),
+        _vm._v(" Manager\r\n            "),
         _c(
           "div",
           {
@@ -87247,9 +87447,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("role")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -87306,9 +87506,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("email")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88058,9 +88258,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88117,9 +88317,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("username")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88150,7 +88350,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cook\n            "),
+        _vm._v(" Cook\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -88171,7 +88371,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Waiter\n            "),
+        _vm._v(" Waiter\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -88192,7 +88392,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cashier\n            "),
+        _vm._v(" Cashier\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -88213,7 +88413,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Manager\n            "),
+        _vm._v(" Manager\r\n            "),
         _c(
           "div",
           {
@@ -88229,9 +88429,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("role")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88288,9 +88488,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("email")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88562,6 +88762,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -88628,6 +88831,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         reset: function reset() {
             this.filteredSearch = false;
             this.getMeals();
+        },
+        declareMealAsNotPaid: function declareMealAsNotPaid(meal) {
+            var _this4 = this;
+
+            axios.patch('/api/meals/' + meal.id + '/declareNotPaid').then(function (response) {
+                _this4.filterByState('terminated');
+            });
         }
     },
     mounted: function mounted() {
@@ -88787,6 +88997,8 @@ var render = function() {
         _vm._v(" "),
         _vm._l(_vm.meals, function(meal) {
           return _c("tbody", { key: meal.id }, [
+            _c("td", [_vm._v(_vm._s(meal.id))]),
+            _vm._v(" "),
             _c("td", [_vm._v(_vm._s(meal.state))]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(meal.table_number))]),
@@ -88818,7 +89030,23 @@ var render = function() {
                   }
                 },
                 [_vm._v("Details")]
-              )
+              ),
+              _vm._v(" "),
+              meal.state == "terminated"
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-warning",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.declareMealAsNotPaid(meal)
+                        }
+                      }
+                    },
+                    [_vm._v("Not Paid")]
+                  )
+                : _vm._e()
             ])
           ])
         })
@@ -88834,6 +89062,8 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
+        _c("th", [_vm._v("Id")]),
+        _vm._v(" "),
         _c("th", [_vm._v("State")]),
         _vm._v(" "),
         _c("th", [_vm._v("Table")]),
@@ -89266,6 +89496,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -89273,7 +89506,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             invoices: [],
             pagination: {},
             filter: [],
-            filteredSearch: false
+            filteredSearch: false,
+            currentInvoice: {}
         };
     },
 
@@ -89328,6 +89562,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         getInvoiceDetails: function getInvoiceDetails(invoice) {
             console.log(invoice);
             this.$emit('invoice-details-click', invoice);
+        },
+        declareInvoiceAsNotPaid: function declareInvoiceAsNotPaid(invoice) {
+            var _this3 = this;
+
+            axios.patch('/api/invoice/' + invoice.id + '/declareNotPaid').then(function (response) {
+                sendInvoiceNotPaid(invoice);
+                _this3.getInvoices();
+            });
+        },
+        sendInvoiceNotPaid: function sendInvoiceNotPaid(invoice) {
+            this.$socket.emit('invoice_not_paid', invoice);
         }
     },
     mounted: function mounted() {
@@ -89459,6 +89704,8 @@ var render = function() {
         _vm._v(" "),
         _vm._l(_vm.invoices, function(invoice) {
           return _c("tbody", { key: invoice.id }, [
+            _c("td", [_vm._v(_vm._s(invoice.id))]),
+            _vm._v(" "),
             _c("td", [_vm._v(_vm._s(invoice.state))]),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(invoice.table_number))]),
@@ -89490,7 +89737,23 @@ var render = function() {
                   }
                 },
                 [_vm._v("Details")]
-              )
+              ),
+              _vm._v(" "),
+              invoice.state == "pending"
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-warning",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.declareInvoiceAsNotPaid(invoice)
+                        }
+                      }
+                    },
+                    [_vm._v("Not Paid")]
+                  )
+                : _vm._e()
             ])
           ])
         })
@@ -89506,6 +89769,8 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
+        _c("th", [_vm._v("Invoice id")]),
+        _vm._v(" "),
         _c("th", [_vm._v("State")]),
         _vm._v(" "),
         _c("th", [_vm._v("Table")]),

@@ -14,6 +14,8 @@ export default new Vuex.Store({
         tokenType: "",
         token: "",
         expiration: 0,
+
+        //--------------Orders-------------------------
         confirmedOrders: [],
         confirmedOrdersMeta:[],
         confirmedOrdersLinks:[],
@@ -21,6 +23,18 @@ export default new Vuex.Store({
         inPreparationUserOrdersMeta:[],
         inPreparationUserOrdersLinks:[],
         currentOrder: {},
+
+        //----------------Invoices----------------------
+        currentInvoice: {},
+        pendingInvoices: [],
+        pendingInvoicesMeta:[],
+        pendingInvoicesLinks:[],
+        paidInvoices: [],
+        paidInvoicesMeta:[],
+        paidInvoicesLinks:[],
+        editingNifName: false,
+        viewingDetails: false,
+        
         //---------------Management---------------------
         tables:[],
         currentTable:{},

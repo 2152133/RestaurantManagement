@@ -21,7 +21,7 @@ Vue.use(Toasted, {
 
 Vue.use(new VueSocketio({
     debug: true,
-    connection: 'http://192.168.10.10:8080'
+    connection: 'http://127.0.0.1:8080'
 })); 
 
 
@@ -144,10 +144,87 @@ const app = new Vue({
             let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
             this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"');        
         },
+
+        managerMessage_unavailable(destUser){
+            this.$toasted.error('User "' + destUser.name + '" is not available');       
+        },
+        managerMessage_sent(dataFromServer){
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+        // cooks
+        cookMessage(dataFromServer){
+            let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
+            this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"', {
+                action : {
+                    text : 'Go to Orders',
+                    onClick : (e, toastObject) => {
+                        this.$router.push("/orders")
+                        toastObject.goAway(0);
+                    }
+                },
+            });        
+        },
+        cookMessage_unavailable(destUser){
+            this.$toasted.error('User "' + destUser.name + '" is not available');       
+        },
+        cookMessage_sent(dataFromServer){
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+        refresh_orders_assignment_update(dataFromServer){
+            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
+            this.$store.dispatch('loadConfirmedOrders');
+            
+        },
+        refresh_prepared_orders(order){
+            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
+            this.$store.dispatch('loadConfirmedOrders');
+        },
+        // waiter of meal
+        responsableWaiterMessage(dataFromServer){
+            let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
+            this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"', {
+                action : {
+                    text : 'Go to Meals',
+                    onClick : (e, toastObject) => {
+                        this.$router.push("/mealsOfWaiter")
+                        toastObject.goAway(0);
+                    }
+                },
+            });        
+        },
+        responsableWaiterMessage_unavailable(destUser){
+            this.$toasted.error('User "' + destUser.name + '" is not available');       
+        },
+        responsableWaiterMessage_sent(dataFromServer){
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
+        // cashiers
+        cashierMessage(dataFromServer){
+            let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
+            this.$toasted.show('Message "' + dataFromServer[0] + '" sent from "' + sourceName + '"', {
+                action : {
+                    text : 'Go to Invoices',
+                    onClick : (e, toastObject) => {
+                        this.$router.push("/invoices")
+                        toastObject.goAway(0);
+                    }
+                },
+            });        
+        },
+        cashierMessage_unavailable(destUser){
+            this.$toasted.error('User "' + destUser.name + '" is not available');       
+        },
+        cashierMessage_sent(dataFromServer){
+            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        },
         msg_from_server_type(dataFromServer){
             console.log('Receiving this message from Server: "' + dataFromServer + '"');
             let sourceName = dataFromServer[0] === null ? 'Unknown': dataFromServer[0];
             this.$toasted.show('Message "' + dataFromServer[1] + '" sent from "' + sourceName + '"');
+        },
+        refresh_invoices(data){
+            this.$store.dispatch('loadPendingInvoices');
+            this.$store.dispatch('loadPaidInvoices');
         },
     },
 })
