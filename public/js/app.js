@@ -76675,8 +76675,14 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
                 currentMeal: {},
                 allMealOrders: [],
                 pendingMealOrders: [],
+                pendingMealOrdersMeta: [],
+                pendingMealOrdersLinks: [],
                 confirmedMealOrders: [],
+                confirmedMealOrdersMeta: [],
+                confirmedMealOrdersLinks: [],
                 preparedMealOrders: [],
+                preparedMealOrdersMeta: [],
+                preparedMealOrdersLinks: [],
                 notDeliveredOrdersOfMeal: [],
                 allItems: [],
                 mealDetails: [],
@@ -77761,11 +77767,29 @@ var index_esm = {
     pendingMealOrders: function pendingMealOrders(state) {
         return state.pendingMealOrders;
     },
+    pendingMealOrdersMeta: function pendingMealOrdersMeta(state) {
+        return state.pendingMealOrdersMeta;
+    },
+    pendingMealOrdersLinks: function pendingMealOrdersLinks(state) {
+        return state.pendingMealOrdersLinks;
+    },
     confirmedMealOrders: function confirmedMealOrders(state) {
         return state.confirmedMealOrders;
     },
+    confirmedMealOrdersMeta: function confirmedMealOrdersMeta(state) {
+        return state.confirmedMealOrdersMeta;
+    },
+    confirmedMealOrdersLinks: function confirmedMealOrdersLinks(state) {
+        return state.confirmedMealOrdersLinks;
+    },
     preparedMealOrders: function preparedMealOrders(state) {
         return state.preparedMealOrders;
+    },
+    preparedMealOrdersMeta: function preparedMealOrdersMeta(state) {
+        return state.preparedMealOrdersMeta;
+    },
+    preparedMealOrdersLinks: function preparedMealOrdersLinks(state) {
+        return state.preparedMealOrdersLinks;
     },
     notDeliveredOrdersOfMeal: function notDeliveredOrdersOfMeal(state) {
         return state.notDeliveredOrdersOfMeal;
@@ -78000,11 +78024,29 @@ var index_esm = {
     setPendingMealOrders: function setPendingMealOrders(state, pendingMealOrders) {
         state.pendingMealOrders = pendingMealOrders;
     },
+    setPendingMealOrdersMeta: function setPendingMealOrdersMeta(state, pendingMealOrdersMeta) {
+        state.pendingMealOrdersMeta = pendingMealOrdersMeta;
+    },
+    setPendingMealOrdersLinks: function setPendingMealOrdersLinks(state, pendingMealOrdersLinks) {
+        state.pendingMealOrdersLinks = pendingMealOrdersLinks;
+    },
     setConfirmedMealOrders: function setConfirmedMealOrders(state, confirmedMealOrders) {
         state.confirmedMealOrders = confirmedMealOrders;
     },
+    setConfirmedMealOrdersMeta: function setConfirmedMealOrdersMeta(state, confirmedMealOrdersMeta) {
+        state.confirmedMealOrdersMeta = confirmedMealOrdersMeta;
+    },
+    setConfirmedMealOrdersLinks: function setConfirmedMealOrdersLinks(state, confirmedMealOrdersLinks) {
+        state.confirmedMealOrdersLinks = confirmedMealOrdersLinks;
+    },
     setPreparedMealOrders: function setPreparedMealOrders(state, preparedMealOrders) {
         state.preparedMealOrders = preparedMealOrders;
+    },
+    setPreparedMealOrdersMeta: function setPreparedMealOrdersMeta(state, preparedMealOrdersMeta) {
+        state.preparedMealOrdersMeta = preparedMealOrdersMeta;
+    },
+    setPreparedMealOrdersLinks: function setPreparedMealOrdersLinks(state, preparedMealOrdersLinks) {
+        state.preparedMealOrdersLinks = preparedMealOrdersLinks;
     },
     setNotDeliveredOrdersOfMeal: function setNotDeliveredOrdersOfMeal(state, notDeliveredOrdersOfMeal) {
         state.notDeliveredOrdersOfMeal = notDeliveredOrdersOfMeal;
@@ -86160,6 +86202,8 @@ module.exports = {
 
             axios.get("/api/meals/" + this.$store.getters.currentMeal.id + "/confirmedOrders").then(function (response) {
                 _this2.$store.commit('setConfirmedMealOrders', response.data.data);
+                _this2.$store.commit('setConfirmedMealOrdersMeta', response.data.meta);
+                _this2.$store.commit('setConfirmedMealOrdersLinks', response.data.links);
             });
         },
         loadMealPreparedOrders: function loadMealPreparedOrders() {
@@ -86167,18 +86211,53 @@ module.exports = {
 
             axios.get("/api/meals/" + this.$store.getters.currentMeal.id + "/preparedOrders").then(function (response) {
                 _this3.$store.commit('setPreparedMealOrders', response.data.data);
+                _this3.$store.commit('setPreparedMealOrdersMeta', response.data.meta);
+                _this3.$store.commit('setPreparedMealOrdersLinks', response.data.links);
             });
+        },
+        refreshPendingMealOrders: function refreshPendingMealOrders(orders, meta, links) {
+            this.$store.commit('setPendingMealOrders', orders);
+            this.$store.commit('setPendingMealOrdersMeta', meta);
+            this.$store.commit('setPendingMealOrdersLinks', links);
+        },
+        refreshConfirmedMealOrders: function refreshConfirmedMealOrders(orders, meta, links) {
+            this.$store.commit('setConfirmedMealOrders', orders);
+            this.$store.commit('setConfirmedMealOrdersMeta', meta);
+            this.$store.commit('setConfirmedMealOrdersLinks', links);
+        },
+        refreshPreparedMealOrders: function refreshPreparedMealOrders(orders, meta, links) {
+            this.$store.commit('setPreparedMealOrders', orders);
+            this.$store.commit('setPreparedMealOrdersMeta', meta);
+            this.$store.commit('setPreparedMealOrdersLinks', links);
         }
     },
     computed: {
         getPendingMealOrders: function getPendingMealOrders() {
             return this.$store.getters.pendingMealOrders;
         },
+        getPendingMealOrdersMeta: function getPendingMealOrdersMeta() {
+            return this.$store.getters.pendingMealOrdersMeta;
+        },
+        getPendingMealOrdersLinks: function getPendingMealOrdersLinks() {
+            return this.$store.getters.pendingMealOrdersLinks;
+        },
         getConfirmedMealOrders: function getConfirmedMealOrders() {
             return this.$store.getters.confirmedMealOrders;
         },
+        getConfirmedMealOrdersMeta: function getConfirmedMealOrdersMeta() {
+            return this.$store.getters.confirmedMealOrdersMeta;
+        },
+        getConfirmedMealOrdersLinks: function getConfirmedMealOrdersLinks() {
+            return this.$store.getters.confirmedMealOrdersLinks;
+        },
         getPreparedMealOrders: function getPreparedMealOrders() {
             return this.$store.getters.preparedMealOrders;
+        },
+        getPreparedMealOrdersMeta: function getPreparedMealOrdersMeta() {
+            return this.$store.getters.preparedMealOrdersMeta;
+        },
+        getPreparedMealOrdersLinks: function getPreparedMealOrdersLinks() {
+            return this.$store.getters.preparedMealOrdersLinks;
         }
     },
     mounted: function mounted() {
@@ -86221,19 +86300,40 @@ var render = function() {
       _c("h3", [_vm._v("Pending Orders")]),
       _vm._v(" "),
       _c("orders-list", {
-        attrs: { orders: _vm.getPendingMealOrders },
-        on: { "delete-order": _vm.deleteOrder }
+        attrs: {
+          orders: _vm.getPendingMealOrders,
+          meta: _vm.getPendingMealOrdersMeta,
+          links: _vm.getPendingMealOrdersLinks
+        },
+        on: {
+          "delete-order": _vm.deleteOrder,
+          refreshOrders: _vm.refreshPendingMealOrders
+        }
       }),
       _vm._v(" "),
       _c("h3", [_vm._v("Confirmed Orders")]),
       _vm._v(" "),
-      _c("orders-list", { attrs: { orders: _vm.getConfirmedMealOrders } }),
+      _c("orders-list", {
+        attrs: {
+          orders: _vm.getConfirmedMealOrders,
+          meta: _vm.getConfirmedMealOrdersMeta,
+          links: _vm.getConfirmedMealOrdersLinks
+        },
+        on: { refreshOrders: _vm.refreshConfirmedMealOrders }
+      }),
       _vm._v(" "),
       _c("h3", [_vm._v("Prepared Orders")]),
       _vm._v(" "),
       _c("orders-list", {
-        attrs: { orders: _vm.getPreparedMealOrders },
-        on: { "mark-delivered": _vm.markDelivered }
+        attrs: {
+          orders: _vm.getPreparedMealOrders,
+          meta: _vm.getPreparedMealOrdersMeta,
+          links: _vm.getPreparedMealOrdersLinks
+        },
+        on: {
+          "mark-delivered": _vm.markDelivered,
+          refreshOrders: _vm.refreshPreparedMealOrders
+        }
       })
     ],
     1

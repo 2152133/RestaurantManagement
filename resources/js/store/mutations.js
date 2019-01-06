@@ -148,11 +148,29 @@ export default {
     setPendingMealOrders(state, pendingMealOrders){
         state.pendingMealOrders = pendingMealOrders;
     },
+    setPendingMealOrdersMeta(state, pendingMealOrdersMeta){
+        state.pendingMealOrdersMeta = pendingMealOrdersMeta;
+    },
+    setPendingMealOrdersLinks(state, pendingMealOrdersLinks){
+        state.pendingMealOrdersLinks = pendingMealOrdersLinks;
+    },
     setConfirmedMealOrders(state, confirmedMealOrders){
         state.confirmedMealOrders = confirmedMealOrders;
     },
+    setConfirmedMealOrdersMeta(state, confirmedMealOrdersMeta){
+        state.confirmedMealOrdersMeta = confirmedMealOrdersMeta;
+    },
+    setConfirmedMealOrdersLinks(state, confirmedMealOrdersLinks){
+        state.confirmedMealOrdersLinks = confirmedMealOrdersLinks;
+    },
     setPreparedMealOrders(state, preparedMealOrders){
         state.preparedMealOrders = preparedMealOrders;
+    },
+    setPreparedMealOrdersMeta(state, preparedMealOrdersMeta){
+        state.preparedMealOrdersMeta = preparedMealOrdersMeta;
+    },
+    setPreparedMealOrdersLinks(state, preparedMealOrdersLinks){
+        state.preparedMealOrdersLinks = preparedMealOrdersLinks;
     },
     setNotDeliveredOrdersOfMeal(state, notDeliveredOrdersOfMeal){
         state.notDeliveredOrdersOfMeal = notDeliveredOrdersOfMeal;

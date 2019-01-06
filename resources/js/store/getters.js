@@ -115,11 +115,29 @@ export default {
     pendingMealOrders(state){
         return state.pendingMealOrders;
     },
+    pendingMealOrdersMeta(state){
+        return state.pendingMealOrdersMeta;
+    },
+    pendingMealOrdersLinks(state){
+        return state.pendingMealOrdersLinks;
+    },
     confirmedMealOrders(state){
         return state.confirmedMealOrders;
     },
+    confirmedMealOrdersMeta(state){
+        return state.confirmedMealOrdersMeta;
+    },
+    confirmedMealOrdersLinks(state){
+        return state.confirmedMealOrdersLinks;
+    },
     preparedMealOrders(state){
         return state.preparedMealOrders;
+    },
+    preparedMealOrdersMeta(state){
+        return state.preparedMealOrdersMeta;
+    },
+    preparedMealOrdersLinks(state){
+        return state.preparedMealOrdersLinks;
     },
     notDeliveredOrdersOfMeal(state){
         return state.notDeliveredOrdersOfMeal;
