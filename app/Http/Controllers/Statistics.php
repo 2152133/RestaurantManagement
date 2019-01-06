@@ -10,7 +10,6 @@ use App\Order;
 
 class Statistics extends Controller
 {
-    // US39
     public function getAVGNumberOfOrdersHandledOnGivenDatesForEachCook(Request $request, $id, $dates) {
         $arrayOfDatesANdAVG = array();
         $datesToCompare = explode(',', $dates);
@@ -149,9 +148,7 @@ class Statistics extends Controller
                 $allMealIDs = 
                         Meal::select(DB::raw('(TIMEDIFF(meals.end, meals.start)) as total'))
                             ->distinct()
-                            //->orderBy('id', 'ASC')
                             ->join('orders', 'orders.meal_id', '=', 'meals.id')
-                            //->where('meals.id', '=', $mealIDs[$i]->only('id'))
                             ->whereYear('meals.start', '=', Carbon::parse($date)->format('Y'))
                             ->whereMonth('meals.start', '=', Carbon::parse($date)->format('m'))
                             ->get();
@@ -173,55 +170,34 @@ class Statistics extends Controller
         return response()->json($arrayOfDatesANdAVG, 200);
     }
 
-    //TODO
+    // average time to handle each order (each month) by item
     public function getAVGTimeToHandleEachOrderOnGivenMonth(Request $request, $dates) {
         $arrayOfDatesANdAVG = array();
         $datesToCompare = explode(',', $dates);
         
         foreach ($datesToCompare as $date) {
             try {
-                // $OrdersIDs = 
-                //         Order::select('id')
-                //             ->whereYear('orders.start', '=', Carbon::parse($date)->format('Y'))
-                //             ->whereMonth('orders.start', '=', Carbon::parse($date)->format('m'))
-                //             ->orderBy('id', 'ASC')
-                //             ->get();
-                // $totalOrdersFromGivenMonth = $OrdersIDs->count(); //73517
-                // //dd($totalOrdersFromGivenMonth);
-                $allOrdersIDs = 
-                        Order::select(DB::raw('(TIMEDIFF(orders.end, orders.start)) as total'))
-                            //->distinct()
-                            //->orderBy('id', 'ASC')
-                            //->join('orders', 'orders.meal_id', '=', 'meals.id')
-                            //->where('meals.id', '=', $OrdersIDs[$i]->only('id'))
+                $allOrdersItemsWithTotalOccurencesAndTotalTime = 
+                        Order::select(DB::raw('count(*) as totalOcurrences, orders.item_id as id, sum(TIMEDIFF(orders.end, orders.start)) as totalTime')) //, (TIMEDIFF(orders.end, orders.start)) as total
+                            ->groupBy('orders.item_id')
+                            ->orderBy('orders.item_id', 'ASC')
                             ->whereYear('orders.start', '=', Carbon::parse($date)->format('Y'))
                             ->whereMonth('orders.start', '=', Carbon::parse($date)->format('m'))
-                            ->get();
-                $totalOrdersIDs = $allOrdersIDs->count(); //73517
-                $totalOrdersFromGivenMonth = $totalOrdersIDs; 
-                //dd($totalOrdersIDs);
-                $timeItTakesTOHandleAMeal = 0;
-                for ($i=0; $i < $totalOrdersIDs; $i++) {
-                    list($hours, $minutes, $seconds) = explode(':', (($allOrdersIDs[$i])->only('total')['total']), 3);
-                    $timeItTakesTOHandleAMeal += ((int)$minutes * 60 + (int)$hours * 3600 + (int)$seconds);
+                            ->get();// 2017-12-02 -> total: 73517
+                $arrayOfDatesAndAVG = array();
+                foreach ($allOrdersItemsWithTotalOccurencesAndTotalTime as $ordersItemsWithTotalOccurencesAndTotalTime) {
+                    $totalOcurrences = $ordersItemsWithTotalOccurencesAndTotalTime->only('totalOcurrences')['totalOcurrences'];
+                    $totalTime = $ordersItemsWithTotalOccurencesAndTotalTime->only('totalTime')['totalTime'];
+                    if ($totalOcurrences > 0)
+                        array_push($arrayOfDatesAndAVG, ['date' => $date, 'AVG time to handle Order' => gmdate("H:i:s", ($totalTime/$totalOcurrences))]);
+                    else
+                        array_push($arrayOfDatesAndAVG, ['date' => $date, 'AVG time to handle Order' => gmdate("H:i:s", $totalOcurrences)]);
                 }
-                if ($totalOrdersFromGivenMonth > 0)
-                    array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Order' => gmdate("H:i:s", ($timeItTakesTOHandleAMeal/$totalOrdersFromGivenMonth))]);
-                else
-                    array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Order' => gmdate("H:i:s", $totalOrdersFromGivenMonth)]);
             }catch (\Exception $e){
-                return $e;
                 return response()->json(['error' => 'Invalid date format.'], 500);
             }
         }
-        return response()->json($arrayOfDatesANdAVG, 200);
+        dd($arrayOfDatesAndAVG);
+        return response()->json($arrayOfDatesAndAVG, 200);
     }
-    /* total orders in meal
-    Meal::select(DB::raw('(meals.start - meals.end) as total'))
-        ->join('orders', 'orders.meal_id', '=', 'meals.id')
-        ->where('meals.id', '=', $id)
-        ->whereYear('meals.start', '=', Carbon::parse($date)->format('Y'))
-        ->whereMonth('meals.start', '=', Carbon::parse($date)->format('m'))
-        ->get();
-    */
 }
