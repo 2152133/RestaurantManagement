@@ -4,20 +4,21 @@
             <h1>Meal Orders state</h1>
         </div>
 
-        <h3>Confirmed Orders</h3>
-        <orders-list :orders="getConfirmedMealOrders"></orders-list>
+        <div class="alert" :class="{'alert-success':showSuccess,'alert-danger':showFailure}" v-if="showSuccess || showFailure">
+            <strong>{{successMessage}}</strong>
+            <strong>{{failMessage}}</strong>
+        </div>
 
         <h3>Pending Orders</h3>
         <orders-list :orders="getPendingMealOrders" v-on:delete-order="deleteOrder"></orders-list>
 
-        <div>
-            <h3>Prepared Orders</h3>
-            <div class="alert" :class="{'alert-success':showSuccess,'alert-danger':showFailure}" v-if="showSuccess || showFailure">
-                <strong>{{successMessage}}</strong>
-                <strong>{{failMessage}}</strong>
-            </div>
-            <orders-list :orders="getPreparedMealsOrders" v-on:mark-delivered="markDelivered"></orders-list>
-        </div>
+        <h3>Confirmed Orders</h3>
+        <orders-list :orders="getConfirmedMealOrders"></orders-list>
+
+        <h3>Prepared Orders</h3>
+        <orders-list :orders="getPreparedMealOrders" v-on:mark-delivered="markDelivered"></orders-list>
+        
+            
     </div>
 </template>
 <script>
@@ -36,6 +37,7 @@
                 this.$store.commit('removeOrderFromPendingMealOrders', index);
                 this.successMessage = "Order Deleted!";
                 this.showSuccess = true;
+                setTimeout(this.hideSuccess, 3000);
             },
             markDelivered: function (order, index) {
                 axios.put("/api/meals/" + order.id + "/markPreparedOrderAsDelivered")
@@ -43,25 +45,23 @@
                         this.successMessage = "Success marking delivered";
                         this.showSuccess = true;
                         this.$store.commit('removeOrderFromPreparedMealOrders', index);
-                    })
-                    .catch(error => { });
+                        setTimeout(this.hideSuccess, 3000);
+                    });
+            },
+            hideSuccess(){
+                this.successMessage = "";
+                this.showSuccess = false;
             },
             loadMealConfirmedOrders() {
-                axios.get("/api/meals/" + meal.id + "/confirmedOrders")
+                axios.get("/api/meals/" + this.$store.getters.currentMeal.id + "/confirmedOrders")
                     .then(response => {
                         this.$store.commit('setConfirmedMealOrders', response.data.data);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
                     });
             },
             loadMealPreparedOrders() {
-                axios.get("/api/meals/" + meal.id + "/preparedOrders")
+                axios.get("/api/meals/" + this.$store.getters.currentMeal.id + "/preparedOrders")
                     .then(response => {
-                        this.$store.commit('setPreparedMealsOrders', response.data.data);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
+                        this.$store.commit('setPreparedMealOrders', response.data.data);
                     });
             },
 
@@ -73,13 +73,13 @@
             getConfirmedMealOrders() {
                 return this.$store.getters.confirmedMealOrders;
             },
-            getPreparedMealsOrders() {
-                return this.$store.getters.preparedMealsOrders;
+            getPreparedMealOrders() {
+                return this.$store.getters.preparedMealOrders;
             },
         },
         mounted() {
-            loadMealConfirmedOrders();
-            loadMealPreparedOrders();
+            this.loadMealConfirmedOrders();
+            this.loadMealPreparedOrders();
         }
     };
 </script>

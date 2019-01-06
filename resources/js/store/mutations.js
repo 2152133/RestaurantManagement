@@ -96,9 +96,9 @@ export default {
     createNewPendingMeal(state, payload){
         state.currentMealOrder.id = state.counter;
         state.currentMealOrder.state = "pending";
-        state.currentMealOrder.item_id = payload.item_number;
-        state.currentMealOrder.meal_id = payload.meal_number;
-        state.currentMealOrder.responsible_cook_id = null;
+        state.currentMealOrder.item = payload.item;
+        state.currentMealOrder.responsible_cook = null;
+        state.currentMealOrder.meal_id = payload.mealId;
         state.currentMealOrder.start = payload.datetimeToOrder;
     },
 
@@ -145,8 +145,8 @@ export default {
     setConfirmedMealOrders(state, confirmedMealOrders){
         state.confirmedMealOrders = confirmedMealOrders;
     },
-    setPreparedMealsOrders(state, preparedMealsOrders){
-        state.preparedMealsOrders = preparedMealsOrders;
+    setPreparedMealOrders(state, preparedMealOrders){
+        state.preparedMealOrders = preparedMealOrders;
     },
     setNotDeliveredOrdersOfMeal(state, notDeliveredOrdersOfMeal){
         state.notDeliveredOrdersOfMeal = notDeliveredOrdersOfMeal;

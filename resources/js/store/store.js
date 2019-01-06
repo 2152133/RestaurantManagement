@@ -43,7 +43,7 @@ export default new Vuex.Store({
         allMealOrders: [],
         pendingMealOrders: [],
         confirmedMealOrders: [],
-        preparedMealsOrders: [],
+        preparedMealOrders: [],
         notDeliveredOrdersOfMeal: [],
         allItems: [],
         mealDetails: [],

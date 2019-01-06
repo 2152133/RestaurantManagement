@@ -78,13 +78,10 @@ class OrderController extends Controller
 
     public function getConfirmedOrdersForMeal($meal_id)
     {
-        $confirmedOrdersOfMeal = DB::table('orders')
-            ->join('meals', 'meals.id', '=', 'orders.meal_id')
-            ->where('orders.meal_id', '=', $meal_id)
-            ->where('orders.state', '=', 'confirmed')
-            ->select('orders.state', 'orders.id', 'orders.meal_id', 'orders.responsible_cook_id', 'orders.start', 'orders.end', 'orders.item_id', 'orders.created_at')
+        $confirmedOrdersOfMeal = Order::where('meal_id', $meal_id)
+            ->where('state', 'confirmed')
             ->paginate(10);
-        return response()->json($confirmedOrdersOfMeal, 200);
+        return (OrderResource::collection($confirmedOrdersOfMeal))->response()->setStatusCode(200);
     }
 
     public function addOrderToMeal($meal_number, $item_id)
@@ -119,13 +116,10 @@ class OrderController extends Controller
     }
 
     public function getPreparedOrdersForMeal($meal_id){
-        $preparedOrdersOfMeal = DB::table('orders')
-            ->join('meals', 'meals.id', '=', 'orders.meal_id')
-            ->where('orders.meal_id', '=', $meal_id)
-            ->where('orders.state', '=', 'prepared')
-            ->select('orders.state', 'orders.id', 'orders.meal_id', 'orders.responsible_cook_id', 'orders.start', 'orders.end', 'orders.item_id', 'orders.created_at')
+        $preparedOrdersOfMeal = Order::where('meal_id', $meal_id)
+            ->where('state', 'prepared')
             ->paginate(10);
-        return response()->json($preparedOrdersOfMeal, 200);
+        return (OrderResource::collection($preparedOrdersOfMeal))->response()->setStatusCode(200);
     }
 
     public function markPreparedOrderAsDelivered($order_id){

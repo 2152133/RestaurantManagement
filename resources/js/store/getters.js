@@ -112,8 +112,8 @@ export default {
     confirmedMealOrders(state){
         return state.confirmedMealOrders;
     },
-    preparedMealsOrders(state){
-        return state.preparedMealsOrders;
+    preparedMealOrders(state){
+        return state.preparedMealOrders;
     },
     notDeliveredOrdersOfMeal(state){
         return state.notDeliveredOrdersOfMeal;

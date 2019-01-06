@@ -4,7 +4,6 @@
       <router-link :to="{name: 'create_meal'}">Create Meal</router-link>
     </button>
 
-
     <table class="table">
       <thead>
         <tr>
@@ -47,6 +46,7 @@
     },
     methods: {
       showOrdersOfMeal: function (meal) {
+        this.$store.commit('setCurrentMeal', meal);
         this.$router.push({ name: 'mealOrdersState', params: { meal } });
       },
       showUpdate: function () {
@@ -57,51 +57,39 @@
         this.$router.push({ name: 'mealSummary' });
       },
       terminateMeal: function (meal, index) {
-        this.getTerminatedOrdersOfMeal(meal).then(var_aux => {
-          if (var_aux != 0) {
-            let response = confirm(
-              "There are orders not delivered, do you wish to continue?"
-            );
-            if (response) {
-              axios.put("api/meals/" + meal.id + "/terminate")
-                .then(response => {
-                  this.showSuccess = "Meal terminated Successfully";
-                  this.showSuccess = true;
-                })
-                .catch(error => {
-                  this.failMessage = "Error terminating meal";
-                  this.showFailure = true;
-                });
-              this.$store.commit('removeMealFromUserMeals', index);
+        axios.get("/api/meals/" + meal.id + "/notDeliveredOrders")
+          .then(response => {
+            console.log(response);
+            this.$store.commit('setNotDeliveredOrdersOfMeal', response.data);
+            if (this.getNotDeliveredOrdersOfMeal.length > 0) {
+              let userAnswer = confirm("There are orders not delivered, do you wish to continue?");
+              if (userAnswer) {
+                this.terminateMealOnDB(meal, index);
+              } else {
+                console.log("CANCEL");
+              }
             } else {
-              console.log("CANCEL");
+              this.terminateMealOnDB(meal, index);
             }
-          } else {
-            axios
-              .put("api/meals/" + meal.id + "/terminate")
-              .then(response => {
-                this.showSuccess = "Meal terminated Successfully";
-                this.showSuccess = true;
-              })
-              .catch(error => {
-                this.failMessage = "Error terminating meal";
-                this.showFailure = true;
-              });
+          });
+      },
+      terminateMealOnDB(meal, index) {
+        axios.put("api/meals/" + meal.id + "/terminate")
+          .then(response => {
+            this.showSuccess = "Meal terminated Successfully";
+            this.showSuccess = true;
             this.$store.commit('removeMealFromUserMeals', index);
-          }
-        });
+          })
+          .catch(error => {
+            this.failMessage = "Error terminating meal";
+            this.showFailure = true;
+          });
       },
-      getTerminatedOrdersOfMeal: function (meal) {
-        return new Promise(resolve => {
-          axios
-            .get("/api/meals/" + meal.id + "/notDeliveredOrders")
-            .then(response => {
-              this.$store.commit('setNotDeliveredOrdersOfMeal', response.data.data);
-              resolve(response);
-            })
-            .catch(error => { });
-        });
-      },
+    },
+    computed: {
+      getNotDeliveredOrdersOfMeal() {
+        return this.$store.getters.notDeliveredOrdersOfMeal;
+      }
     }
   };
 </script>

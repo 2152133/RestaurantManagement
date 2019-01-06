@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="jumbotron">
-      <h1>{{title}}</h1>
+      <h1>My meals</h1>
     </div>
 
-    <meals-list :meals="getUserMeals" v-on:terminate-meal="terminateMeal"></meals-list>
+    <meals-list :meals="getUserMeals"></meals-list>
 
   </div>
 </template>
@@ -12,11 +12,7 @@
 module.exports = {
   data() {
     return {
-      title: "My meals",
-      successMessage: "",
-      failMessage: "",
-      showSuccess: false,
-      showFailure: false,
+      
     };
   },
   methods: {
