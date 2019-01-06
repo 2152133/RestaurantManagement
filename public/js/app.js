@@ -54191,7 +54191,7 @@ __WEBPACK_IMPORTED_MODULE_6_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_3_vue_
 
 __WEBPACK_IMPORTED_MODULE_6_vue___default.a.use(new __WEBPACK_IMPORTED_MODULE_2_vue_socket_io___default.a({
     debug: true,
-    connection: 'http://127.0.0.1:8080'
+    connection: 'http://192.168.10.10:8080'
 }));
 
 __WEBPACK_IMPORTED_MODULE_6_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_5_vee_validate__["a" /* default */]);
@@ -91201,13 +91201,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: { VeLine: __WEBPACK_IMPORTED_MODULE_0_v_charts_lib_line_common___default.a },
     data: function data() {
         return {
-            title: 'Statistics',
+            title: 'Statistics - ',
+            section: 'Total Orders/Meals',
             toggleWorkerBool: true,
             toggleOrderMealBool: true,
             toggleWorkerTotalBool: true,
@@ -91271,25 +91282,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this6 = this;
 
             axios.get('/api/timeToHandleMeal/' + dates).then(function (response) {
-                _this6.chartData.columns = ['date', 'AVG time to handle Meal'];
+                _this6.chartData.columns = ['date', 'AVG time to handle Meal (minutes)'];
                 _this6.chartData.rows = response.data;
             });
         },
-        getCooksIds: function getCooksIds() {
+        getAVGTimeToHandleEachOrderOnGivenMonth: function getAVGTimeToHandleEachOrderOnGivenMonth(dates) {
             var _this7 = this;
+
+            axios.get('/api/timeToHandleOrder/' + dates).then(function (response) {
+                _this7.chartData.columns = ['date', 'AVG time to handle Order (minutes)'];
+                _this7.chartData.rows = response.data;
+            });
+        },
+        getCooksIds: function getCooksIds() {
+            var _this8 = this;
 
             axios.get('/api/cooks').then(function (response) {
                 response.data.forEach(function (cook) {
-                    _this7.cooksIds.push(cook.id);
+                    _this8.cooksIds.push(cook.id);
                 });
             });
         },
         getWaitersIds: function getWaitersIds() {
-            var _this8 = this;
+            var _this9 = this;
 
             axios.get('/api/waiters').then(function (response) {
                 response.data.forEach(function (cook) {
-                    _this8.waitersIds.push(cook.id);
+                    _this9.waitersIds.push(cook.id);
                 });
             });
         },
@@ -91300,7 +91319,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.toggleOrderMealBool = this.toggleOrderMealBool ? false : true;
         },
         toggleWorkerTotal: function toggleWorkerTotal() {
-            this.toggleWorkerTotalBool = this.toggleWorkerTotalBool ? false : true;
+            if (this.toggleWorkerTotalBool) {
+                this.toggleWorkerTotalBool = false;
+                this.section = 'Workers Orders/Meals';
+            } else {
+                this.toggleWorkerTotalBool = true;
+                this.section = 'General Orders/Meals';
+            }
         },
         toggleMealsOrders: function toggleMealsOrders() {
             this.toggleMealsOrdersBool = this.toggleMealsOrdersBool ? false : true;
@@ -111128,7 +111153,7 @@ var render = function() {
     "div",
     [
       _c("div", { staticClass: "jumbotron" }, [
-        _c("h1", [_vm._v(_vm._s(_vm.title))])
+        _c("h1", [_vm._v(_vm._s(_vm.title) + _vm._s(_vm.section))])
       ]),
       _vm._v(" "),
       _c("div", [
@@ -111431,31 +111456,81 @@ var render = function() {
                 ])
           ]),
       _vm._v(" "),
-      _c("label", { attrs: { for: "Date" } }, [
-        _vm._v("Date (yyyy-mm-dd,yyyy-mm-dd)")
-      ]),
-      _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.data.dates,
-            expression: "data.dates"
-          }
-        ],
-        staticClass: "form-control",
-        attrs: { type: "text" },
-        domProps: { value: _vm.data.dates },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
-            }
-            _vm.$set(_vm.data, "dates", $event.target.value)
-          }
-        }
-      }),
+      _vm.toggleWorkerTotalBool
+        ? _c("div", [
+            _vm.toggleMealsOrdersBool && _vm.toggleTotalAvgHandledBool
+              ? _c("label", { attrs: { for: "Date" } }, [
+                  _vm._v("Total Orders Date (yyyy-mm-dd,yyyy-mm-dd)")
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.toggleMealsOrdersBool && !_vm.toggleTotalAvgHandledBool
+              ? _c("label", { attrs: { for: "Date" } }, [
+                  _vm._v("Average Orders Date (yyyy-mm-dd,yyyy-mm-dd)")
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.toggleMealsOrdersBool && _vm.toggleTotalAvgHandledBool
+              ? _c("label", { attrs: { for: "Date" } }, [
+                  _vm._v("Total Meals Date (yyyy-mm-dd,yyyy-mm-dd)")
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.toggleMealsOrdersBool && !_vm.toggleTotalAvgHandledBool
+              ? _c("label", { attrs: { for: "Date" } }, [
+                  _vm._v("Average Meals Date (yyyy-mm-dd,yyyy-mm-dd)")
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.data.dates,
+                  expression: "data.dates"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "text" },
+              domProps: { value: _vm.data.dates },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.data, "dates", $event.target.value)
+                }
+              }
+            })
+          ])
+        : _c("div", [
+            _c("label", { attrs: { for: "Date" } }, [
+              _vm._v("Date (yyyy-mm-dd,yyyy-mm-dd)")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.data.dates,
+                  expression: "data.dates"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "text" },
+              domProps: { value: _vm.data.dates },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.data, "dates", $event.target.value)
+                }
+              }
+            })
+          ]),
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
@@ -111487,7 +111562,7 @@ var render = function() {
                     on: {
                       click: function($event) {
                         $event.preventDefault()
-                        _vm.getAVGTimeToHandleEachMealOnGivenMonth(
+                        _vm.getAVGTimeToHandleEachOrderOnGivenMonth(
                           _vm.data.dates
                         )
                       }
@@ -111497,7 +111572,7 @@ var render = function() {
                 )
               : _vm._e(),
             _vm._v(" "),
-            !_vm.toggleMealsOrdersBool
+            !_vm.toggleMealsOrdersBool && _vm.toggleTotalAvgHandledBool
               ? _c(
                   "button",
                   {
@@ -111507,6 +111582,25 @@ var render = function() {
                       click: function($event) {
                         $event.preventDefault()
                         _vm.getTotalMealsFromGivenMonth(_vm.data.dates)
+                      }
+                    }
+                  },
+                  [_vm._v("Confirm")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.toggleMealsOrdersBool && !_vm.toggleTotalAvgHandledBool
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.getAVGTimeToHandleEachMealOnGivenMonth(
+                          _vm.data.dates
+                        )
                       }
                     }
                   },

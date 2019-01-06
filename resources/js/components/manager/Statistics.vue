@@ -1,7 +1,7 @@
 <template>
   <div>
       <div class="jumbotron">
-            <h1>{{title}}</h1>
+            <h1>{{title}}{{section}}</h1>
         </div>
         <div>
             <div v-if="toggleWorkerTotalBool">
@@ -43,13 +43,23 @@
                     </select>
             </div>
         </div>
-        <label for="Date">Date (yyyy-mm-dd,yyyy-mm-dd)</label>
-        <input class="form-control" type="text" v-model="data.dates">
+        <div v-if="toggleWorkerTotalBool">
+            <label v-if="toggleMealsOrdersBool && toggleTotalAvgHandledBool" for="Date">Total Orders Date (yyyy-mm-dd,yyyy-mm-dd)</label>
+            <label v-if="toggleMealsOrdersBool && !toggleTotalAvgHandledBool" for="Date">Average Orders Date (yyyy-mm-dd,yyyy-mm-dd)</label>
+            <label v-if="!toggleMealsOrdersBool && toggleTotalAvgHandledBool" for="Date">Total Meals Date (yyyy-mm-dd,yyyy-mm-dd)</label>
+            <label v-if="!toggleMealsOrdersBool && !toggleTotalAvgHandledBool" for="Date">Average Meals Date (yyyy-mm-dd,yyyy-mm-dd)</label>
+            <input class="form-control" type="text" v-model="data.dates">
+        </div>
+        <div v-else>
+            <label for="Date">Date (yyyy-mm-dd,yyyy-mm-dd)</label>
+            <input class="form-control" type="text" v-model="data.dates">
+        </div>
         <br>
         <div v-if="toggleWorkerTotalBool">
             <button v-if="toggleMealsOrdersBool && toggleTotalAvgHandledBool" type="button" class="btn btn-success" @click.prevent="getTotalOrdersFromGivenMonth(data.dates)">Confirm</button>
-            <button v-if="toggleMealsOrdersBool && !toggleTotalAvgHandledBool" type="button" class="btn btn-success" @click.prevent="getAVGTimeToHandleEachMealOnGivenMonth(data.dates)">Confirm</button>
-            <button v-if="!toggleMealsOrdersBool" type="button" class="btn btn-success" @click.prevent="getTotalMealsFromGivenMonth(data.dates)">Confirm</button>
+            <button v-if="toggleMealsOrdersBool && !toggleTotalAvgHandledBool" type="button" class="btn btn-success" @click.prevent="getAVGTimeToHandleEachOrderOnGivenMonth(data.dates)">Confirm</button>
+            <button v-if="!toggleMealsOrdersBool && toggleTotalAvgHandledBool" type="button" class="btn btn-success" @click.prevent="getTotalMealsFromGivenMonth(data.dates)">Confirm</button>
+            <button v-if="!toggleMealsOrdersBool && !toggleTotalAvgHandledBool" type="button" class="btn btn-success" @click.prevent="getAVGTimeToHandleEachMealOnGivenMonth(data.dates)">Confirm</button>
         </div>
         <div v-else>
             <button v-if="toggleWorkerBool" type="button" class="btn btn-success" @click.prevent="getAVGNumberOfOrdersHandledOnGivenDatesForEachCook(data.id, data.dates)">Confirm</button>
@@ -67,7 +77,8 @@ export default {
     components: { VeLine },
     data () {
         return {
-            title: 'Statistics',
+            title: 'Statistics - ',
+            section: 'Total Orders/Meals',
             toggleWorkerBool: true,
             toggleOrderMealBool: true,
             toggleWorkerTotalBool: true,
@@ -124,7 +135,14 @@ export default {
         getAVGTimeToHandleEachMealOnGivenMonth(dates) {
             axios.get('/api/timeToHandleMeal/' + dates)
             .then(response => {
-                this.chartData.columns = ['date', 'AVG time to handle Meal']
+                this.chartData.columns = ['date', 'AVG time to handle Meal (minutes)']
+                this.chartData.rows = response.data
+            })
+        },
+        getAVGTimeToHandleEachOrderOnGivenMonth(dates) {
+            axios.get('/api/timeToHandleOrder/' + dates)
+            .then(response => {
+                this.chartData.columns = ['date', 'AVG time to handle Order (minutes)']
                 this.chartData.rows = response.data
             })
         },
@@ -151,7 +169,13 @@ export default {
             this.toggleOrderMealBool = this.toggleOrderMealBool ? false : true
         },
         toggleWorkerTotal() {
-            this.toggleWorkerTotalBool = this.toggleWorkerTotalBool ? false : true
+            if (this.toggleWorkerTotalBool) {
+                this.toggleWorkerTotalBool = false
+                this.section = 'Workers Orders/Meals'
+            } else {
+                this.toggleWorkerTotalBool = true
+                this.section = 'General Orders/Meals'
+            }
         },
         toggleMealsOrders() {
             this.toggleMealsOrdersBool = this.toggleMealsOrdersBool ? false : true

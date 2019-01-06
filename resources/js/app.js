@@ -21,7 +21,7 @@ Vue.use(Toasted, {
 
 Vue.use(new VueSocketio({
     debug: true,
-    connection: 'http://127.0.0.1:8080'
+    connection: 'http://192.168.10.10:8080'
 })); 
 
 
