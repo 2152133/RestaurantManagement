@@ -133,6 +133,12 @@ export default {
     setUserMeals(state, userMeals){
         state.userMeals = userMeals;
     },
+    setUserMealsMeta(state, userMealsMeta){
+        state.userMealsMeta = userMealsMeta;
+    },
+    setUserMealsLinks(state, userMealsLinks){
+        state.userMealsLinks = userMealsLinks;
+    },
     setCurrentMeal(state, currentMeal){
         state.currentMeal = currentMeal;
     },

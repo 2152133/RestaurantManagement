@@ -39,6 +39,8 @@ export default new Vuex.Store({
 
         //-----------------Meals------------------------
         userMeals: [],
+        userMealsMeta: [],
+        userMealsLinks: [],
         currentMeal: {},
         allMealOrders: [],
         pendingMealOrders: [],

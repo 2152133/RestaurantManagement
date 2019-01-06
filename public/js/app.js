@@ -54191,7 +54191,7 @@ __WEBPACK_IMPORTED_MODULE_6_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_3_vue_
 
 __WEBPACK_IMPORTED_MODULE_6_vue___default.a.use(new __WEBPACK_IMPORTED_MODULE_2_vue_socket_io___default.a({
     debug: true,
-    connection: 'http://192.168.10.10:8080'
+    connection: 'http://127.0.0.1:8080'
 }));
 
 __WEBPACK_IMPORTED_MODULE_6_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_5_vee_validate__["a" /* default */]);
@@ -76670,6 +76670,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
 
                 //-----------------Meals------------------------
                 userMeals: [],
+                userMealsMeta: [],
+                userMealsLinks: [],
                 currentMeal: {},
                 allMealOrders: [],
                 pendingMealOrders: [],
@@ -77744,6 +77746,12 @@ var index_esm = {
     userMeals: function userMeals(state) {
         return state.userMeals;
     },
+    userMealsMeta: function userMealsMeta(state) {
+        return state.userMealsMeta;
+    },
+    userMealsLinks: function userMealsLinks(state) {
+        return state.userMealsLinks;
+    },
     currentMeal: function currentMeal(state) {
         return state.currentMeal;
     },
@@ -77976,6 +77984,12 @@ var index_esm = {
     //-------------------------Meal setters-----------------------------------
     setUserMeals: function setUserMeals(state, userMeals) {
         state.userMeals = userMeals;
+    },
+    setUserMealsMeta: function setUserMealsMeta(state, userMealsMeta) {
+        state.userMealsMeta = userMealsMeta;
+    },
+    setUserMealsLinks: function setUserMealsLinks(state, userMealsLinks) {
+        state.userMealsLinks = userMealsLinks;
     },
     setCurrentMeal: function setCurrentMeal(state, currentMeal) {
         state.currentMeal = currentMeal;
@@ -85406,7 +85420,12 @@ module.exports = {
       var _this = this;
 
       axios.get("/api/meals/waiterMeals/" + this.getCurrentUser.id).then(function (response) {
+        console.log(response);
         _this.$store.commit('setUserMeals', response.data.data);
+        _this.$store.commit('setUserMealsMeta', response.data.meta);
+        _this.$store.commit('setUserMealsLinks', response.data.links);
+
+        console.log(_this.getUserMealsMeta);
       });
     },
     getItems: function getItems() {
@@ -85415,6 +85434,11 @@ module.exports = {
       axios.get("/api/items/all").then(function (response) {
         _this2.$store.commit('setAllItems', response.data);
       });
+    },
+    refreshUserMeals: function refreshUserMeals(userMeals, userMealsMeta, userMealsLinks) {
+      this.$store.commit('setUserMeals', userMeals);
+      this.$store.commit('setUserMealsMeta', userMealsMeta);
+      this.$store.commit('setUserMealsLinks', userMealsLinks);
     }
   },
   computed: {
@@ -85423,6 +85447,12 @@ module.exports = {
     },
     getUserMeals: function getUserMeals() {
       return this.$store.getters.userMeals;
+    },
+    getUserMealsMeta: function getUserMealsMeta() {
+      return this.$store.getters.userMealsMeta;
+    },
+    getUserMealsLinks: function getUserMealsLinks() {
+      return this.$store.getters.userMealsLinks;
     }
   },
   mounted: function mounted() {
@@ -85444,7 +85474,14 @@ var render = function() {
     [
       _vm._m(0),
       _vm._v(" "),
-      _c("meals-list", { attrs: { meals: _vm.getUserMeals } })
+      _c("meals-list", {
+        attrs: {
+          meals: _vm.getUserMeals,
+          meta: _vm.getUserMealsMeta,
+          links: _vm.getUserMealsLinks
+        },
+        on: { refreshMeals: _vm.refreshUserMeals }
+      })
     ],
     1
   )
@@ -85558,10 +85595,9 @@ module.exports = Component.exports
 //
 //
 //
-//
 
 module.exports = {
-  props: ["meals", "meta", "links", "user"],
+  props: ["meals", "meta", "links"],
   data: function data() {
     return {};
   },
@@ -85606,6 +85642,12 @@ module.exports = {
         _this2.failMessage = "Error terminating meal";
         _this2.showFailure = true;
       });
+    },
+    showCreateMeal: function showCreateMeal() {
+      this.$router.push({ name: 'create_meal' });
+    },
+    refreshMeals: function refreshMeals(meals, meta, links) {
+      this.$emit('refreshMeals', meals, meta, links);
     }
   },
   computed: {
@@ -85623,113 +85665,116 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "button",
-      {
-        staticClass: "btn btn-outline-success",
-        staticStyle: { float: "right" },
-        attrs: { type: "button" }
-      },
-      [
-        _c("router-link", { attrs: { to: { name: "create_meal" } } }, [
-          _vm._v("Create Meal")
-        ])
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c("table", { staticClass: "table" }, [
-      _vm._m(0),
-      _vm._v(" "),
+  return _c(
+    "div",
+    [
       _c(
-        "tbody",
-        _vm._l(_vm.meals, function(meal, index) {
-          return _c("tr", { key: meal.id }, [
-            _c("td", [_vm._v(_vm._s(meal.id))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(meal.state))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(meal.table_number))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(meal.start))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(meal.end))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(meal.total_price_preview))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(meal.created_at))]),
-            _vm._v(" "),
-            _c("td", [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-outline-primary",
-                  staticStyle: { float: "right" },
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.showOrdersOfMeal(meal)
-                    }
-                  }
-                },
-                [_vm._v("Meal's orders' state")]
-              ),
+        "button",
+        {
+          staticClass: "btn btn-outline-success",
+          staticStyle: { float: "right" },
+          attrs: { type: "button" },
+          on: { click: _vm.showCreateMeal }
+        },
+        [_vm._v("\n    Create Meal\n  ")]
+      ),
+      _vm._v(" "),
+      _c("pagination", {
+        attrs: { objects: _vm.meals, meta: _vm.meta, links: _vm.links },
+        on: { refreshObjects: _vm.refreshMeals }
+      }),
+      _vm._v(" "),
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.meals, function(meal, index) {
+            return _c("tr", { key: meal.id }, [
+              _c("td", [_vm._v(_vm._s(meal.id))]),
               _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-outline-info",
-                  staticStyle: { float: "right" },
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.showSummary(meal)
-                    }
-                  }
-                },
-                [_vm._v("See meal summary")]
-              ),
+              _c("td", [_vm._v(_vm._s(meal.state))]),
               _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-outline-danger",
-                  staticStyle: { float: "right" },
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.terminateMeal(meal, index)
-                    }
-                  }
-                },
-                [_vm._v("Terminate meal")]
-              ),
+              _c("td", [_vm._v(_vm._s(meal.table_number))]),
               _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-outline-warning",
-                  staticStyle: { float: "right" },
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.showUpdate(meal, index)
+              _c("td", [_vm._v(_vm._s(meal.start))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(meal.total_price_preview))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(meal.created_at.date))]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-outline-primary",
+                    staticStyle: { float: "right" },
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.showOrdersOfMeal(meal)
+                      }
                     }
-                  }
-                },
-                [_vm._v("Add order to meal")]
-              )
+                  },
+                  [_vm._v("Meal's orders' state")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-outline-info",
+                    staticStyle: { float: "right" },
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.showSummary(meal)
+                      }
+                    }
+                  },
+                  [_vm._v("See meal summary")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-outline-danger",
+                    staticStyle: { float: "right" },
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.terminateMeal(meal, index)
+                      }
+                    }
+                  },
+                  [_vm._v("Terminate meal")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-outline-warning",
+                    staticStyle: { float: "right" },
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.showUpdate(meal, index)
+                      }
+                    }
+                  },
+                  [_vm._v("Add order to meal")]
+                )
+              ])
             ])
-          ])
-        })
-      )
-    ])
-  ])
+          })
+        )
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -85745,8 +85790,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Table Number")]),
         _vm._v(" "),
         _c("th", [_vm._v("Start")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("End")]),
         _vm._v(" "),
         _c("th", [_vm._v("Total Price Preview")]),
         _vm._v(" "),
@@ -85839,6 +85882,7 @@ module.exports = Component.exports
 //
 //
 //
+//
 
 module.exports = {
   data: function data() {
@@ -85859,11 +85903,15 @@ module.exports = {
       axios.post("/api/meals/createMealOnTable/" + table_number + "/onWaiter/" + this.$store.getters.getAuthUser.id).then(function (response) {
         _this.successMessage = "Meal created successfully!";
         _this.showSuccess = true;
+        _this.goBack();
       }).catch(function (error) {
         console.log(error);
         this.failMessage = "Meal not created!";
         this.showFailure = true;
       });
+    },
+    goBack: function goBack() {
+      this.$router.go(-1);
     }
   },
   mounted: function mounted() {
@@ -85962,6 +86010,21 @@ var render = function() {
           }
         },
         [_vm._v("Create Meal")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-outline-danger",
+          attrs: { type: "button" },
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              return _vm.goBack($event)
+            }
+          }
+        },
+        [_vm._v("Cancel")]
       )
     ])
   ])

@@ -65,11 +65,10 @@ class MealController extends Controller
 
     public function waiterMeals($user_id)
     {
-        $waiterMeals = DB::table('meals')
-                    ->where('meals.responsible_waiter_id', '=', $user_id)
-                    ->where('meals.state', '=', 'active')
+        $waiterMeals = Meal::where('responsible_waiter_id', $user_id)
+                    ->where('state', 'active')
                     ->paginate(5);
-        return response()->json($waiterMeals, 201);
+        return (MealResource::collection($waiterMeals))->response()->setStatusCode(201);
     }
 
     public function getTablesWitoutActiveMeals()

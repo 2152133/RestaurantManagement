@@ -17,6 +17,7 @@
       </select>
 
       <button type="button" class="btn btn-outline-success" v-on:click.prevent="createMeal(selectedOption)">Create Meal</button>
+      <button type="button" class="btn btn-outline-danger" v-on:click.prevent="goBack">Cancel</button>
     </div>
   </div>
 </template>
@@ -38,13 +39,17 @@
           .then(response => {
             this.successMessage = "Meal created successfully!";
             this.showSuccess = true;
+            this.goBack();
           })
           .catch(function (error) {
             console.log(error);
             this.failMessage = "Meal not created!";
             this.showFailure = true;
           });
-      }
+      },
+      goBack() {
+        this.$router.go(-1);
+      },
     },
     mounted() {
       axios.get("/api/meals/tablesWithoutActiveMeals")

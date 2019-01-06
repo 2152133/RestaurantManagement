@@ -100,6 +100,12 @@ export default {
     userMeals(state){
         return state.userMeals;
     },
+    userMealsMeta(state){
+        return state.userMealsMeta;
+    },
+    userMealsLinks(state){
+        return state.userMealsLinks;
+    },
     currentMeal(state){
         return state.currentMeal;
     },
