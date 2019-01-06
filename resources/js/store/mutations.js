@@ -80,6 +80,27 @@ export default {
     },
 
 
+    //-----------------------Meals----------------------------------
+    removeMealFromUserMeals(state, index){
+        state.userMeals.splice(index, 1);
+    },
+    addOrderToPendingMealOrders(state, order){
+        state.pendingMealOrders.push(order);
+    },
+    removeOrderFromPendingMealOrders(state, index){
+        state.pendingMealOrders.splice(index, 1);
+    },
+    removeOrderFromPreparedMealOrders(state, index){
+        state.preparedMealOrders.splice(index, 1);
+    },
+    createNewPendingMeal(state, payload){
+        state.currentMealOrder.id = state.counter;
+        state.currentMealOrder.state = "pending";
+        state.currentMealOrder.item_id = payload.item_number;
+        state.currentMealOrder.meal_id = payload.meal_number;
+        state.currentMealOrder.responsible_cook_id = null;
+        state.currentMealOrder.start = payload.datetimeToOrder;
+    },
 
     //------------------Setters---------------------------------------------------------------------------
     //--------------------Order setters-------------------------------
@@ -107,6 +128,43 @@ export default {
 
 
     
+
+    //-------------------------Meal setters-----------------------------------
+    setUserMeals(state, userMeals){
+        state.userMeals = userMeals;
+    },
+    setCurrentMeal(state, currentMeal){
+        state.currentMeal = currentMeal;
+    },
+    setAllMealOrders(state, allMealOrders){
+        state.allMealOrders = allMealOrders;
+    },
+    setPendingMealOrders(state, pendingMealOrders){
+        state.pendingMealOrders = pendingMealOrders;
+    },
+    setConfirmedMealOrders(state, confirmedMealOrders){
+        state.confirmedMealOrders = confirmedMealOrders;
+    },
+    setPreparedMealsOrders(state, preparedMealsOrders){
+        state.preparedMealsOrders = preparedMealsOrders;
+    },
+    setNotDeliveredOrdersOfMeal(state, notDeliveredOrdersOfMeal){
+        state.notDeliveredOrdersOfMeal = notDeliveredOrdersOfMeal;
+    },
+    setAllItems(state, allItems){
+        state.allItems = allItems;
+    },
+    setMealDetails(state, mealDetails){
+        state.mealDetails = mealDetails;
+    },
+    setCurrentMealOrder(state, currentMealOrder){
+        state.currentMealOrder = currentMealOrder;
+    },
+    setCounter(state, counter){
+        state.counter = counter;
+    },
+
+
 
 
     //----------------------Invoice Setters-------------------------------------

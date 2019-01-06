@@ -96,6 +96,42 @@ export default {
     },
 
 
+    //-------------------------Meals------------------------
+    userMeals(state){
+        return state.userMeals;
+    },
+    currentMeal(state){
+        return state.currentMeal;
+    },
+    allMealOrders(state){
+        return state.allMealOrders;
+    },
+    pendingMealOrders(state){
+        return state.pendingMealOrders;
+    },
+    confirmedMealOrders(state){
+        return state.confirmedMealOrders;
+    },
+    preparedMealsOrders(state){
+        return state.preparedMealsOrders;
+    },
+    notDeliveredOrdersOfMeal(state){
+        return state.notDeliveredOrdersOfMeal;
+    },
+    allItems(state){
+        return state.allItems;
+    },
+    mealDetails(state){
+        return state.mealDetails;
+    },
+    currentMealOrder(state){
+        return state.currentMealOrder;
+    },
+    counter(state){
+        return state.counter;
+    },
+
+
     //-----------------------Invoices----------------------
     currentInvoice(state){
         return state.currentInvoice;

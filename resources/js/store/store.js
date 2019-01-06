@@ -35,6 +35,24 @@ export default new Vuex.Store({
         editingNifName: false,
         viewingDetails: false,
         
+
+
+        //-----------------Meals------------------------
+        userMeals: [],
+        currentMeal: {},
+        allMealOrders: [],
+        pendingMealOrders: [],
+        confirmedMealOrders: [],
+        preparedMealsOrders: [],
+        notDeliveredOrdersOfMeal: [],
+        allItems: [],
+        mealDetails: [],
+        currentMealOrder: {},
+        counter: 0,
+
+
+
+
         //---------------Management---------------------
         tables:[],
         currentTable:{},

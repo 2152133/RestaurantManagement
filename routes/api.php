@@ -95,7 +95,7 @@ Route::middleware('auth:api')->group(function () {
     //Get tables without active meals
     Route::get('/meals/tablesWithoutActiveMeals', 'MealController@getTablesWitoutActiveMeals');
     //Create meal
-    Route::post('/meal/createMeal/{table_number}/{waiter_id}', 'MealController@createMeal');
+    Route::post('/meals/createMealOnTable/{table_number}/onWaiter/{waiter_id}', 'MealController@createMeal');
     //Add an order to a meal (create order)
     Route::post('/meal/addOrder/{meal_id}/{item_id}', 'OrderController@addOrderToMeal');
 

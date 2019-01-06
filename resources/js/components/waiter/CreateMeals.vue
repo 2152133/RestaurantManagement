@@ -16,7 +16,7 @@
       <button
         type="button"
         class="btn btn-outline-success"
-        v-on:click.prevent="createMeal(selectedOption, loggedWaiter)"
+        v-on:click.prevent="createMeal(selectedOption)"
       >Create Meal</button>
       <div
         class="alert"
@@ -37,7 +37,6 @@ module.exports = {
       tablesWithoutActiveMealsAtTheMoment: [],
       selectedOption: "",
       selected: "Select an option",
-      loggedWaiter: "13",
       successMessage: "",
       failMessage: "",
       showSuccess: false,
@@ -45,11 +44,8 @@ module.exports = {
     };
   },
   methods: {
-    createMeal: function(table_number, responsible_waiter_id) {
-      axios
-        .post(
-          "/api/meal/createMeal/" + table_number + "/" + responsible_waiter_id
-        )
+    createMeal: function(table_number) {
+      axios.post("/api/meals/createMealOnTable/" + table_number + "/onWaiter/" + this.$store.getters.getAuthUser.id)
         .then(response => {
           this.successMessage = "Meal created successfully!";
           this.showSuccess = true;
