@@ -1,10 +1,10 @@
 export default {
-    setAuthUser({commit}, data) {
+    setAuthUser({ commit }, data) {
         commit('setAuthUser', data);
     },
 
     //--------------------Orders---------------------------------
-    loadInPreparationUserOrders(context, userId){
+    loadInPreparationUserOrders(context, userId) {
         axios.get('/api/orders/inPreparation/fromCook/' + userId)
             .then((response) => {
                 // handle success
@@ -22,7 +22,7 @@ export default {
                 // always executed
             });
     },
-    loadConfirmedOrders(context){
+    loadConfirmedOrders(context) {
         axios.get('/api/orders/confirmed')
             .then((response) => {
                 // handle success
@@ -65,7 +65,7 @@ export default {
 
 
     //----------------------Invoices---------------------------------------
-    loadPendingInvoices(context){
+    loadPendingInvoices(context) {
         axios.get('/api/invoices/pending/')
             .then((response) => {
                 // handle success
@@ -82,7 +82,7 @@ export default {
                 // always executed
             });
     },
-    loadPaidInvoices(context){
+    loadPaidInvoices(context) {
         axios.get('/api/invoices/paid/')
             .then((response) => {
                 // handle success
@@ -100,6 +100,30 @@ export default {
             });
     },
 
+
+    //--------------------------Meals-------------------------------------
+    loadMealConfirmedOrders(context) {
+        if (!isNaN(context.getters.currentMeal.id)) {
+            axios.get("/api/meals/" + context.getters.currentMeal.id + "/confirmedOrders")
+                .then(response => {
+                    context.commit('setConfirmedMealOrders', response.data.data);
+                    context.commit('setConfirmedMealOrdersMeta', response.data.meta);
+                    context.commit('setConfirmedMealOrdersLinks', response.data.links);
+                });
+        }
+
+    },
+    loadMealPreparedOrders(context) {
+        if (!isNaN(context.getters.currentMeal.id)) {
+            axios.get("/api/meals/" + context.getters.currentMeal.id + "/preparedOrders")
+                .then(response => {
+                    context.commit('setPreparedMealOrders', response.data.data);
+                    context.commit('setPreparedMealOrdersMeta', response.data.meta);
+                    context.commit('setPreparedMealOrdersLinks', response.data.links);
+                });
+        }
+    },
+
     //------------------------Items--------------------------------------    
     loadItems(context) {
         axios.get('api/items')
@@ -111,19 +135,19 @@ export default {
     },
 
     //------------------------Tables--------------------------------------
-    loadTables(context){
+    loadTables(context) {
         axios.get('/api/tables/all')
-                .then((response) => {
-                    // handle success
-                    context.commit('refreshTablesPagination', response);
-                    console.log(response);
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                })
-                .then(function () {
-                    // always executed
-                });
+            .then((response) => {
+                // handle success
+                context.commit('refreshTablesPagination', response);
+                console.log(response);
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
     },
 }

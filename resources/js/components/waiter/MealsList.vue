@@ -1,9 +1,10 @@
 <template>
   <div>
-    <button type="button" class="btn btn-outline-success" style="float:right">
-      <router-link :to="{name: 'create_meal'}">Create Meal</router-link>
+    <button type="button" class="btn btn-outline-success" style="float:right" @click="showCreateMeal">
+      Create Meal
     </button>
 
+    <pagination :objects="meals" :meta="meta" :links="links" @refreshObjects="refreshMeals"></pagination>
     <table class="table">
       <thead>
         <tr>
@@ -11,7 +12,6 @@
           <th>State</th>
           <th>Table Number</th>
           <th>Start</th>
-          <th>End</th>
           <th>Total Price Preview</th>
           <th>Created At</th>
           <th>Actions</th>
@@ -23,9 +23,8 @@
           <td>{{meal.state}}</td>
           <td>{{meal.table_number}}</td>
           <td>{{meal.start}}</td>
-          <td>{{meal.end}}</td>
           <td>{{meal.total_price_preview}}</td>
-          <td>{{meal.created_at}}</td>
+          <td>{{meal.created_at.date}}</td>
           <td>
             <button type="button" class="btn btn-outline-primary" style="float:right" v-on:click.prevent="showOrdersOfMeal(meal)">Meal's orders' state</button>
             <button type="button" class="btn btn-outline-info" style="float:right" v-on:click.prevent="showSummary(meal)">See meal summary</button>
@@ -40,7 +39,7 @@
 </template>
 <script>
   module.exports = {
-    props: ["meals", "meta", "links", "user"],
+    props: ["meals", "meta", "links"],
     data: function () {
       return {};
     },
@@ -85,6 +84,12 @@
             this.showFailure = true;
           });
       },
+      showCreateMeal() {
+        this.$router.push({ name: 'create_meal' });
+      },
+      refreshMeals(meals, meta, links) {
+        this.$emit('refreshMeals', meals, meta, links);
+      }
     },
     computed: {
       getNotDeliveredOrdersOfMeal() {
