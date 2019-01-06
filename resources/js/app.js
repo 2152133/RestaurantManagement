@@ -198,8 +198,12 @@ const app = new Vue({
         responsableWaiterMessage_sent(dataFromServer){
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
         },
-        refresh_confirmed_orders(){
+        refresh_waiter_confirmed_orders(){
             this.$store.dispatch('loadMealConfirmedOrders');
+        },
+        refresh_waiter_prepared_orders(){
+            this.$store.dispatch('loadMealConfirmedOrders');
+            this.$store.dispatch('loadMealPreparedOrders');
         },
         // cashiers
         cashierMessage(dataFromServer){

@@ -54355,8 +54355,12 @@ var app = new __WEBPACK_IMPORTED_MODULE_6_vue___default.a({
         responsableWaiterMessage_sent: function responsableWaiterMessage_sent(dataFromServer) {
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
         },
-        refresh_confirmed_orders: function refresh_confirmed_orders() {
+        refresh_waiter_confirmed_orders: function refresh_waiter_confirmed_orders() {
             this.$store.dispatch('loadMealConfirmedOrders');
+        },
+        refresh_waiter_prepared_orders: function refresh_waiter_prepared_orders() {
+            this.$store.dispatch('loadMealConfirmedOrders');
+            this.$store.dispatch('loadMealPreparedOrders');
         },
 
         // cashiers
@@ -78219,11 +78223,20 @@ var index_esm = {
 
     //--------------------------Meals-------------------------------------
     loadMealConfirmedOrders: function loadMealConfirmedOrders(context) {
-        if (context.getters.currentMeal.id) {
+        if (!isNaN(context.getters.currentMeal.id)) {
             axios.get("/api/meals/" + context.getters.currentMeal.id + "/confirmedOrders").then(function (response) {
                 context.commit('setConfirmedMealOrders', response.data.data);
                 context.commit('setConfirmedMealOrdersMeta', response.data.meta);
                 context.commit('setConfirmedMealOrdersLinks', response.data.links);
+            });
+        }
+    },
+    loadMealPreparedOrders: function loadMealPreparedOrders(context) {
+        if (!isNaN(context.getters.currentMeal.id)) {
+            axios.get("/api/meals/" + context.getters.currentMeal.id + "/preparedOrders").then(function (response) {
+                context.commit('setPreparedMealOrders', response.data.data);
+                context.commit('setPreparedMealOrdersMeta', response.data.meta);
+                context.commit('setPreparedMealOrdersLinks', response.data.links);
             });
         }
     },
@@ -86216,13 +86229,7 @@ module.exports = {
             this.$store.dispatch('loadMealConfirmedOrders');
         },
         loadMealPreparedOrders: function loadMealPreparedOrders() {
-            var _this2 = this;
-
-            axios.get("/api/meals/" + this.$store.getters.currentMeal.id + "/preparedOrders").then(function (response) {
-                _this2.$store.commit('setPreparedMealOrders', response.data.data);
-                _this2.$store.commit('setPreparedMealOrdersMeta', response.data.meta);
-                _this2.$store.commit('setPreparedMealOrdersLinks', response.data.links);
-            });
+            this.$store.dispatch('loadMealPreparedOrders');
         },
         refreshPendingMealOrders: function refreshPendingMealOrders(orders, meta, links) {
             this.$store.commit('setPendingMealOrders', orders);
