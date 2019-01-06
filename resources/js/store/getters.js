@@ -211,4 +211,10 @@ export default {
     items(state){
         return state.items;
     },
+    itemsMeta(state){
+        return state.itemsMeta;
+    },
+    itemsLinks(state){
+        return state.itemsLinks;
+    },
 }

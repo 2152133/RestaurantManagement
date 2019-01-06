@@ -76704,7 +76704,10 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
                 editingTable: false,
                 creatingTable: false,
                 currentItem: null,
-                items: []
+                items: [],
+                itemsMeta: [],
+                itemsLinks: []
+
         },
         getters: __WEBPACK_IMPORTED_MODULE_2__getters__["a" /* default */],
         mutations: __WEBPACK_IMPORTED_MODULE_3__mutations__["a" /* default */],
@@ -77869,6 +77872,12 @@ var index_esm = {
     },
     items: function items(state) {
         return state.items;
+    },
+    itemsMeta: function itemsMeta(state) {
+        return state.itemsMeta;
+    },
+    itemsLinks: function itemsLinks(state) {
+        return state.itemsLinks;
     }
 });
 
@@ -77877,7 +77886,9 @@ var index_esm = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony default export */ __webpack_exports__["a"] = ({
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/* harmony default export */ __webpack_exports__["a"] = (_defineProperty({
     setToken: function setToken(state, _ref) {
         var token = _ref.token,
             tokenType = _ref.tokenType,
@@ -77961,6 +77972,26 @@ var index_esm = {
         state.paidInvoices = payload.newPaidInvoices;
         state.paidInvoicesMeta = payload.newMeta;
         state.paidInvoicesLinks = payload.newLinks;
+    },
+
+
+    //-----------------------Items----------------------------------
+    refreshItems: function refreshItems(state, payload) {
+        state.items = payload.newItems;
+        state.itemsMeta = payload.newMeta;
+        state.itemsLinks = payload.newLinks;
+    },
+
+
+    //--------------------Items setters-------------------------------
+    setItems: function setItems(state, items) {
+        state.items = items;
+    },
+    setItemsMeta: function setItemsMeta(state, itemsMeta) {
+        state.itemsMeta = itemsMeta;
+    },
+    setItemsLinks: function setItemsLinks(state, itemsLinks) {
+        state.itemsLinks = itemsLinks;
     },
 
 
@@ -78117,11 +78148,10 @@ var index_esm = {
     },
     setCurrentItem: function setCurrentItem(state, item) {
         state.currentItem = item;
-    },
-    setItems: function setItems(state, items) {
-        state.items = items;
     }
-});
+}, 'setItems', function setItems(state, items) {
+    state.items = items;
+}));
 
 /***/ }),
 /* 142 */
@@ -78239,6 +78269,16 @@ var index_esm = {
                 context.commit('setPreparedMealOrdersLinks', response.data.links);
             });
         }
+    },
+
+
+    //------------------------Items--------------------------------------    
+    loadItems: function loadItems(context) {
+        axios.get('api/items').then(function (response) {
+            context.commit('setItems', response.data.data);
+            context.commit('setItemsMeta', response.data.meta);
+            context.commit('setItemsLinks', response.data.links);
+        });
     },
 
 
@@ -82079,6 +82119,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             items: []
         };
     },
+
     methods: {
         editItem: function editItem(item) {
             this.currentItem = item;
@@ -82088,29 +82129,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this = this;
 
             axios.delete('api/item/' + item.id).then(function (response) {
-                _this.getItems();
+                _this.loadItems();
             });
         },
-
         savedItem: function savedItem() {
             this.currentItem = null;
-            this.$refs.itemsListRef.editingitem = null;
             this.showSuccess = true;
             this.successMessage = 'Item Saved';
         },
         cancelEdit: function cancelEdit() {
             this.currentItem = null;
-            this.$refs.itemsListRef.editingitem = null;
             this.showSuccess = false;
         },
-        getItems: function getItems() {
-            var _this2 = this;
-
-            axios.get('api/items').then(function (response) {
-                _this2.items = response.data.data;
-            });
+        loadItems: function loadItems() {
+            this.$store.dispatch('loadItems');
         },
-        childMessage: function childMessage(message) {
+        refreshItems: function refreshItems(newItems, newMeta, newLinks) {
+            this.$store.commit('refreshItems', { newItems: newItems, newMeta: newMeta, newLinkmessage: newLinkmessage });
             this.showSuccess = true;
             this.successMessage = message;
         }
@@ -82118,10 +82153,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     computed: {
         isManager: function isManager() {
             return this.$store.getters.isManager;
+        },
+        getItems: function getItems() {
+            return this.$store.getters.items;
+        },
+        getItemsMeta: function getItemsMeta() {
+            return this.$store.getters.itemsMeta;
+        },
+        getItemsLinks: function getItemsLinks() {
+            return this.$store.getters.itemsLinks;
         }
     },
     mounted: function mounted() {
-        this.getItems();
+        this.loadItems();
     }
 });
 
@@ -82175,12 +82219,15 @@ var render = function() {
         : _vm._e(),
       _vm._v(" "),
       _c("items-list", {
-        ref: "itemsListRef",
-        attrs: { items: _vm.items },
+        attrs: {
+          items: _vm.getItems,
+          meta: _vm.getItemsMeta,
+          links: _vm.getItemsLinks
+        },
         on: {
+          refreshItems: _vm.refreshItems,
           "edit-click": _vm.editItem,
-          "delete-click": _vm.deleteItem,
-          message: _vm.childMessage
+          "delete-click": _vm.deleteItem
         }
       }),
       _vm._v(" "),
@@ -82288,21 +82335,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['items'],
+    props: ['items', 'meta', 'links'],
     data: function data() {
         return {
             editingItem: null,
@@ -82325,32 +82360,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         compactDescription: function compactDescription(text) {
             return text.length > 100 ? text.substr(0, 70) + '...' : text;
         },
-        getItems: function getItems(url) {
-            var _this = this;
-
-            var page_url = url || '/api/items';
-            axios.get(page_url).then(function (response) {
-                Object.assign(_this.items, response.data.data);
-                _this.makePagination(response.data.meta, response.data.links);
-            });
-        },
-        makePagination: function makePagination(meta, links) {
-            var pagination = {
-                current_page: meta.current_page,
-                last_page: meta.last_page,
-                next_page_url: links.next,
-                prev_page_url: links.prev
-            };
-            this.pagination = pagination;
+        refreshItems: function refreshItems(items, meta, links) {
+            this.$emit('refreshItems', items, meta, links);
         }
     },
     computed: {
         isManager: function isManager() {
             return this.$store.getters.isManager;
         }
-    },
-    mounted: function mounted() {
-        this.getItems();
     }
 });
 
@@ -82362,151 +82379,99 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("h3", [_vm._v("Items")]),
-    _vm._v(" "),
-    _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
-      _c("ul", { staticClass: "pagination" }, [
-        _c(
-          "li",
-          {
-            staticClass: "page-item",
-            class: [{ disabled: !_vm.pagination.prev_page_url }]
-          },
-          [
-            _c(
-              "a",
-              {
-                staticClass: "page-link",
-                attrs: { href: "#" },
-                on: {
-                  click: function($event) {
-                    _vm.getItems(_vm.pagination.prev_page_url)
+  return _c(
+    "div",
+    [
+      _c("h3", [_vm._v("Items")]),
+      _vm._v(" "),
+      _c("pagination", {
+        attrs: { objects: _vm.items, meta: _vm.meta, links: _vm.links },
+        on: { refreshObjects: _vm.refreshItems }
+      }),
+      _vm._v(" "),
+      _c(
+        "table",
+        { staticClass: "table" },
+        [
+          _c("thead", [
+            _c("tr", [
+              _c("th", [_vm._v("Product")]),
+              _vm._v(" "),
+              _c("th", [_vm._v("Name")]),
+              _vm._v(" "),
+              _c("th", [_vm._v("Description")]),
+              _vm._v(" "),
+              _c("th", [_vm._v("Price")]),
+              _vm._v(" "),
+              _vm.isManager ? _c("th", [_vm._v("Actions")]) : _vm._e()
+            ])
+          ]),
+          _vm._v(" "),
+          _vm._l(_vm.items, function(item) {
+            return _c("tbody", { key: item.id }, [
+              _c("td", [
+                _c("img", {
+                  attrs: {
+                    src: _vm.itemImageURL(item.photo_url),
+                    height: "80",
+                    width: "100"
                   }
-                }
-              },
-              [_vm._v("Previous")]
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c("li", { staticClass: "page-item disabled" }, [
-          _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-            _vm._v(
-              "Page " +
-                _vm._s(_vm.pagination.current_page) +
-                " of " +
-                _vm._s(_vm.pagination.last_page)
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c(
-          "li",
-          {
-            staticClass: "page-item",
-            class: [{ disabled: !_vm.pagination.next_page_url }]
-          },
-          [
-            _c(
-              "a",
-              {
-                staticClass: "page-link",
-                attrs: { href: "#" },
-                on: {
-                  click: function($event) {
-                    _vm.getItems(_vm.pagination.next_page_url)
-                  }
-                }
-              },
-              [_vm._v("Next")]
-            )
-          ]
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _c(
-      "table",
-      { staticClass: "table" },
-      [
-        _c("thead", [
-          _c("tr", [
-            _c("th", [_vm._v("Product")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Name")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Description")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Price")]),
-            _vm._v(" "),
-            _vm.isManager ? _c("th", [_vm._v("Actions")]) : _vm._e()
-          ])
-        ]),
-        _vm._v(" "),
-        _vm._l(_vm.items, function(item) {
-          return _c("tbody", { key: item.id }, [
-            _c("td", [
-              _c("img", {
-                attrs: {
-                  src: _vm.itemImageURL(item.photo_url),
-                  height: "80",
-                  width: "100"
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(item.name))]),
-            _vm._v(" "),
-            _c("td", [
-              _vm._v(_vm._s(_vm.compactDescription(item.description)))
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(item.price) + " €")]),
-            _vm._v(" "),
-            _vm.isManager
-              ? _c("td", [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-sm btn-warning",
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.editItem(item)
+                })
+              ]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(item.name))]),
+              _vm._v(" "),
+              _c("td", [
+                _vm._v(_vm._s(_vm.compactDescription(item.description)))
+              ]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(item.price) + " €")]),
+              _vm._v(" "),
+              _vm.isManager
+                ? _c("td", [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-sm btn-warning",
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.editItem(item)
+                          }
                         }
-                      }
-                    },
-                    [_vm._v("Edit")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-sm btn-danger",
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.deleteItem(item)
+                      },
+                      [_vm._v("Edit")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-sm btn-danger",
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.deleteItem(item)
+                          }
                         }
-                      }
-                    },
-                    [_vm._v("Delete")]
-                  )
-                ])
-              : _vm._e()
-          ])
-        })
-      ],
-      2
-    ),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    _c("br")
-  ])
+                      },
+                      [_vm._v("Delete")]
+                    )
+                  ])
+                : _vm._e()
+            ])
+          })
+        ],
+        2
+      ),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br")
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -82648,7 +82613,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$validator.validateAll().then(function (result) {
                 if (result) {
                     axios.patch('api/item/' + _this.item.id, _this.item).then(function (response) {
-                        Object.assign(_this.item, response.data.data);
+                        _this.item = response.data.data;
                         _this.$emit('item-saved', _this.item);
                     });
                 }
@@ -82658,7 +82623,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this2 = this;
 
             axios.get('api/item/' + this.item.id).then(function (response) {
-                Object.assign(_this2.item, response.data.data);
+                _this2.item = response.data.data;
                 _this2.$emit('item-canceled', _this2.item);
             });
         },
@@ -89371,6 +89336,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -89379,7 +89365,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             meals: [],
             pagination: {},
             filter: [],
-            filteredSearch: false
+            filteredSearch: false,
+            waitersIds: [],
+            data: {
+                id: null,
+                dates: ""
+            },
+            toggleWaiter: false,
+            toggleDate: false
         };
     },
 
@@ -89444,10 +89437,46 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.patch('/api/meals/' + meal.id + '/declareNotPaid').then(function (response) {
                 _this4.filterByState('terminated');
             });
+        },
+        filterByWaiter: function filterByWaiter(id) {
+            var _this5 = this;
+
+            axios.get('/api/meals/filtered?responsible_waiter_id=' + id).then(function (response) {
+                _this5.filteredSearch = true;
+                _this5.meals = response.data.data;
+                _this5.makeFilteredPagination(response.data);
+            });
+        },
+        filterByDate: function filterByDate(date) {
+            var _this6 = this;
+
+            axios.get('/api/meals/filtered?start=' + date).then(function (response) {
+                _this6.filteredSearch = true;
+                _this6.meals = response.data.data;
+                _this6.makeFilteredPagination(response.data);
+            });
+        },
+        getWaitersIds: function getWaitersIds() {
+            var _this7 = this;
+
+            axios.get('/api/waiters').then(function (response) {
+                response.data.forEach(function (waiter) {
+                    _this7.waitersIds.push(waiter.id);
+                });
+            });
+        },
+        showSelectWaiter: function showSelectWaiter() {
+            this.toggleWaiter = this.toggleWaiter ? false : true;
+            this.toggleDate = false;
+        },
+        showSelectDate: function showSelectDate() {
+            this.toggleDate = this.toggleDate ? false : true;
+            this.toggleWaiter = false;
         }
     },
     mounted: function mounted() {
         this.getMeals();
+        this.getWaitersIds();
     }
 });
 
@@ -89530,10 +89559,160 @@ var render = function() {
             }
           },
           [_vm._v("Not Paid")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-info",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.showSelectWaiter()
+              }
+            }
+          },
+          [_vm._v("Waiter")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-info",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.showSelectDate()
+              }
+            }
+          },
+          [_vm._v("Date")]
         )
       ]),
       _vm._v(" "),
       _c("hr"),
+      _vm._v(" "),
+      _c("div", [
+        _vm.toggleWaiter
+          ? _c("div", [
+              _c("label", [_vm._v("Waiter ID")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.data.id,
+                      expression: "data.id"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.data,
+                        "id",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { disabled: "", selected: "" } }, [
+                    _vm._v("-- Select an ID --")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.waitersIds, function(id) {
+                    return _c("option", { key: id }, [_vm._v(_vm._s(id))])
+                  })
+                ],
+                2
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.toggleDate
+          ? _c("div", [
+              _c("label", { attrs: { for: "Date" } }, [
+                _vm._v("Date (yyyy-mm-dd)")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.data.dates,
+                    expression: "data.dates"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text" },
+                domProps: { value: _vm.data.dates },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.data, "dates", $event.target.value)
+                  }
+                }
+              })
+            ])
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _vm.toggleWaiter || _vm.toggleDate ? _c("br") : _vm._e(),
+      _vm._v(" "),
+      _c("div", [
+        _vm.toggleWaiter
+          ? _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    _vm.filterByWaiter(_vm.data.id)
+                  }
+                }
+              },
+              [_vm._v("Confirm")]
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.toggleDate
+          ? _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    _vm.filterByDate(_vm.data.dates)
+                  }
+                }
+              },
+              [_vm._v("Confirm")]
+            )
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _vm.toggleWaiter || _vm.toggleDate ? _c("hr") : _vm._e(),
       _vm._v(" "),
       _c("ul", { staticClass: "pagination" }, [
         _c(
@@ -90105,6 +90284,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -90113,7 +90313,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             pagination: {},
             filter: [],
             filteredSearch: false,
-            currentInvoice: {}
+            currentInvoice: {},
+            waitersIds: [],
+            data: {
+                id: null,
+                dates: ""
+            },
+            toggleWaiter: false,
+            toggleDate: false
         };
     },
 
@@ -90166,7 +90373,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.getInvoices();
         },
         getInvoiceDetails: function getInvoiceDetails(invoice) {
-            console.log(invoice);
             this.$emit('invoice-details-click', invoice);
         },
         declareInvoiceAsNotPaid: function declareInvoiceAsNotPaid(invoice) {
@@ -90179,10 +90385,46 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         sendInvoiceNotPaid: function sendInvoiceNotPaid(invoice) {
             this.$socket.emit('invoice_not_paid', invoice);
+        },
+        filterByWaiter: function filterByWaiter(id) {
+            var _this4 = this;
+
+            axios.get('/api/invoices/filtered?responsible_waiter_id=' + id).then(function (response) {
+                _this4.filteredSearch = true;
+                _this4.invoices = response.data.data;
+                _this4.makeFilteredPagination(response.data);
+            });
+        },
+        filterByDate: function filterByDate(date) {
+            var _this5 = this;
+
+            axios.get('/api/invoices/filtered?date=' + date).then(function (response) {
+                _this5.filteredSearch = true;
+                _this5.invoices = response.data.data;
+                _this5.makeFilteredPagination(response.data);
+            });
+        },
+        getWaitersIds: function getWaitersIds() {
+            var _this6 = this;
+
+            axios.get('/api/waiters').then(function (response) {
+                response.data.forEach(function (waiter) {
+                    _this6.waitersIds.push(waiter.id);
+                });
+            });
+        },
+        showSelectWaiter: function showSelectWaiter() {
+            this.toggleWaiter = this.toggleWaiter ? false : true;
+            this.toggleDate = false;
+        },
+        showSelectDate: function showSelectDate() {
+            this.toggleDate = this.toggleDate ? false : true;
+            this.toggleWaiter = false;
         }
     },
     mounted: function mounted() {
         this.getInvoices();
+        this.getWaitersIds();
     }
 });
 
@@ -90237,10 +90479,160 @@ var render = function() {
             }
           },
           [_vm._v("Not Paid")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-info",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.showSelectWaiter()
+              }
+            }
+          },
+          [_vm._v("Waiter")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-info",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.showSelectDate()
+              }
+            }
+          },
+          [_vm._v("Date")]
         )
       ]),
       _vm._v(" "),
       _c("hr"),
+      _vm._v(" "),
+      _c("div", [
+        _vm.toggleWaiter
+          ? _c("div", [
+              _c("label", [_vm._v("Waiter ID")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.data.id,
+                      expression: "data.id"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.data,
+                        "id",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { disabled: "", selected: "" } }, [
+                    _vm._v("-- Select an ID --")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.waitersIds, function(id) {
+                    return _c("option", { key: id }, [_vm._v(_vm._s(id))])
+                  })
+                ],
+                2
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.toggleDate
+          ? _c("div", [
+              _c("label", { attrs: { for: "Date" } }, [
+                _vm._v("Date (yyyy-mm-dd)")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.data.dates,
+                    expression: "data.dates"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text" },
+                domProps: { value: _vm.data.dates },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.data, "dates", $event.target.value)
+                  }
+                }
+              })
+            ])
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _vm.toggleWaiter || _vm.toggleDate ? _c("br") : _vm._e(),
+      _vm._v(" "),
+      _c("div", [
+        _vm.toggleWaiter
+          ? _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    _vm.filterByWaiter(_vm.data.id)
+                  }
+                }
+              },
+              [_vm._v("Confirm")]
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.toggleDate
+          ? _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    _vm.filterByDate(_vm.data.dates)
+                  }
+                }
+              },
+              [_vm._v("Confirm")]
+            )
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _vm.toggleWaiter || _vm.toggleDate ? _c("hr") : _vm._e(),
       _vm._v(" "),
       _c("ul", { staticClass: "pagination" }, [
         _c(
@@ -91490,8 +91882,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this9 = this;
 
             axios.get('/api/waiters').then(function (response) {
-                response.data.forEach(function (cook) {
-                    _this9.waitersIds.push(cook.id);
+                response.data.forEach(function (waiter) {
+                    _this9.waitersIds.push(waiter.id);
                 });
             });
         },

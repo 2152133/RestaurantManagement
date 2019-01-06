@@ -70,6 +70,9 @@ export default new Vuex.Store({
         creatingTable: false,
         currentItem: null,
         items: [],
+        itemsMeta: [],
+        itemsLinks: [],
+
     },
     getters,
     mutations,

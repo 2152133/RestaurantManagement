@@ -124,6 +124,15 @@ export default {
         }
     },
 
+    //------------------------Items--------------------------------------    
+    loadItems(context) {
+        axios.get('api/items')
+        .then(response=>{
+            context.commit('setItems', response.data.data);
+            context.commit('setItemsMeta', response.data.meta);
+            context.commit('setItemsLinks', response.data.links);
+        });
+    },
 
     //------------------------Tables--------------------------------------
     loadTables(context) {

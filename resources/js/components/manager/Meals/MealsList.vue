@@ -7,8 +7,29 @@
             <a class="btn btn-info" @click.prevent="filterByState('terminated')">Terminated</a>
             <a class="btn btn-info" @click.prevent="filterByState('paid')">Paid</a>
             <a class="btn btn-info" @click.prevent="filterByState('not paid')">Not Paid</a>
+            <a class="btn btn-info" @click.prevent="showSelectWaiter()">Waiter</a>
+            <a class="btn btn-info" @click.prevent="showSelectDate()">Date</a>
         </div>
         <hr>
+        <div> 
+            <div v-if="toggleWaiter">
+                <label>Waiter ID</label>
+                <select class="form-control" v-model="data.id">
+                    <option disabled selected>-- Select an ID --</option>
+                    <option v-for="id in waitersIds" :key="id">{{id}}</option>
+                </select>
+            </div>
+            <div v-if="toggleDate">
+                <label for="Date">Date (yyyy-mm-dd)</label>
+                <input class="form-control" type="text" v-model="data.dates">
+            </div>
+        </div>
+        <br v-if="toggleWaiter || toggleDate">
+        <div>
+            <button v-if="toggleWaiter" type="button" class="btn btn-success" @click.prevent="filterByWaiter(data.id)">Confirm</button>
+            <button v-if="toggleDate" type="button" class="btn btn-success" @click.prevent="filterByDate(data.dates)">Confirm</button>
+        </div>
+        <hr v-if="toggleWaiter || toggleDate">
         <ul class="pagination">
             <li v-bind:class="[{disabled: !pagination.prev_page_url}]" 
             class="page-item"><a class="page-link" href="#"
@@ -57,7 +78,14 @@ export default {
             meals: [],
             pagination: {},
             filter: [],
-            filteredSearch: false
+            filteredSearch: false,
+            waitersIds: [],
+            data: {
+                id: null,
+                dates: ""
+            },
+            toggleWaiter: false,
+            toggleDate: false
         }
     },
     methods: {
@@ -119,10 +147,43 @@ export default {
                 this.filterByState('terminated');
             })
         },
+        filterByWaiter(id) {
+            axios.get('/api/meals/filtered?responsible_waiter_id=' + id)
+            .then(response => {
+                this.filteredSearch = true
+                this.meals = response.data.data
+                this.makeFilteredPagination(response.data)
+            })
+        },
+        filterByDate(date) {
+            axios.get('/api/meals/filtered?start=' + date)
+            .then(response => {
+                this.filteredSearch = true
+                this.meals = response.data.data
+                this.makeFilteredPagination(response.data)
+            })
+        },
+        getWaitersIds() {
+            axios.get('/api/waiters') 
+            .then(response => {
+                response.data.forEach(waiter => {
+                    this.waitersIds.push(waiter.id)
+                });
+            })
+        },
+        showSelectWaiter() {
+            this.toggleWaiter = this.toggleWaiter ? false : true
+            this.toggleDate = false
+        },
+        showSelectDate() {
+            this.toggleDate = this.toggleDate ? false : true
+            this.toggleWaiter = false
+        }
 
     },
     mounted() {
         this.getMeals()
+        this.getWaitersIds()
     },
 }
 </script>
