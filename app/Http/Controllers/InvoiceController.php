@@ -7,6 +7,8 @@ use App\Invoice;
 use App\Meal;
 use App\Order;
 use App\Http\Resources\Invoice as InvoiceResource;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class InvoiceController extends Controller
 {
@@ -28,17 +30,29 @@ class InvoiceController extends Controller
         $invoices = new Invoice;
         $queries = [];
         $columns = [
-            'state', 'created_at', 'responsible_waiter_id'
+            'state', 'date', 'responsible_waiter_id'
         ];
 
         foreach ($columns as $column) {
             if($request->has($column)) {
-                $invoices = $invoices->where($column, $request[$column]);
+                if ($column == 'start') {
+                    try {
+                        $invoices = $invoices->whereDate($column, Carbon::parse($request[$column]));
+                    }catch (\Exception $e){
+                        return response()->json(['error' => 'Invalid date format.'], 500);
+                    }
+                }
+                elseif ($column == 'responsible_waiter_id') {
+                        $invoices = $invoices->join('meals', 'invoices.meal_id', '=', 'meals.id')
+                        ->where('meals.responsible_waiter_id', $request[$column]);
+                }
+                else {
+                    $invoices = $invoices->where($column, $request[$column]);
+                }
                 $queries[$column] = $request[$column];
             }
         }
-
-        return (InvoiceResource::collection($invoices->paginate(5))->appends($queries))->response()->setStatusCode(200);
+        return response()->json(InvoiceResource::collection($invoices->paginate(5))->appends($queries), 200);
     }
 
     public function declareInvoiceAsPaid(Request $request){

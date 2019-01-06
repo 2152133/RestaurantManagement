@@ -88821,6 +88821,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -88829,7 +88850,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             meals: [],
             pagination: {},
             filter: [],
-            filteredSearch: false
+            filteredSearch: false,
+            waitersIds: [],
+            data: {
+                id: null,
+                dates: ""
+            },
+            toggleWaiter: false,
+            toggleDate: false
         };
     },
 
@@ -88894,10 +88922,46 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.patch('/api/meals/' + meal.id + '/declareNotPaid').then(function (response) {
                 _this4.filterByState('terminated');
             });
+        },
+        filterByWaiter: function filterByWaiter(id) {
+            var _this5 = this;
+
+            axios.get('/api/meals/filtered?responsible_waiter_id=' + id).then(function (response) {
+                _this5.filteredSearch = true;
+                _this5.meals = response.data.data;
+                _this5.makeFilteredPagination(response.data);
+            });
+        },
+        filterByDate: function filterByDate(date) {
+            var _this6 = this;
+
+            axios.get('/api/meals/filtered?start=' + date).then(function (response) {
+                _this6.filteredSearch = true;
+                _this6.meals = response.data.data;
+                _this6.makeFilteredPagination(response.data);
+            });
+        },
+        getWaitersIds: function getWaitersIds() {
+            var _this7 = this;
+
+            axios.get('/api/waiters').then(function (response) {
+                response.data.forEach(function (waiter) {
+                    _this7.waitersIds.push(waiter.id);
+                });
+            });
+        },
+        showSelectWaiter: function showSelectWaiter() {
+            this.toggleWaiter = this.toggleWaiter ? false : true;
+            this.toggleDate = false;
+        },
+        showSelectDate: function showSelectDate() {
+            this.toggleDate = this.toggleDate ? false : true;
+            this.toggleWaiter = false;
         }
     },
     mounted: function mounted() {
         this.getMeals();
+        this.getWaitersIds();
     }
 });
 
@@ -88980,10 +89044,160 @@ var render = function() {
             }
           },
           [_vm._v("Not Paid")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-info",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.showSelectWaiter()
+              }
+            }
+          },
+          [_vm._v("Waiter")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-info",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.showSelectDate()
+              }
+            }
+          },
+          [_vm._v("Date")]
         )
       ]),
       _vm._v(" "),
       _c("hr"),
+      _vm._v(" "),
+      _c("div", [
+        _vm.toggleWaiter
+          ? _c("div", [
+              _c("label", [_vm._v("Waiter ID")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.data.id,
+                      expression: "data.id"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.data,
+                        "id",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { disabled: "", selected: "" } }, [
+                    _vm._v("-- Select an ID --")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.waitersIds, function(id) {
+                    return _c("option", { key: id }, [_vm._v(_vm._s(id))])
+                  })
+                ],
+                2
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.toggleDate
+          ? _c("div", [
+              _c("label", { attrs: { for: "Date" } }, [
+                _vm._v("Date (yyyy-mm-dd)")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.data.dates,
+                    expression: "data.dates"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text" },
+                domProps: { value: _vm.data.dates },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.data, "dates", $event.target.value)
+                  }
+                }
+              })
+            ])
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _vm.toggleWaiter || _vm.toggleDate ? _c("br") : _vm._e(),
+      _vm._v(" "),
+      _c("div", [
+        _vm.toggleWaiter
+          ? _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    _vm.filterByWaiter(_vm.data.id)
+                  }
+                }
+              },
+              [_vm._v("Confirm")]
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.toggleDate
+          ? _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    _vm.filterByDate(_vm.data.dates)
+                  }
+                }
+              },
+              [_vm._v("Confirm")]
+            )
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _vm.toggleWaiter || _vm.toggleDate ? _c("hr") : _vm._e(),
       _vm._v(" "),
       _c("ul", { staticClass: "pagination" }, [
         _c(
@@ -89555,6 +89769,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -89563,7 +89798,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             pagination: {},
             filter: [],
             filteredSearch: false,
-            currentInvoice: {}
+            currentInvoice: {},
+            waitersIds: [],
+            data: {
+                id: null,
+                dates: ""
+            },
+            toggleWaiter: false,
+            toggleDate: false
         };
     },
 
@@ -89616,7 +89858,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.getInvoices();
         },
         getInvoiceDetails: function getInvoiceDetails(invoice) {
-            console.log(invoice);
             this.$emit('invoice-details-click', invoice);
         },
         declareInvoiceAsNotPaid: function declareInvoiceAsNotPaid(invoice) {
@@ -89629,10 +89870,46 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         sendInvoiceNotPaid: function sendInvoiceNotPaid(invoice) {
             this.$socket.emit('invoice_not_paid', invoice);
+        },
+        filterByWaiter: function filterByWaiter(id) {
+            var _this4 = this;
+
+            axios.get('/api/invoices/filtered?responsible_waiter_id=' + id).then(function (response) {
+                _this4.filteredSearch = true;
+                _this4.invoices = response.data.data;
+                _this4.makeFilteredPagination(response.data);
+            });
+        },
+        filterByDate: function filterByDate(date) {
+            var _this5 = this;
+
+            axios.get('/api/invoices/filtered?date=' + date).then(function (response) {
+                _this5.filteredSearch = true;
+                _this5.invoices = response.data.data;
+                _this5.makeFilteredPagination(response.data);
+            });
+        },
+        getWaitersIds: function getWaitersIds() {
+            var _this6 = this;
+
+            axios.get('/api/waiters').then(function (response) {
+                response.data.forEach(function (waiter) {
+                    _this6.waitersIds.push(waiter.id);
+                });
+            });
+        },
+        showSelectWaiter: function showSelectWaiter() {
+            this.toggleWaiter = this.toggleWaiter ? false : true;
+            this.toggleDate = false;
+        },
+        showSelectDate: function showSelectDate() {
+            this.toggleDate = this.toggleDate ? false : true;
+            this.toggleWaiter = false;
         }
     },
     mounted: function mounted() {
         this.getInvoices();
+        this.getWaitersIds();
     }
 });
 
@@ -89687,10 +89964,160 @@ var render = function() {
             }
           },
           [_vm._v("Not Paid")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-info",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.showSelectWaiter()
+              }
+            }
+          },
+          [_vm._v("Waiter")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            staticClass: "btn btn-info",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.showSelectDate()
+              }
+            }
+          },
+          [_vm._v("Date")]
         )
       ]),
       _vm._v(" "),
       _c("hr"),
+      _vm._v(" "),
+      _c("div", [
+        _vm.toggleWaiter
+          ? _c("div", [
+              _c("label", [_vm._v("Waiter ID")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.data.id,
+                      expression: "data.id"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.data,
+                        "id",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { disabled: "", selected: "" } }, [
+                    _vm._v("-- Select an ID --")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.waitersIds, function(id) {
+                    return _c("option", { key: id }, [_vm._v(_vm._s(id))])
+                  })
+                ],
+                2
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.toggleDate
+          ? _c("div", [
+              _c("label", { attrs: { for: "Date" } }, [
+                _vm._v("Date (yyyy-mm-dd)")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.data.dates,
+                    expression: "data.dates"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text" },
+                domProps: { value: _vm.data.dates },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.data, "dates", $event.target.value)
+                  }
+                }
+              })
+            ])
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _vm.toggleWaiter || _vm.toggleDate ? _c("br") : _vm._e(),
+      _vm._v(" "),
+      _c("div", [
+        _vm.toggleWaiter
+          ? _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    _vm.filterByWaiter(_vm.data.id)
+                  }
+                }
+              },
+              [_vm._v("Confirm")]
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.toggleDate
+          ? _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    _vm.filterByDate(_vm.data.dates)
+                  }
+                }
+              },
+              [_vm._v("Confirm")]
+            )
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _vm.toggleWaiter || _vm.toggleDate ? _c("hr") : _vm._e(),
       _vm._v(" "),
       _c("ul", { staticClass: "pagination" }, [
         _c(
@@ -90940,8 +91367,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this9 = this;
 
             axios.get('/api/waiters').then(function (response) {
-                response.data.forEach(function (cook) {
-                    _this9.waitersIds.push(cook.id);
+                response.data.forEach(function (waiter) {
+                    _this9.waitersIds.push(waiter.id);
                 });
             });
         },
