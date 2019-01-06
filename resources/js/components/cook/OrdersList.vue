@@ -20,7 +20,7 @@
           <td v-if="order.responsible_cook != null">{{order.responsible_cook.name}}</td>
           <td v-else></td>
           <td>
-            <div v-if="order.state == 'confirmed'">
+            <div v-if="order.state == 'confirmed' && getAuthUser.type == 'cook'">
               <button
                 type="Submit"
                 class="btn btn-primary btn-sm btn-block"
@@ -29,6 +29,7 @@
               </button>
             </div>
             <button
+              v-if="getAuthUser.type == 'cook'"
               type="Submit"
               class="btn btn-danger btn-sm btn-block"
               @click="declareOrderAsPrepared(order, index)">
@@ -36,6 +37,7 @@
             </button>
             <div v-if="order.state == 'pending'">
               <button
+              v-if="getAuthUser.type == 'waiter'"
                 type="button"
                 class="btn btn-outline-danger"
                 style="float:right"
@@ -43,7 +45,7 @@
                   Delete Order
               </button>
             </div>
-            <div v-if="order.state == 'prepared'">
+            <div v-if="order.state == 'prepared' && getAuthUser.type == 'waiter'">
               <button
                 type="button"
                 class="btn btn-outline-success"
@@ -99,6 +101,11 @@ module.exports = {
     markDelivered(order, index) {
       this.$emit("mark-delivered", order, index);
     },
+  },
+  computed:{
+    getAuthUser(){
+      return this.$store.getters.getAuthUser; 
+    }
   }
 };
 </script>

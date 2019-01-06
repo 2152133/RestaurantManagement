@@ -37,8 +37,9 @@ const invoiceDetailsComponent = Vue.component('invoice-details', require('../com
 const meals_of_waiter = Vue.component('waiterMeals', require('../components/waiter/Meals.vue'));
 Vue.component('meals-list', require('../components/waiter/MealsList.vue'));
 const create_meal = Vue.component('create-meal', require('../components/waiter/CreateMeals.vue'));
-
-
+const mealOrdersStateComponent = Vue.component('meal-orders-state', require('../components/waiter/MealOrdersState.vue'));
+const addOrderToMealComponent = Vue.component('add-order-to-meal', require('../components/waiter/AddOrderToMeal.vue'));
+const mealSummaryComponent = Vue.component('meal-summary', require('../components/waiter/MealSummary.vue'));
 
 //-------------------------Manager---------------------------
 const tablesComponent = Vue.component('tables', require('../components/manager/Tables.vue'));
@@ -152,8 +153,34 @@ const routes = [
             forWaiter: true,
         }
     },
-
-
+    {
+        path: '/mealOrdersState', 
+        component: mealOrdersStateComponent,
+        name: 'mealOrdersState',
+        meta: {
+            forAuth: true,
+            forWaiter: true,
+        },
+        props: true,
+    },
+    {
+        path: '/addOrderToMeal', 
+        component: addOrderToMealComponent,
+        name: 'addOrderToMeal',
+        meta: {
+            forAuth: true,
+            forWaiter: true,
+        },
+    },
+    {
+        path: '/mealSummary', 
+        component: mealSummaryComponent,
+        name: 'mealSummary',
+        meta: {
+            forAuth: true,
+            forWaiter: true,
+        },
+    },
 
 
     //----------------------Managers-----------------------

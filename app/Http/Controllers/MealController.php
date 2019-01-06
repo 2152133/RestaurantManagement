@@ -50,16 +50,17 @@ class MealController extends Controller
 
     public function createMeal($table_number, $responsible_waiter_id)
     {
-        Meal::create([
-            'state' => 'active',
-            'table_number' => $table_number,
-            'start' => date('Y-m-d H:i:s'),
-            'end' => null,
-            'responsible_waiter_id' => $responsible_waiter_id,
-            'total_price_preview' => '0',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
+        $meal = Meal::create([
+                'state' => 'active',
+                'table_number' => $table_number,
+                'start' => date('Y-m-d H:i:s'),
+                'end' => null,
+                'responsible_waiter_id' => $responsible_waiter_id,
+                'total_price_preview' => '0',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
         ]);
+        return new MealResource($meal);
     }
 
     public function waiterMeals($user_id)
