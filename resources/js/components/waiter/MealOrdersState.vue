@@ -53,12 +53,7 @@
                 this.showSuccess = false;
             },
             loadMealConfirmedOrders() {
-                axios.get("/api/meals/" + this.$store.getters.currentMeal.id + "/confirmedOrders")
-                    .then(response => {
-                        this.$store.commit('setConfirmedMealOrders', response.data.data);
-                        this.$store.commit('setConfirmedMealOrdersMeta', response.data.meta);
-                        this.$store.commit('setConfirmedMealOrdersLinks', response.data.links);
-                    });
+                this.$store.dispatch('loadMealConfirmedOrders');
             },
             loadMealPreparedOrders() {
                 axios.get("/api/meals/" + this.$store.getters.currentMeal.id + "/preparedOrders")

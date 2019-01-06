@@ -56,9 +56,13 @@
                 setTimeout(function () {
                     self.createConfirmedOrder(mealId_timeout, item_timeout.id);
                     self.$store.commit('removeOrderFromPendingMealOrders', self.getPendingMealOrders.findIndex(o => o.id === self.counter));
+                    
                 }, 5000);
 
                 this.$router.go(-1);
+            },
+            sendOrderConfirmed() {
+                this.$socket.emit('order_confirmed');
             },
             createDatetimeToOrder() {
                 var currentdate = new Date();
@@ -84,6 +88,7 @@
                             console.log(response);
                             this.successMessage = "Success creating order!";
                             this.showSuccess = true;
+                            this.sendOrderConfirmed();
                         })
                         .catch(error => {
                             console.log('createConfirmedOrder error:');

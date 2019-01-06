@@ -99,7 +99,20 @@ export default {
                 // always executed
             });
     },
-    
+
+
+    //--------------------------Meals-------------------------------------
+    loadMealConfirmedOrders(context) {
+        if(context.getters.currentMeal.id){
+            axios.get("/api/meals/" + context.getters.currentMeal.id + "/confirmedOrders")
+            .then(response => {
+                context.commit('setConfirmedMealOrders', response.data.data);
+                context.commit('setConfirmedMealOrdersMeta', response.data.meta);
+                context.commit('setConfirmedMealOrdersLinks', response.data.links);
+            });
+        }
+        
+    },
 
 
     //------------------------Tables--------------------------------------

@@ -198,6 +198,9 @@ const app = new Vue({
         responsableWaiterMessage_sent(dataFromServer){
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
         },
+        refresh_confirmed_orders(){
+            this.$store.dispatch('loadMealConfirmedOrders');
+        },
         // cashiers
         cashierMessage(dataFromServer){
             let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
