@@ -24,6 +24,7 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Id</th>
                 <th>State</th>
                 <th>Table</th>
                 <th>Date</th>
@@ -33,6 +34,7 @@
             </tr>
         </thead>
         <tbody v-for="meal in meals" v-bind:key="meal.id">
+            <td>{{ meal.id }}</td>
             <td>{{ meal.state }}</td>
             <td>{{ meal.table_number }}</td>
             <td>{{ meal.created_at.date }}</td>
@@ -40,6 +42,7 @@
             <td>{{ meal.total_price_preview }}</td>
             <td>
                 <a class="btn btn-sm btn-warning" v-on:click.prevent="getMealOrders(meal.id)">Details</a> 
+                <a v-if="meal.state == 'terminated'" class="btn btn-sm btn-warning" v-on:click.prevent="declareMealAsNotPaid(meal)">Not Paid</a>
             </td>
         </tbody>
     </table>
@@ -109,7 +112,13 @@ export default {
         reset() {
             this.filteredSearch = false
             this.getMeals()
-        }
+        },
+        declareMealAsNotPaid(meal){
+            axios.patch('/api/meals/' + meal.id + '/declareNotPaid')
+            .then(response => {
+                this.filterByState('terminated');
+            })
+        },
 
     },
     mounted() {

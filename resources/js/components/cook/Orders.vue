@@ -4,9 +4,9 @@
             <h1>{{title}}</h1>
         </div>
         
-        <orders-list :orders="inPreparationUserOrders" :meta="inPreparationUserOrdersMeta" :links="inPreparationUserOrdersLinks" v-on:declare-order-as-prepared="declareOrderAsPrepared" @refreshOrders="refreshInPreparationUserOrders"></orders-list>
+        <orders-list :orders="inPreparationUserOrders" :meta="inPreparationUserOrdersMeta" :links="inPreparationUserOrdersLinks" @refreshOrders="refreshInPreparationUserOrders"></orders-list>
         
-        <orders-list :orders="confirmedOrders" :meta="confirmedOrdersMeta" :links="confirmedOrdersLinks" v-on:assign-to-cook="assignOrderToCook" v-on:declare-order-as-prepared="declareOrderAsPrepared" @refreshOrders="refreshConfirmedOrders" ></orders-list>
+        <orders-list :orders="confirmedOrders" :meta="confirmedOrdersMeta" :links="confirmedOrdersLinks" @refreshOrders="refreshConfirmedOrders" ></orders-list>
             
         <div class="alert" :class="{'alert-success':showSuccess, 'alert-danger':showFailure}" v-if="showSuccess || showFailure">
             <button type="button" @click="showSuccess = false; showFailure = false;" class="close-btn" >&times;</button>
@@ -29,12 +29,6 @@
             }
         },
         methods: {
-            assignOrderToCook: function(order,index){
-                this.$store.dispatch('assignOrderToCook', {orderId: order.id, userId: this.$store.getters.getAuthUser.id});    
-            },
-            declareOrderAsPrepared: function(order, index){
-                this.$store.dispatch('declareOrderAsPrepared', {orderId: order.id, userId: this.$store.getters.getAuthUser.id});
-            },
             loadInPreparationUserOrders: function(){
                 this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
             },
@@ -46,7 +40,8 @@
             },
             refreshInPreparationUserOrders(newInPreparationUserOrders, newInPreparationUserOrdersMeta, newInPreparationUserOrdersLinks){
                 this.$store.commit('refreshInPreparationUserOrders', {newInPreparationUserOrders, newInPreparationUserOrdersMeta, newInPreparationUserOrdersLinks});
-            }
+            },
+            
         },
         computed: {
             confirmedOrders(){

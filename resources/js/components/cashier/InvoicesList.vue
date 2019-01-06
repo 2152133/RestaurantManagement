@@ -42,8 +42,6 @@
         props: ["invoices", "meta", "links", "user"],
         data: function() {
             return {
-                
-                
                 currentInvoice: {},
             }
         },
@@ -52,10 +50,12 @@
                 this.$emit('refreshInvoices', invoices, meta, links);
             },
             fillNifName(invoice){
-                this.$emit('fillNifName', invoice);
+                this.$store.commit('setCurrentInvoice', invoice);
+                this.$router.push({name: 'editNifName'})
             },
             seeDetails(invoice){
-                this.$emit('seeDetails', invoice);
+                this.$store.commit('setCurrentInvoice', invoice);
+                this.$router.push({name: 'invoiceDetails'});
             }
         }
     }

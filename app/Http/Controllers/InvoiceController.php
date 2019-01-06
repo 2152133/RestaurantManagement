@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Invoice;
 use App\Meal;
+use App\Order;
 use App\Http\Resources\Invoice as InvoiceResource;
 
 class InvoiceController extends Controller
@@ -61,6 +62,34 @@ class InvoiceController extends Controller
             if($invoice->save() && $meal->save())
             {
                 return (new InvoiceResource($invoice))->response()->setStatusCode(200);
+            }
+        } catch (Exception $e) {
+            Debugbar::addThrowable($e);
+        }
+    }
+
+    public function declareInvoiceAsNotPaid($invoiceId){
+        try{
+            $invoice = Invoice::findOrFail($invoiceId);
+            
+            $invoice->state = "not paid";
+
+            
+            $meal = Meal::findOrFail($invoice->meal->id);
+            $meal->state = "not paid";
+
+            $orders = Order::where('meal_id', $meal->id)->get();
+
+            foreach ($orders as $order) {
+                if($order->state != 'delivered'){
+                    $order->state = 'not delivered';
+                }
+                $order->save();
+            }
+
+            if($invoice->save() && $meal->save())
+            {
+                return new InvoiceResource($invoice);
             }
         } catch (Exception $e) {
             Debugbar::addThrowable($e);

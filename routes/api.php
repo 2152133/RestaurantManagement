@@ -47,6 +47,8 @@ Route::middleware('auth:api')->group(function () {
         Route::put('user/{id}', 'UserControllerAPI@updateAsManager');
     });
 });
+
+//-----------------------------Orders-------------------------------------
     // List all confirmed orders
     Route::get('/orders/confirmed', 'OrderController@allConfirmed');
     // List orders from a cook
@@ -55,12 +57,27 @@ Route::middleware('auth:api')->group(function () {
     Route::patch('/orders/{orderId}/assignTo/{userId}', 'OrderController@assignOrderToCook');
     // Patch order by order id
     Route::patch('/orders/{orderId}/preparedBy/{userId}', 'OrderController@declareOrderAsPrepared');
+
+
+//-----------------------------Invoices------------------------------------
+
     // Get all pending invoices
     Route::get('/invoices/pending', 'InvoiceController@getPending');
     // Get all paid invoices
     Route::get('/invoices/paid', 'InvoiceController@getPaid');
     // Declare a invoice as paid
     Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
+
+    // Declare a invoice as not paid
+    Route::patch('/invoice/{id}/declareNotPaid', 'InvoiceController@declareInvoiceAsNotPaid');
+
+    //Get filtered invoices
+    Route::get('/invoices/filtered', 'InvoiceController@getFiltered');
+    
+
+
+//-----------------------------Meals---------------------------------------
+
     //Get filtered meals
     Route::get('/meals/filtered', 'MealController@getFiltered');
     
@@ -72,18 +89,57 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/meals/waiterMeals/{responsibleWaiterId}', 'MealController@waiterMeals');
     //For a meal from a waiter, get it's orders
     Route::get('/meals/{mealId}/confirmedOrders', 'OrderController@getConfirmedOrdersForMeal');
-    //For a meal from a waiter, get it's orders
-    Route::get('/meals/{mealId}/pendingOrders', 'OrderController@getPendingOrdersForMeal');
     //Get all meals
     Route::get('/meals', 'MealController@index');
-    //Get all restaurant tables
-    Route::get('/restaurantTables/all', 'RestaurantTableController@all');
+
     //Get tables without active meals
     Route::get('/meals/tablesWithoutActiveMeals', 'MealController@getTablesWitoutActiveMeals');
     //Create meal
     Route::post('/meal/createMeal/{table_number}/{waiter_id}', 'MealController@createMeal');
     //Add an order to a meal (create order)
     Route::post('/meal/addOrder/{meal_id}/{item_id}', 'OrderController@addOrderToMeal');
+
+    //Get prepared orders of Meal
+    Route::get('/meals/{mealId}/preparedOrders', 'OrderController@getPreparedOrdersForMeal');
+
+    //Mark a prepared order as delivered
+    Route::put('/meals/{mealId}/markPreparedOrderAsDelivered', 'OrderController@markPreparedOrderAsDelivered');
+
+    //Get orders for active meals
+    Route::get('/meals/{mealId}/mealDetails', 'OrderController@getAllMealDetails');
+
+    //Get all orders for meal
+    Route::get('/meals/{mealId}/allOrders', 'OrderController@getAllOrdersForMeal');
+
+    //Get not delivered orders of meal
+    Route::get('/meals/{mealId}/notDeliveredOrders', 'OrderController@getNotDeliveredOrdersOfMeal');
+
+    //Terminate meal
+    Route::put('/meals/{mealId}/terminate', 'MealController@terminateMeal');
+
+    // Declare a meal as not paid
+    Route::patch('/meals/{id}/declareNotPaid', 'MealController@declareMealAsNotPaid');
+
+//--------------------------Restaurant tables------------------------------------------
+    //Get all restaurant tables
+    Route::get('/restaurantTables/all', 'RestaurantTableController@all');
+
+    //Get all restaurant tables
+    Route::get('/tables/all', 'RestaurantTableController@all');
+
+    //Create a new restaurant table
+    Route::post('/tables/{id}', 'RestaurantTableController@create');
+
+    //Update a restaurant table
+    Route::patch('/tables/{id}', 'RestaurantTableController@update');
+
+    //Delete restaurant table by id
+    Route::delete('/tables/{id}', 'RestaurantTableController@delete');
+
+
+
+//-----------------------------Users---------------------------------------------------
+
     // Get email availability
     Route::get('users/emailavailable', 'UserControllerAPI@emailAvailable');
     // Get the logged user
@@ -106,31 +162,8 @@ Route::middleware('auth:api')->group(function () {
     Route::patch('shift/{id}', 'UserControllerAPI@startEndShift');
     // Logout
     Route::post('/logout', 'AuthController@logout');
-    //Delete an order 5 seconds after creation
-    Route::delete('/meal/deleteOrderOfMeal/{order_id}/delete', 'OrderController@deleteOrderUpTo5SecondsAfterCreation');
-    //Get prepared orders of Meal
-    Route::get('/meals/{mealId}/preparedOrders', 'OrderController@getPreparedOrdersForMeal');
-    //Mark a prepared order as delivered
-    Route::put('/meals/{mealId}/markPreparedOrderAsDelivered', 'OrderController@markPreparedOrderAsDelivered');
-    //Get orders for active meals
-    Route::get('/meals/{mealId}/mealDetails', 'OrderController@getAllMealDetails');
-    //Get all orders for meal
-    Route::get('/meals/{mealId}/allOrders', 'OrderController@getAllOrdersForMeal');
-    //Terminate meal
-    Route::put('/meals/{mealId}/terminate', 'MealController@terminateMeal');
-    // Declare a invoice as paid
-    Route::patch('/invoice/declarePaid', 'InvoiceController@declareInvoiceAsPaid');
-    //Get all restaurant tables
-    Route::get('/tables/all', 'RestaurantTableController@all');
-    //Create a new restaurant table
-    Route::post('/tables/{id}', 'RestaurantTableController@create');
-    //Update a restaurant table
-    Route::patch('/tables/{id}', 'RestaurantTableController@update');
-    //Delete restaurant table by id
-    Route::delete('/tables/{id}', 'RestaurantTableController@delete');
+
     
-    //Get filtered meals
-    Route::get('/invoices/filtered', 'InvoiceController@getFiltered');
     // Statistcs US39
     Route::get('/ordersHandledCook/{id}/dates/{dates}', 'Statistics@getAVGNumberOfOrdersHandledOnGivenDatesForEachCook');
     Route::get('/ordersHandledWaiter/{id}/dates/{dates}', 'Statistics@getAVGNumberOfOrdersHandledOnGivenDatesForEachWaiter');
