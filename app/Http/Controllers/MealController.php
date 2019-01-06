@@ -10,6 +10,7 @@ use App\Invoice;
 use App\Meal;
 use Illuminate\Support\Facades\DB;
 use App\InvoiceItems;
+use Carbon\Carbon;
 
 class MealController extends Controller
 {
@@ -18,17 +19,23 @@ class MealController extends Controller
         $meals = new Meal;
         $queries = [];
         $columns = [
-            'state', 'created_at', 'responsible_waiter_id'
+            'state', 'start', 'responsible_waiter_id'
         ];
 
         foreach ($columns as $column) {
             if($request->has($column)) {
-                $meals = $meals->where($column, $request[$column]);
+                if ($column == 'start')
+                    try {    
+                        $meals = $meals->whereDate($column, Carbon::parse($request[$column]));
+                    }catch (\Exception $e){
+                        return response()->json(['error' => 'Invalid date format.'], 500);
+                    }
+                else 
+                    $meals = $meals->where($column, $request[$column]);
                 $queries[$column] = $request[$column];
             }
         }
-
-        return (MealResource::collection($meals->paginate(5))->appends($queries))->response()->setStatusCode(200);
+        return response()->json(MealResource::collection($meals->paginate(5))->appends($queries), 200);
     }
 
     public function getActiveAndTerminated(Request $request) {

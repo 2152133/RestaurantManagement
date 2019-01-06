@@ -157,8 +157,8 @@ export default {
         getWaitersIds() {
             axios.get('/api/waiters') 
             .then(response => {
-                response.data.forEach(cook => {
-                    this.waitersIds.push(cook.id)
+                response.data.forEach(waiter => {
+                    this.waitersIds.push(waiter.id)
                 });
             })
         },
