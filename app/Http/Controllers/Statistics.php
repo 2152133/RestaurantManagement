@@ -159,9 +159,11 @@ class Statistics extends Controller
                     $timeItTakesTOHandleAMeal += ((int)$minutes * 60 + (int)$hours * 3600 + (int)$seconds);
                 }
                 if ($totalMealsFromGivenMonth > 0)
-                    array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Meal' => gmdate("H:i:s", ($timeItTakesTOHandleAMeal/$totalMealsFromGivenMonth))]);
+                    //array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Meal' => gmdate("H:i:s", ($timeItTakesTOHandleAMeal/$totalMealsFromGivenMonth))]);
+                    array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Meal (minutes)' => (int)gmdate("i", ($timeItTakesTOHandleAMeal/$totalMealsFromGivenMonth))]);
                 else
-                    array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Meal' => gmdate("H:i:s", $totalMealsFromGivenMonth)]);
+                    //array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Meal' => gmdate("H:i:s", $totalMealsFromGivenMonth)]);
+                    array_push($arrayOfDatesANdAVG, ['date' => $date, 'AVG time to handle Meal (minutes)' => (int)gmdate("i", $totalMealsFromGivenMonth)]);
             }catch (\Exception $e){
                 return $e;
                 return response()->json(['error' => 'Invalid date format.'], 500);
@@ -190,15 +192,17 @@ class Statistics extends Controller
                     $totalTime = $ordersItemsWithTotalOccurencesAndTotalTime->only('totalTime')['totalTime'];
                     $id = $ordersItemsWithTotalOccurencesAndTotalTime->only('id')['id'];
                     if ($totalOcurrences > 0)
-                        array_push($arrayOfDatesAndAVG, ['date' => $date . ' item ' . $id, 'AVG time to handle Order' => gmdate("H:i:s", ($totalTime/$totalOcurrences))]);
+                        //array_push($arrayOfDatesAndAVG, ['date' => $date . ' item ' . $id, 'AVG time to handle Order' => gmdate("H:i:s", ($totalTime/$totalOcurrences))]);
+                        array_push($arrayOfDatesAndAVG, ['date' => $date . ' item ' . $id, 'AVG time to handle Order (minutes)' => (int)gmdate("i", ($totalTime/$totalOcurrences))]);
                     else
-                        array_push($arrayOfDatesAndAVG, ['date' => $date . ' item ' . $id, 'AVG time to handle Order' => gmdate("H:i:s", $totalOcurrences)]);
+                        //array_push($arrayOfDatesAndAVG, ['date' => $date . ' item ' . $id, 'AVG time to handle Order' => gmdate("H:i:s", $totalOcurrences)]);
+                        array_push($arrayOfDatesAndAVG, ['date' => $date . ' item ' . $id, 'AVG time to handle Order (minutes)' => (int)gmdate("i", $totalOcurrences)]);
                 }
             }catch (\Exception $e){
                 return response()->json(['error' => 'Invalid date format.'], 500);
             }
         }
-        dd($arrayOfDatesAndAVG);
+        //dd($arrayOfDatesAndAVG);
         return response()->json($arrayOfDatesAndAVG, 200);
     }
 }
