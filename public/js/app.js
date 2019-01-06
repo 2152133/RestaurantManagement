@@ -54333,6 +54333,10 @@ var app = new __WEBPACK_IMPORTED_MODULE_6_vue___default.a({
             this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
             this.$store.dispatch('loadConfirmedOrders');
         },
+        refresh_cook_orders: function refresh_cook_orders() {
+            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
+            this.$store.dispatch('loadConfirmedOrders');
+        },
 
         // waiter of meal
         responsableWaiterMessage: function responsableWaiterMessage(dataFromServer) {
@@ -54389,7 +54393,7 @@ var app = new __WEBPACK_IMPORTED_MODULE_6_vue___default.a({
             var sourceName = dataFromServer[0] === null ? 'Unknown' : dataFromServer[0];
             this.$toasted.show('Message "' + dataFromServer[1] + '" sent from "' + sourceName + '"');
         },
-        refresh_invoices: function refresh_invoices(data) {
+        refresh_invoices: function refresh_invoices() {
             this.$store.dispatch('loadPendingInvoices');
             this.$store.dispatch('loadPaidInvoices');
         }
@@ -78394,9 +78398,7 @@ var routes = [
     path: '/invoices',
     component: invoicesComponent,
     meta: {
-        forAuth: true,
-        forCashier: true,
-        forManager: true
+        forAuth: true
     }
 }, {
     path: '/editNifName',

@@ -179,6 +179,10 @@ const app = new Vue({
             this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
             this.$store.dispatch('loadConfirmedOrders');
         },
+        refresh_cook_orders(){
+            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
+            this.$store.dispatch('loadConfirmedOrders');
+        },
         // waiter of meal
         responsableWaiterMessage(dataFromServer){
             let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
@@ -229,7 +233,7 @@ const app = new Vue({
             let sourceName = dataFromServer[0] === null ? 'Unknown': dataFromServer[0];
             this.$toasted.show('Message "' + dataFromServer[1] + '" sent from "' + sourceName + '"');
         },
-        refresh_invoices(data){
+        refresh_invoices(){
             this.$store.dispatch('loadPendingInvoices');
             this.$store.dispatch('loadPaidInvoices');
         },
