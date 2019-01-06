@@ -188,10 +188,11 @@ class Statistics extends Controller
                 foreach ($allOrdersItemsWithTotalOccurencesAndTotalTime as $ordersItemsWithTotalOccurencesAndTotalTime) {
                     $totalOcurrences = $ordersItemsWithTotalOccurencesAndTotalTime->only('totalOcurrences')['totalOcurrences'];
                     $totalTime = $ordersItemsWithTotalOccurencesAndTotalTime->only('totalTime')['totalTime'];
+                    $id = $ordersItemsWithTotalOccurencesAndTotalTime->only('id')['id'];
                     if ($totalOcurrences > 0)
-                        array_push($arrayOfDatesAndAVG, ['date' => $date, 'AVG time to handle Order' => gmdate("H:i:s", ($totalTime/$totalOcurrences))]);
+                        array_push($arrayOfDatesAndAVG, ['date' => $date . ' item ' . $id, 'AVG time to handle Order' => gmdate("H:i:s", ($totalTime/$totalOcurrences))]);
                     else
-                        array_push($arrayOfDatesAndAVG, ['date' => $date, 'AVG time to handle Order' => gmdate("H:i:s", $totalOcurrences)]);
+                        array_push($arrayOfDatesAndAVG, ['date' => $date . ' item ' . $id, 'AVG time to handle Order' => gmdate("H:i:s", $totalOcurrences)]);
                 }
             }catch (\Exception $e){
                 return response()->json(['error' => 'Invalid date format.'], 500);
