@@ -7,14 +7,14 @@
 			<button type="button" class="close-btn" v-on:click="showSuccess=false">&times;</button>
 			<strong>{{ successMessage }}</strong>
 		</div>
-        <items-list :items="items" @edit-click="editItem" @delete-click="deleteItem" @message="childMessage" ref="itemsListRef"></items-list>
+        <items-list :items="getItems" :meta="getItemsMeta" :links="getItemsLinks" @refreshItems="refreshItems" @edit-click="editItem" @delete-click="deleteItem"></items-list>
         <item-edit :item="currentItem" @item-saved="savedItem" @item-canceled="cancelEdit" v-if="currentItem"></item-edit>
     </div>
 </template>
 
 <script>
 export default {
-    data: function() {
+    data() {
         return {
             title: 'Items',
             showSuccess: false,
@@ -25,45 +25,50 @@ export default {
     },
     methods: {
         editItem(item){
-	            this.currentItem = item;
-	            this.showSuccess = false;
-	        },
+            this.currentItem = item
+            this.showSuccess = false
+        },
         deleteItem(item){
             axios.delete('api/item/' + item.id)
             .then(response => {
-                this.getItems();
+                this.loadItems()
             })
         },
-        savedItem: function(){
-            this.currentItem = null;
-            this.$refs.itemsListRef.editingitem = null;
-            this.showSuccess = true;
-            this.successMessage = 'Item Saved';
+        savedItem(){
+            this.currentItem = null
+            this.showSuccess = true
+            this.successMessage = 'Item Saved'
         },
-        cancelEdit: function(){
-            this.currentItem = null;
-            this.$refs.itemsListRef.editingitem = null;
-            this.showSuccess = false;
+        cancelEdit(){
+            this.currentItem = null
+            this.showSuccess = false
         },
-        getItems: function(){
-            axios.get('api/items')
-            .then(response=>{
-                this.items = response.data.data; 
-            });
+        loadItems(){
+            this.$store.dispatch('loadItems')
         },
-        childMessage: function(message){
-            this.showSuccess = true;
-            this.successMessage = message;
-        }        
+        refreshItems(newItems, newMeta, newLinks) {
+            this.$store.commit('refreshItems', {newItems, newMeta, newLinkmessage})
+            this.showSuccess = true
+            this.successMessage = message
+        },
     },
     computed: {
         isManager() {
             return this.$store.getters.isManager
         },
+        getItems(){
+            return this.$store.getters.items
+        },
+        getItemsMeta(){
+            return this.$store.getters.itemsMeta
+        },
+        getItemsLinks(){
+            return this.$store.getters.itemsLinks
+        },
     },
     mounted() {
-        this.getItems()
-    },
+        this.loadItems()
+    }
 }
 </script>
 

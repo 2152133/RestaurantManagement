@@ -79,6 +79,23 @@ export default {
         state.paidInvoicesLinks = payload.newLinks;
     },
 
+    //-----------------------Items----------------------------------
+    refreshItems(state, payload) {
+        state.items = payload.newItems;
+        state.itemsMeta = payload.newMeta;
+        state.itemsLinks = payload.newLinks;
+    },
+
+    //--------------------Items setters-------------------------------
+    setItems(state, items){
+        state.items = items;
+    },
+    setItemsMeta(state, itemsMeta){
+        state.itemsMeta = itemsMeta;
+    },
+    setItemsLinks(state, itemsLinks){
+        state.itemsLinks = itemsLinks;
+    },
 
     //-----------------------Meals----------------------------------
     removeMealFromUserMeals(state, index){

@@ -1,19 +1,7 @@
 <template>
 <div>
     <h3>Items</h3>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li v-bind:class="[{disabled: !pagination.prev_page_url}]" 
-            class="page-item"><a class="page-link" href="#"
-            @click="getItems(pagination.prev_page_url)">Previous</a></li>
-            
-            <li class="page-item disabled"><a class="page-link" href="#">Page {{ pagination.current_page }} of {{ pagination.last_page }}</a></li>
-
-            <li v-bind:class="[{disabled: !pagination.next_page_url}]" 
-            class="page-item"><a class="page-link" href="#"
-            @click="getItems(pagination.next_page_url)">Next</a></li>
-        </ul>
-    </nav>
+    <pagination :objects="items" :meta="meta" :links="links" @refreshObjects="refreshItems"></pagination>
     <table class="table">
         <thead>
             <tr>
@@ -43,7 +31,7 @@
 
 <script>
 export default {
-    props: ['items'],
+    props: ['items', 'meta', 'links'],
     data() {
         return {
             editingItem: null,
@@ -53,43 +41,26 @@ export default {
     methods: {
         editItem(item){
             this.editingItem = item;
-            this.$emit('edit-click', item);
+            this.$emit('edit-click', item)
         },		
         deleteItem(item){
             this.editingItem = null;
-            this.$emit('delete-click', item);
+            this.$emit('delete-click', item)
         },
         itemImageURL(photo) {
-            return "storage/items/" + String(photo);
+            return "storage/items/" + String(photo)
         },
         compactDescription(text) {
-            return text.length > 100 ? text.substr( 0, 70 )+'...' : text;
+            return text.length > 100 ? text.substr( 0, 70 )+'...' : text
         },
-         getItems(url) {    
-            let page_url = url || '/api/items'
-            axios.get(page_url)
-                .then(response => {
-                    Object.assign(this.items, response.data.data);
-                    this.makePagination(response.data.meta, response.data.links)
-                })
-        },
-        makePagination(meta, links) {
-            let pagination = {
-                current_page: meta.current_page,
-                last_page: meta.last_page,
-                next_page_url: links.next,
-                prev_page_url: links.prev,
-            }
-            this.pagination = pagination
-        },
+        refreshItems(items, meta, links) {
+            this.$emit('refreshItems', items, meta, links)
+        }
     },
     computed: {
         isManager() {
             return this.$store.getters.isManager
         },
-    },
-    mounted() {
-        this.getItems()
     },
 }
 </script>
