@@ -54367,6 +54367,7 @@ var app = new __WEBPACK_IMPORTED_MODULE_6_vue___default.a({
             this.$store.dispatch('loadMealPreparedOrders');
         },
 
+
         // cashiers
         cashierMessage: function cashierMessage(dataFromServer) {
             var _this3 = this;
@@ -78274,6 +78275,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             });
         }
     },
+    loadWaiterMeals: function loadWaiterMeals(context) {
+        axios.get("/api/meals/waiterMeals/" + context.getters.getAuthUser.id).then(function (response) {
+            console.log(response);
+            context.commit('setUserMeals', response.data.data);
+            context.commit('setUserMealsMeta', response.data.meta);
+            context.commit('setUserMealsLinks', response.data.links);
+        });
+    },
 
 
     //------------------------Items--------------------------------------    
@@ -85454,22 +85463,13 @@ module.exports = {
 
   methods: {
     getMealsOfWaiter: function getMealsOfWaiter() {
-      var _this = this;
-
-      axios.get("/api/meals/waiterMeals/" + this.getCurrentUser.id).then(function (response) {
-        console.log(response);
-        _this.$store.commit('setUserMeals', response.data.data);
-        _this.$store.commit('setUserMealsMeta', response.data.meta);
-        _this.$store.commit('setUserMealsLinks', response.data.links);
-
-        console.log(_this.getUserMealsMeta);
-      });
+      this.$store.dispatch('loadWaiterMeals');
     },
     getItems: function getItems() {
-      var _this2 = this;
+      var _this = this;
 
       axios.get("/api/items/all").then(function (response) {
-        _this2.$store.commit('setAllItems', response.data);
+        _this.$store.commit('setAllItems', response.data);
       });
     },
     refreshUserMeals: function refreshUserMeals(userMeals, userMealsMeta, userMealsLinks) {
@@ -85675,6 +85675,7 @@ module.exports = {
         _this2.showSuccess = "Meal terminated Successfully";
         _this2.showSuccess = true;
         _this2.$store.commit('removeMealFromUserMeals', index);
+        _this2.sendTerminateMeal();
       }).catch(function (error) {
         _this2.failMessage = "Error terminating meal";
         _this2.showFailure = true;
@@ -85685,6 +85686,9 @@ module.exports = {
     },
     refreshMeals: function refreshMeals(meals, meta, links) {
       this.$emit('refreshMeals', meals, meta, links);
+    },
+    sendTerminateMeal: function sendTerminateMeal() {
+      this.$socket.emit('meal_terminated');
     }
   },
   computed: {

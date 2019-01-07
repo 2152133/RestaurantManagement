@@ -123,6 +123,15 @@ export default {
                 });
         }
     },
+    loadWaiterMeals(context) {
+        axios.get("/api/meals/waiterMeals/" + context.getters.getAuthUser.id)
+          .then(response => {
+            console.log(response);
+            context.commit('setUserMeals', response.data.data);
+            context.commit('setUserMealsMeta', response.data.meta);
+            context.commit('setUserMealsLinks', response.data.links);
+          })
+      },
 
     //------------------------Items--------------------------------------    
     loadItems(context) {

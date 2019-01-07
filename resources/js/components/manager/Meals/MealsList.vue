@@ -145,6 +145,7 @@ export default {
             axios.patch('/api/meals/' + meal.id + '/declareNotPaid')
             .then(response => {
                 this.filterByState('terminated');
+
             })
         },
         filterByWaiter(id) {

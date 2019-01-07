@@ -209,6 +209,7 @@ const app = new Vue({
             this.$store.dispatch('loadMealConfirmedOrders');
             this.$store.dispatch('loadMealPreparedOrders');
         },
+
         // cashiers
         cashierMessage(dataFromServer){
             let sourceName = dataFromServer[1] === null ? 'Unknown': dataFromServer[1].name;
