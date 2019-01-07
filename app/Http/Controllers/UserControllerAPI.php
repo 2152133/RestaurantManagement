@@ -81,7 +81,7 @@ class UserControllerAPI extends Controller {
             'type' => 'required|in:cook,waiter,cashier,manager'
         ]);
         $user = User::findOrFail($id);
-        $user->fill($request->all());
+        $user->update($request->except('password'));
         $user->save();
         return (new UserResource($user))->response()->setStatusCode(200);
     }
@@ -157,7 +157,7 @@ class UserControllerAPI extends Controller {
             'email' => 'required|email|unique:users,email,'.$id,
         ]);
         $user = User::findOrFail($id);
-        $user->fill($request->all());
+        $user->update($request->except('photo_url'));
         $user->save();
         return (new UserResource($user))->response()->setStatusCode(200);
     }

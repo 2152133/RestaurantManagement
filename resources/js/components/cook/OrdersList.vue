@@ -6,6 +6,7 @@
         <tr>
           <th>Id</th>
           <th>State</th>
+          <th>Date</th>
           <th>Item Name</th>
           <th>Responsable cook</th>
           <th>Actions</th>
@@ -15,6 +16,7 @@
         <tr v-for="(order,index) in orders" :key="order.id">
           <td>{{order.id}}</td>
           <td>{{order.state}}</td>
+          <td>{{order.start}}</td>
           <td v-if="order.item != null">{{order.item.name}}</td>
           <td v-else></td>
           <td v-if="order.responsible_cook != null">{{order.responsible_cook.name}}</td>
@@ -85,6 +87,8 @@ module.exports = {
       axios.patch('/api/orders/' + order.id + '/preparedBy/' + this.$store.getters.getAuthUser.id)
             .then((response) => {
                 // handle success
+                let msg = 'Order ' + order.id + ' is ready!'
+                this.$socket.emit('privateMessage', msg, this.$store.getters.getAuthUser, order.meal.responsible_waiter_id)
                 this.sendOrderPrepared();
             });
     },

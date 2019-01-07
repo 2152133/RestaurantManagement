@@ -21,7 +21,7 @@ Vue.use(Toasted, {
 
 Vue.use(new VueSocketio({
     debug: true,
-    connection: 'http://127.0.0.1:8080'
+    connection: 'http://192.168.10.10:8080'
 })); 
 
 
@@ -90,13 +90,6 @@ router.beforeEach((to, from, next) => {
             })
         } else next()
     }
-    else if (to.matched.some(record => record.meta.forManager)) {
-        if (!store.getters.isManager) {
-            next({
-                path: '/dashboard'
-            })
-        } else next()
-    }
     else if (to.matched.some(record => record.meta.forCook)) {
         if (!store.getters.isCook) {
             next({
@@ -124,6 +117,13 @@ router.beforeEach((to, from, next) => {
                 path: '/login'
             })
         } else next()
+    }
+    else if (to.matched.some(record => record.meta.forManager)) {
+        if (!store.getters.isManager) {
+            next({
+                path: '/dashboard'
+            })
+        } else next()   
     } else next()
 });
 
@@ -190,7 +190,7 @@ const app = new Vue({
                 action : {
                     text : 'Go to Meals',
                     onClick : (e, toastObject) => {
-                        this.$router.push("/mealsOfWaiter")
+                        this.$router.push("/mealOrdersState")
                         toastObject.goAway(0);
                     }
                 },
@@ -233,6 +233,17 @@ const app = new Vue({
             console.log('Receiving this message from Server: "' + dataFromServer + '"');
             let sourceName = dataFromServer[0] === null ? 'Unknown': dataFromServer[0];
             this.$toasted.show('Message "' + dataFromServer[1] + '" sent from "' + sourceName + '"');
+        },
+        msg_from_server_type_cook(msg){
+            this.$toasted.show(msg, {
+                action : {
+                    text : 'Go to Orders',
+                    onClick : (e, toastObject) => {
+                        this.$router.push("/orders")
+                        toastObject.goAway(0);
+                    }
+                },
+            });
         },
         refresh_invoices(){
             this.$store.dispatch('loadPendingInvoices');

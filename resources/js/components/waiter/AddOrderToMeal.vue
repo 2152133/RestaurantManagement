@@ -58,7 +58,7 @@
                     self.$store.commit('removeOrderFromPendingMealOrders', self.getPendingMealOrders.findIndex(o => o.id === self.counter));
                     
                 }, 5000);
-
+                
                 this.$router.go(-1);
             },
             sendOrderConfirmed() {
@@ -89,6 +89,9 @@
                             this.successMessage = "Success creating order!";
                             this.showSuccess = true;
                             this.sendOrderConfirmed();
+                            let msg = 'New Order of item ' + item_number + '!'
+                            this.$socket.emit('msg_from_client_type_waiter', msg, this.$store.getters.getAuthUser)
+                
                         })
                         .catch(error => {
                             console.log('createConfirmedOrder error:');

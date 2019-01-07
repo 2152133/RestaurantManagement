@@ -111,6 +111,8 @@ const routes = [
         component: invoicesComponent,
         meta: {
             forAuth: true,
+            forCashier: true,
+            forManager: true,
         }
     },
     {

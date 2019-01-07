@@ -10,6 +10,9 @@
             <li v-bind:class="[{disabled: !links.next}]" 
             class="page-item"><a class="page-link" href="#"
             @click="getObjects(links.next)">Next</a></li>
+            <li v-bind:class="[{disabled: !links.last}]" 
+            class="page-item"><a class="page-link" href="#"
+            @click="getObjects(links.last)">last</a></li>
         </ul>
     </nav>
 </template>
