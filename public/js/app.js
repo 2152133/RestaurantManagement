@@ -81357,12 +81357,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         sendManagerMessage: function sendManagerMessage() {
             var msg = window.prompt('What do you want to say to the managers?');
-            console.log('Sending to the server (only same type) this message: "' + msg + '"');
-            if (this.getAutenticatedUser === null) {
-                this.$toasted.error('User is not logged in. Type is unknown!');
-            } else {
-                this.$socket.emit('msg_from_client_type_manager', msg, this.getAutenticatedUser);
-            }
+            console.log('Sending to the server (managers) this message: "' + msg + '"');
+            this.$socket.emit('msg_from_client_type_manager', msg, this.getAutenticatedUser);
         }
     },
     computed: {
@@ -81384,12 +81380,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         isManager: function isManager() {
             return this.$store.getters.isManager;
         }
-    },
-    beforeCreated: function beforeCreated() {
-        this.$store.state.user = this.$store.getters.getAuthUser;
-        this.$store.state.token = this.$store.getters.getToken;
-        this.$store.state.tokenType = this.$store.getters.getTokenType;
-        this.$store.state.getExpiration = this.$store.getters.getExpiration;
     }
 });
 
@@ -83893,7 +83883,7 @@ module.exports = {
       axios.patch('/api/orders/' + order.id + '/preparedBy/' + this.$store.getters.getAuthUser.id).then(function (response) {
         // handle success
         var msg = 'Order ' + order.id + ' is ready!';
-        _this2.$socket.emit('privateMessage', msg, _this2.$store.getters.getAuthUser, order.meal.responsible_waiter_id);
+        _this2.$socket.emit('message_responsable_waiter', msg, _this2.$store.getters.getAuthUser, order.meal.responsible_waiter_id);
         _this2.sendOrderPrepared();
       });
     },
@@ -90924,8 +90914,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         shiftStatus: function shiftStatus() {
             return this.$store.getters.getAuthUser.shift_active ? 'Working' : 'Not working';
         },
+        loggedUser: function loggedUser() {
+            return this.$store.getters.getAuthUser;
+        },
         isAuthenticated: function isAuthenticated() {
             return this.$store.getters.isAuthenticated;
+        },
+        isCook: function isCook() {
+            return this.$store.getters.isCook;
+        },
+        isWaiter: function isWaiter() {
+            return this.$store.getters.isWaiter;
+        },
+        isCashier: function isCashier() {
+            return this.$store.getters.isCashier;
+        },
+        isManager: function isManager() {
+            return this.$store.getters.isManager;
         }
     }
 });
@@ -90971,12 +90976,12 @@ var render = function() {
               )
             ]),
             _vm._v(" "),
-            _c("li", { staticClass: "nav-item" }, [
-              _c(
-                "a",
-                [
-                  _vm.isAuthenticated
-                    ? _c(
+            _vm.isCook || _vm.isManager
+              ? _c("li", { staticClass: "nav-item" }, [
+                  _c(
+                    "a",
+                    [
+                      _c(
                         "router-link",
                         {
                           staticClass: "nav-item nav-link",
@@ -90984,18 +90989,18 @@ var render = function() {
                         },
                         [_vm._v("Orders")]
                       )
-                    : _vm._e()
-                ],
-                1
-              )
-            ]),
+                    ],
+                    1
+                  )
+                ])
+              : _vm._e(),
             _vm._v(" "),
-            _c("li", { staticClass: "nav-item" }, [
-              _c(
-                "a",
-                [
-                  _vm.isAuthenticated
-                    ? _c(
+            _vm.isCashier || _vm.isManager
+              ? _c("li", { staticClass: "nav-item" }, [
+                  _c(
+                    "a",
+                    [
+                      _c(
                         "router-link",
                         {
                           staticClass: "nav-item nav-link",
@@ -91003,18 +91008,18 @@ var render = function() {
                         },
                         [_vm._v("Invoices")]
                       )
-                    : _vm._e()
-                ],
-                1
-              )
-            ]),
+                    ],
+                    1
+                  )
+                ])
+              : _vm._e(),
             _vm._v(" "),
-            _c("li", { staticClass: "nav-item" }, [
-              _c(
-                "a",
-                [
-                  _vm.isAuthenticated
-                    ? _c(
+            _vm.isWaiter || _vm.isManager
+              ? _c("li", { staticClass: "nav-item" }, [
+                  _c(
+                    "a",
+                    [
+                      _c(
                         "router-link",
                         {
                           staticClass: "nav-item nav-link",
@@ -91022,18 +91027,18 @@ var render = function() {
                         },
                         [_vm._v("MyMeals")]
                       )
-                    : _vm._e()
-                ],
-                1
-              )
-            ]),
+                    ],
+                    1
+                  )
+                ])
+              : _vm._e(),
             _vm._v(" "),
-            _c("li", { staticClass: "nav-item" }, [
-              _c(
-                "a",
-                [
-                  _vm.isAuthenticated
-                    ? _c(
+            _vm.isAuthenticated
+              ? _c("li", { staticClass: "nav-item" }, [
+                  _c(
+                    "a",
+                    [
+                      _c(
                         "router-link",
                         {
                           staticClass: "nav-item nav-link",
@@ -91041,18 +91046,18 @@ var render = function() {
                         },
                         [_vm._v("Dashboard")]
                       )
-                    : _vm._e()
-                ],
-                1
-              )
-            ]),
+                    ],
+                    1
+                  )
+                ])
+              : _vm._e(),
             _vm._v(" "),
-            _c("li", { staticClass: "nav-item" }, [
-              _c(
-                "a",
-                [
-                  this.$store.getters.isAuthenticated
-                    ? _c(
+            _vm.isManager
+              ? _c("li", { staticClass: "nav-item" }, [
+                  _c(
+                    "a",
+                    [
+                      _c(
                         "router-link",
                         {
                           staticClass: "nav-item nav-link",
@@ -91060,21 +91065,25 @@ var render = function() {
                         },
                         [_vm._v("Tables")]
                       )
-                    : _vm._e()
-                ],
-                1
-              )
-            ])
+                    ],
+                    1
+                  )
+                ])
+              : _vm._e()
           ]),
           _vm._v(" "),
           _c("ul", { staticClass: "navbar-nav" }, [
-            _c("li", { staticClass: "navbar-item" }, [
-              _vm.isAuthenticated
-                ? _c("a", { staticClass: "nav-item nav-link" }, [
-                    _vm._v("Status: " + _vm._s(_vm.shiftStatus))
+            _vm.isAuthenticated
+              ? _c("li", { staticClass: "navbar-item" }, [
+                  _c("a", { staticClass: "nav-item nav-link" }, [
+                    _vm._v(
+                      _vm._s(_vm.loggedUser.name) +
+                        ": " +
+                        _vm._s(_vm.shiftStatus)
+                    )
                   ])
-                : _vm._e()
-            ]),
+                ])
+              : _vm._e(),
             _vm._v(" "),
             _c(
               "li",
@@ -91434,7 +91443,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 var tokenType = response.data.token_type;
                 var token = response.data.access_token;
                 var expiration = response.data.expires_in + Date.now();
-                _this.$store.dispatch('setAuthUser', _this.user);
+                //this.$store.dispatch('setAuthUser', this.user)
                 _this.$store.commit('setToken', { token: token, tokenType: tokenType, expiration: expiration });
                 _this.$socket.emit('user_enter', _this.$store.getters.getAuthUser);
                 _this.typeofmsg = "alert-success";

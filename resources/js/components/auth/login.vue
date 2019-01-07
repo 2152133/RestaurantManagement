@@ -47,7 +47,7 @@
                     let tokenType = response.data.token_type
                     let token = response.data.access_token
                     let expiration = response.data.expires_in + Date.now()
-                    this.$store.dispatch('setAuthUser', this.user)
+                    //this.$store.dispatch('setAuthUser', this.user)
                     this.$store.commit('setToken', {token, tokenType, expiration})
                     this.$socket.emit('user_enter', this.$store.getters.getAuthUser);
                     this.typeofmsg = "alert-success";

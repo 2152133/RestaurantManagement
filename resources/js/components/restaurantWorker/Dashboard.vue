@@ -81,12 +81,8 @@ export default {
         },
         sendManagerMessage(){
             let msg = window.prompt('What do you want to say to the managers?')
-            console.log('Sending to the server (only same type) this message: "' + msg + '"')
-            if (this.getAutenticatedUser === null) {
-                this.$toasted.error('User is not logged in. Type is unknown!');            
-            } else {
-                this.$socket.emit('msg_from_client_type_manager', msg, this.getAutenticatedUser);
-            }
+            console.log('Sending to the server (managers) this message: "' + msg + '"')
+            this.$socket.emit('msg_from_client_type_manager', msg, this.getAutenticatedUser);
         }
     },
     computed: {
@@ -109,12 +105,5 @@ export default {
             return this.$store.getters.isManager
         },
     },
-    beforeCreated() {
-        this.$store.state.user = this.$store.getters.getAuthUser
-        this.$store.state.token = this.$store.getters.getToken
-        this.$store.state.tokenType = this.$store.getters.getTokenType
-        this.$store.state.getExpiration = this.$store.getters.getExpiration
-
-    }
 }
 </script>

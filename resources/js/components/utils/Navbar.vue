@@ -10,25 +10,25 @@
                 <li class="nav-item">
                     <a><router-link class="nav-item nav-link" to="items">Items</router-link></a>
                 </li>
-                <li class="nav-item">
-                    <a><router-link class="nav-item nav-link" to="orders" v-if="isAuthenticated">Orders</router-link></a>
+                <li v-if="isCook || isManager" class="nav-item">
+                    <a><router-link class="nav-item nav-link" to="orders">Orders</router-link></a>
                 </li>
-                <li class="nav-item">
-                    <a><router-link class="nav-item nav-link" to="invoices" v-if="isAuthenticated">Invoices</router-link></a>
+                <li v-if="isCashier || isManager" class="nav-item">
+                    <a><router-link class="nav-item nav-link" to="invoices">Invoices</router-link></a>
                 </li>
-                <li class="nav-item">
-                    <a><router-link class="nav-item nav-link" to="mealsOfWaiter" v-if="isAuthenticated">MyMeals</router-link></a>
+                <li v-if="isWaiter || isManager" class="nav-item">
+                    <a><router-link class="nav-item nav-link" to="mealsOfWaiter">MyMeals</router-link></a>
                 </li>
-                <li class="nav-item">
-                    <a><router-link class="nav-item nav-link" to="dashboard" v-if="isAuthenticated">Dashboard</router-link></a>
+                <li v-if="isAuthenticated" class="nav-item">
+                    <a><router-link class="nav-item nav-link" to="dashboard">Dashboard</router-link></a>
                 </li>
-                <li class="nav-item">
-                    <a><router-link class="nav-item nav-link" to="tables" v-if="this.$store.getters.isAuthenticated">Tables</router-link></a>
+                <li v-if="isManager" class="nav-item">
+                    <a><router-link class="nav-item nav-link" to="tables">Tables</router-link></a>
                 </li>
             </ul>
             <ul class="navbar-nav">
-                <li class="navbar-item">
-                    <a v-if="isAuthenticated" class="nav-item nav-link">Status: {{shiftStatus}}</a>
+                <li v-if="isAuthenticated" class="navbar-item">
+                    <a class="nav-item nav-link">{{loggedUser.name}}: {{shiftStatus}}</a>
                 </li>
                 <li class="navbar-item">
                     <router-link class="nav-item nav-link" to="login" v-if="!isAuthenticated">Login</router-link>
@@ -45,9 +45,24 @@ export default {
         shiftStatus() {
             return this.$store.getters.getAuthUser.shift_active ? 'Working' : 'Not working'
         },
+        loggedUser() {
+            return this.$store.getters.getAuthUser
+        },
         isAuthenticated() {
             return this.$store.getters.isAuthenticated
         },
+        isCook() {
+            return this.$store.getters.isCook
+        },
+        isWaiter() {
+            return this.$store.getters.isWaiter
+        },
+        isCashier() {
+            return this.$store.getters.isCashier
+        },
+        isManager() {
+            return this.$store.getters.isManager
+        }
     }
 }
 </script>

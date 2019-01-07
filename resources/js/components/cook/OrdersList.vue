@@ -88,7 +88,7 @@ module.exports = {
             .then((response) => {
                 // handle success
                 let msg = 'Order ' + order.id + ' is ready!'
-                this.$socket.emit('privateMessage', msg, this.$store.getters.getAuthUser, order.meal.responsible_waiter_id)
+                this.$socket.emit('message_responsable_waiter', msg, this.$store.getters.getAuthUser, order.meal.responsible_waiter_id)
                 this.sendOrderPrepared();
             });
     },
