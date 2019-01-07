@@ -1,10 +1,11 @@
 <template>
   <div>
-    <button type="button" class="btn btn-outline-success" style="float:right" @click="showCreateMeal">
+    <button type="button" class="btn btn-success" style="float:right" @click="showCreateMeal">
       Create Meal
     </button>
 
     <pagination :objects="meals" :meta="meta" :links="links" @refreshObjects="refreshMeals"></pagination>
+    <button type="button" class="btn btn-warning" style="float:right" v-on:click.prevent="showUpdate">Add order to meal</button>
     <table class="table">
       <thead>
         <tr>
@@ -26,10 +27,10 @@
           <td>{{meal.total_price_preview}}</td>
           <td>{{meal.created_at.date}}</td>
           <td>
-            <button type="button" class="btn btn-outline-primary" style="float:right" v-on:click.prevent="showOrdersOfMeal(meal)">Meal's orders' state</button>
-            <button type="button" class="btn btn-outline-info" style="float:right" v-on:click.prevent="showSummary(meal)">See meal summary</button>
-            <button type="button" class="btn btn-outline-danger" style="float:right" v-on:click.prevent="terminateMeal(meal, index)">Terminate meal</button>
-            <button type="button" class="btn btn-outline-warning" style="float:right" v-on:click.prevent="showUpdate(meal, index)">Add order to meal</button>
+            <button type="button" class="btn btn-primary btn-block" style="float:right" v-on:click.prevent="showOrdersOfMeal(meal)">Meal's orders' state</button>
+            <button type="button" class="btn btn-info btn-block" style="float:right" v-on:click.prevent="showSummary(meal)">See meal summary</button>
+            <button type="button" class="btn btn-danger btn-block" style="float:right" v-on:click.prevent="terminateMeal(meal, index)">Terminate meal</button>
+            
           </td>
         </tr>
       </tbody>

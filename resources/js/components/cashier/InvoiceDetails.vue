@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div class="jumbotron">
+            <h1>Invoice Details</h1>
+        </div>
         <div id="receipt">
             <label>Date: {{getCurrentInvoice.date}}</label>
             <br/>

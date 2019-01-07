@@ -4,8 +4,11 @@
             <h1>{{title}}</h1>
         </div>
         
+        <h3>In Preparation</h3>
         <orders-list :orders="inPreparationUserOrders" :meta="inPreparationUserOrdersMeta" :links="inPreparationUserOrdersLinks" @refreshOrders="refreshInPreparationUserOrders"></orders-list>
-        
+        <br/>
+        <br/>
+        <h3>Confirmed</h3>
         <orders-list :orders="confirmedOrders" :meta="confirmedOrdersMeta" :links="confirmedOrdersLinks" @refreshOrders="refreshConfirmedOrders" ></orders-list>
             
         <div class="alert" :class="{'alert-success':showSuccess, 'alert-danger':showFailure}" v-if="showSuccess || showFailure">

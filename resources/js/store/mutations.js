@@ -106,6 +106,7 @@ export default {
     },
     removeOrderFromPendingMealOrders(state, index){
         state.pendingMealOrders.splice(index, 1);
+        state.currentMealOrder={};
     },
     removeOrderFromPreparedMealOrders(state, index){
         state.preparedMealOrders.splice(index, 1);
@@ -117,6 +118,10 @@ export default {
         state.currentMealOrder.responsible_cook = null;
         state.currentMealOrder.meal_id = payload.mealId;
         state.currentMealOrder.start = payload.datetimeToOrder;
+        state.currentMealOrder.isDeleted = false;
+    },
+    setCurrentMealOrderDeleted(state){
+        state.currentMealOrder.isDeleted = true;
     },
 
     //------------------Setters---------------------------------------------------------------------------

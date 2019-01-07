@@ -9,6 +9,7 @@ use App\Order;
 use App\Http\Resources\Invoice as InvoiceResource;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Validator;
 
 class InvoiceController extends Controller
 {
@@ -56,19 +57,22 @@ class InvoiceController extends Controller
     }
 
     public function declareInvoiceAsPaid(Request $request){
-        try{
-            $requestInvoice = json_decode($request->invoice);
 
+        $requestInvoice = json_decode($request->invoice, true);
         
-            if(empty($requestInvoice->nif) || empty($requestInvoice->name)){
-                abort(400, 'Client nif and name required');
-            }
+        $rules = [
+            'nif' => 'required|numeric|digits:9',
+            'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/'
+        ];
 
-            $invoice = Invoice::findOrFail($requestInvoice->id);
-            
+        $validator = Validator::make($requestInvoice, $rules);
+    
+        if ($validator->passes()) {
+            $invoice = Invoice::findOrFail($requestInvoice['id']);
+        
             $invoice->state = "paid";
-            $invoice->nif = $requestInvoice->nif;
-            $invoice->name = $requestInvoice->name;
+            $invoice->nif = $requestInvoice['nif'];
+            $invoice->name = $requestInvoice['name'];
             
             $meal = Meal::findOrFail($invoice->meal->id);
             $meal->state = "paid";
@@ -77,8 +81,8 @@ class InvoiceController extends Controller
             {
                 return (new InvoiceResource($invoice))->response()->setStatusCode(200);
             }
-        } catch (Exception $e) {
-            Debugbar::addThrowable($e);
+        } else {
+            return response()->json(['error' => $validator->errors()->all()], 422);
         }
     }
 

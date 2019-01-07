@@ -196,8 +196,8 @@ const app = new Vue({
                 },
             });        
         },
-        responsableWaiterMessage_unavailable(destUser){
-            this.$toasted.error('User "' + destUser.name + '" is not available');       
+        responsableWaiterMessage_unavailable(destUser_id){
+            this.$toasted.error('Waiter "' + destUser_id + '" is not available');       
         },
         responsableWaiterMessage_sent(dataFromServer){
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');

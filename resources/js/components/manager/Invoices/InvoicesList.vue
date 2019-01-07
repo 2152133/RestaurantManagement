@@ -134,12 +134,14 @@ export default {
             this.getInvoices()
         },
         getInvoiceDetails(invoice) {
-            this.$emit('invoice-details-click', invoice);
+            this.$store.commit('setCurrentInvoice', invoice)
+            
+            this.$emit('invoice-details-click', invoice)
         },
         declareInvoiceAsNotPaid(invoice){
             axios.patch('/api/invoice/' + invoice.id + '/declareNotPaid')
             .then(response => {
-                sendInvoiceNotPaid(invoice);
+                this.sendInvoiceNotPaid(invoice);
                 this.getInvoices();
             })
         },

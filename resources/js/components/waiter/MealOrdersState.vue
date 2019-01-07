@@ -35,6 +35,7 @@
         methods: {
             deleteOrder: function (order, index) {
                 this.$store.commit('removeOrderFromPendingMealOrders', index);
+                this.$store.commit('setCurrentMealOrderDeleted');
                 this.successMessage = "Order Deleted!";
                 this.showSuccess = true;
                 setTimeout(this.hideSuccess, 3000);

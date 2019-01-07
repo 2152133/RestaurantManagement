@@ -107,6 +107,20 @@ class MealController extends Controller
             ->where('orders.state', '=', 'delivered')
             ->get();
 
+        $ordersOfMealNotDelivered = DB::table('orders')
+            ->where('orders.meal_id', '=', $meal_id)
+            ->where('orders.state', '!=', 'delivered')
+            ->get();
+
+        foreach ($ordersOfMealNotDelivered as $order) {
+            Order::where('id', $order->id)
+            ->update([
+                'state' => 'not delivered',
+                'end' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+        }
+
         $counterTotalPrice = 0;
 
         foreach ($deliveredMealOrdersPrice as $order) {

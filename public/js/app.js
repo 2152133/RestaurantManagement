@@ -54353,8 +54353,8 @@ var app = new __WEBPACK_IMPORTED_MODULE_6_vue___default.a({
                 }
             });
         },
-        responsableWaiterMessage_unavailable: function responsableWaiterMessage_unavailable(destUser) {
-            this.$toasted.error('User "' + destUser.name + '" is not available');
+        responsableWaiterMessage_unavailable: function responsableWaiterMessage_unavailable(destUser_id) {
+            this.$toasted.error('Waiter "' + destUser_id + '" is not available');
         },
         responsableWaiterMessage_sent: function responsableWaiterMessage_sent(dataFromServer) {
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
@@ -78023,6 +78023,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     removeOrderFromPendingMealOrders: function removeOrderFromPendingMealOrders(state, index) {
         state.pendingMealOrders.splice(index, 1);
+        state.currentMealOrder = {};
     },
     removeOrderFromPreparedMealOrders: function removeOrderFromPreparedMealOrders(state, index) {
         state.preparedMealOrders.splice(index, 1);
@@ -78034,6 +78035,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         state.currentMealOrder.responsible_cook = null;
         state.currentMealOrder.meal_id = payload.mealId;
         state.currentMealOrder.start = payload.datetimeToOrder;
+        state.currentMealOrder.isDeleted = false;
+    },
+    setCurrentMealOrderDeleted: function setCurrentMealOrderDeleted(state) {
+        state.currentMealOrder.isDeleted = true;
     },
 
 
@@ -83600,6 +83605,9 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
 
 module.exports = {
     data: function data() {
@@ -83669,6 +83677,8 @@ var render = function() {
         _c("h1", [_vm._v(_vm._s(_vm.title))])
       ]),
       _vm._v(" "),
+      _c("h3", [_vm._v("In Preparation")]),
+      _vm._v(" "),
       _c("orders-list", {
         attrs: {
           orders: _vm.inPreparationUserOrders,
@@ -83677,6 +83687,12 @@ var render = function() {
         },
         on: { refreshOrders: _vm.refreshInPreparationUserOrders }
       }),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("h3", [_vm._v("Confirmed")]),
       _vm._v(" "),
       _c("orders-list", {
         attrs: {
@@ -84125,23 +84141,10 @@ module.exports = Component.exports
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
 module.exports = {
     data: function data() {
-        return {
-            title: 'Pending Invoices',
-            showSuccess: false,
-            showFailure: false,
-            successMessage: '',
-            failMessage: ''
-        };
+        return {};
     },
 
     methods: {
@@ -84198,42 +84201,9 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("div", { staticClass: "jumbotron" }, [
-        _c("h1", [_vm._v(_vm._s(_vm.title))])
-      ]),
+      _vm._m(0),
       _vm._v(" "),
-      _vm.showSuccess || _vm.showFailure
-        ? _c(
-            "div",
-            {
-              staticClass: "alert",
-              class: {
-                "alert-success": _vm.showSuccess,
-                "alert-danger": _vm.showFailure
-              }
-            },
-            [
-              _c(
-                "button",
-                {
-                  staticClass: "close-btn",
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      _vm.showSuccess = false
-                      _vm.showFailure = false
-                    }
-                  }
-                },
-                [_vm._v("×")]
-              ),
-              _vm._v(" "),
-              _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
-              _vm._v(" "),
-              _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
-            ]
-          )
-        : _vm._e(),
+      _c("h3", [_vm._v("Pending Invoices")]),
       _vm._v(" "),
       _c("invoices-list", {
         attrs: {
@@ -84243,6 +84213,12 @@ var render = function() {
         },
         on: { refreshInvoices: _vm.refreshPendingInvoices }
       }),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("h3", [_vm._v("Paid Invoices")]),
       _vm._v(" "),
       _c("invoices-list", {
         attrs: {
@@ -84256,7 +84232,16 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "jumbotron" }, [
+      _c("h1", [_vm._v("Pending Invoices")])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -84574,6 +84559,13 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 module.exports = {
     data: function data() {
@@ -84583,18 +84575,16 @@ module.exports = {
         declareInvoiceAsPaid: function declareInvoiceAsPaid() {
             var _this = this;
 
-            /*if(!(this.invoice.name && this.invoice.nif)){
-                alert("Nif and name required");
-                return;
-            }
-            if(/^[a-zA-Z\s]*$/.test(this.invoice.name) && /^([0-9]{9})$/.test(this.invoice.nif)){*/
-            axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(this.getCurrentInvoice), user: this.$store.getters.getAuthUser.id }).then(function (response) {
-                // handle success
-                _this.sendInvoicePaid();
-                _this.$router.go(-1);
-                console.log(response);
+            this.$validator.validateAll().then(function (result) {
+                if (result) {
+                    axios.patch('/api/invoice/declarePaid', { invoice: JSON.stringify(_this.getCurrentInvoice), user: _this.$store.getters.getAuthUser.id }).then(function (response) {
+                        // handle success
+                        _this.sendInvoicePaid();
+                        _this.$router.go(-1);
+                        console.log(response);
+                    });
+                }
             });
-            //}
         },
         cancel: function cancel() {
             this.$router.go(-1);
@@ -84640,15 +84630,16 @@ var render = function() {
                 rawName: "v-model",
                 value: _vm.getCurrentInvoice.nif,
                 expression: "getCurrentInvoice.nif"
+              },
+              {
+                name: "validate",
+                rawName: "v-validate",
+                value: "required|numeric|max:9|min:9",
+                expression: "'required|numeric|max:9|min:9'"
               }
             ],
             staticClass: "form-control",
-            attrs: {
-              type: "text",
-              name: "nif",
-              pattern: "[0-9]{9}",
-              title: "9 numbers"
-            },
+            attrs: { type: "number", name: "nif", title: "9 numbers" },
             domProps: { value: _vm.getCurrentInvoice.nif },
             on: {
               input: function($event) {
@@ -84661,6 +84652,26 @@ var render = function() {
           })
         ]),
         _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.errors.has("nif"),
+                expression: "errors.has('nif')"
+              }
+            ],
+            staticClass: "help-block alert alert-danger"
+          },
+          [
+            _vm._v(
+              "\n            " + _vm._s(_vm.errors.first("nif")) + "\n        "
+            )
+          ]
+        ),
+        _vm._v(" "),
         _c("div", { staticClass: "form-group" }, [
           _c("label", [_vm._v("Name:")]),
           _vm._v(" "),
@@ -84671,13 +84682,18 @@ var render = function() {
                 rawName: "v-model",
                 value: _vm.getCurrentInvoice.name,
                 expression: "getCurrentInvoice.name"
+              },
+              {
+                name: "validate",
+                rawName: "v-validate",
+                value: "required",
+                expression: "'required'"
               }
             ],
             staticClass: "form-control",
             attrs: {
               type: "text",
               name: "name",
-              pattern: "[a-zA-Z\\s]*",
               title: "Only letters and spaces"
             },
             domProps: { value: _vm.getCurrentInvoice.name },
@@ -84691,6 +84707,26 @@ var render = function() {
             }
           })
         ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.errors.has("name"),
+                expression: "errors.has('name')"
+              }
+            ],
+            staticClass: "help-block alert alert-danger"
+          },
+          [
+            _vm._v(
+              "\n            " + _vm._s(_vm.errors.first("name")) + "\n        "
+            )
+          ]
+        ),
         _vm._v(" "),
         _c(
           "button",
@@ -85212,6 +85248,9 @@ module.exports = function listToStyles (parentId, list) {
 //
 //
 //
+//
+//
+//
 
 module.exports = {
     data: function data() {
@@ -85243,6 +85282,8 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
     _c("div", { attrs: { id: "receipt" } }, [
       _c("label", [_vm._v("Date: " + _vm._s(_vm.getCurrentInvoice.date))]),
       _vm._v(" "),
@@ -85294,7 +85335,7 @@ var render = function() {
       _c("br"),
       _vm._v(" "),
       _c("table", [
-        _vm._m(0),
+        _vm._m(1),
         _vm._v(" "),
         _c(
           "tbody",
@@ -85324,7 +85365,7 @@ var render = function() {
         ),
         _vm._v(" "),
         _c("tr", [
-          _vm._m(1),
+          _vm._m(2),
           _c("td", [
             _c("strong", [
               _vm._v(_vm._s(_vm.getCurrentInvoice.total_price) + "€")
@@ -85374,6 +85415,14 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "jumbotron" }, [
+      _c("h1", [_vm._v("Invoice Details")])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -85638,6 +85687,7 @@ module.exports = Component.exports
 //
 //
 //
+//
 
 module.exports = {
   props: ["meals", "meta", "links"],
@@ -85718,7 +85768,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-outline-success",
+          staticClass: "btn btn-success",
           staticStyle: { float: "right" },
           attrs: { type: "button" },
           on: { click: _vm.showCreateMeal }
@@ -85730,6 +85780,22 @@ var render = function() {
         attrs: { objects: _vm.meals, meta: _vm.meta, links: _vm.links },
         on: { refreshObjects: _vm.refreshMeals }
       }),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-warning",
+          staticStyle: { float: "right" },
+          attrs: { type: "button" },
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              return _vm.showUpdate($event)
+            }
+          }
+        },
+        [_vm._v("Add order to meal")]
+      ),
       _vm._v(" "),
       _c("table", { staticClass: "table" }, [
         _vm._m(0),
@@ -85754,7 +85820,7 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-outline-primary",
+                    staticClass: "btn btn-primary btn-block",
                     staticStyle: { float: "right" },
                     attrs: { type: "button" },
                     on: {
@@ -85770,7 +85836,7 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-outline-info",
+                    staticClass: "btn btn-info btn-block",
                     staticStyle: { float: "right" },
                     attrs: { type: "button" },
                     on: {
@@ -85786,7 +85852,7 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-outline-danger",
+                    staticClass: "btn btn-danger btn-block",
                     staticStyle: { float: "right" },
                     attrs: { type: "button" },
                     on: {
@@ -85797,22 +85863,6 @@ var render = function() {
                     }
                   },
                   [_vm._v("Terminate meal")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-outline-warning",
-                    staticStyle: { float: "right" },
-                    attrs: { type: "button" },
-                    on: {
-                      click: function($event) {
-                        $event.preventDefault()
-                        _vm.showUpdate(meal, index)
-                      }
-                    }
-                  },
-                  [_vm._v("Add order to meal")]
                 )
               ])
             ])
@@ -86184,6 +86234,7 @@ module.exports = {
     methods: {
         deleteOrder: function deleteOrder(order, index) {
             this.$store.commit('removeOrderFromPendingMealOrders', index);
+            this.$store.commit('setCurrentMealOrderDeleted');
             this.successMessage = "Order Deleted!";
             this.showSuccess = true;
             setTimeout(this.hideSuccess, 3000);
@@ -86431,92 +86482,102 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
+//
 
 module.exports = {
-    data: function data() {
-        return {
-            successMessage: "",
-            failMessage: "",
-            showSuccess: false,
-            showFailure: false,
-            selectedOptionItem: null,
-            selectedOptionMeal: null
-        };
-    },
+  data: function data() {
+    return {
+      successMessage: "",
+      failMessage: "",
+      showSuccess: false,
+      showFailure: false,
+      selectedOptionItem: null,
+      selectedOptionMeal: null
+    };
+  },
 
-    methods: {
-        createPendingMeal: function createPendingMeal(mealId, item) {
-            var mealId_timeout = mealId;
-            var item_timeout = item;
+  methods: {
+    createPendingMeal: function createPendingMeal(mealId, item) {
+      var mealId_timeout = mealId;
+      var item_timeout = item;
 
-            this.$store.commit('setCounter', this.getCounter + 1);
+      this.$store.commit("setCounter", this.getCounter + 1);
 
-            var datetimeToOrder = this.createDatetimeToOrder();
+      var datetimeToOrder = this.createDatetimeToOrder();
 
-            this.$store.commit('createNewPendingMeal', { mealId: mealId, item: item, datetimeToOrder: datetimeToOrder });
-            this.$store.commit('addOrderToPendingMealOrders', this.getCurrentMealOrder);
+      this.$store.commit("createNewPendingMeal", {
+        mealId: mealId,
+        item: item,
+        datetimeToOrder: datetimeToOrder
+      });
+      this.$store.commit("addOrderToPendingMealOrders", this.getCurrentMealOrder);
 
-            var self = this;
+      var self = this;
 
-            setTimeout(function () {
-                self.createConfirmedOrder(mealId_timeout, item_timeout.id);
-                self.$store.commit('removeOrderFromPendingMealOrders', self.getPendingMealOrders.findIndex(function (o) {
-                    return o.id === self.counter;
-                }));
-            }, 5000);
-
-            this.$router.go(-1);
-        },
-        sendOrderConfirmed: function sendOrderConfirmed() {
-            this.$socket.emit('order_confirmed');
-        },
-        createDatetimeToOrder: function createDatetimeToOrder() {
-            var currentdate = new Date();
-            var datetimeToOrder = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-            return datetimeToOrder;
-        },
-
-        createConfirmedOrder: function createConfirmedOrder(meal_id, item_number) {
-            var _this = this;
-
-            if (!isNaN(this.getCurrentMealOrder.id)) {
-                axios.post("/api/meal/addOrder/" + meal_id + "/" + item_number).then(function (response) {
-                    console.log('createConfirmedOrder request:');
-                    console.log(response);
-                    _this.successMessage = "Success creating order!";
-                    _this.showSuccess = true;
-                    _this.sendOrderConfirmed();
-                    var msg = 'New Order of item ' + item_number + '!';
-                    _this.$socket.emit('msg_from_client_type_waiter', msg, _this.$store.getters.getAuthUser);
-                }).catch(function (error) {
-                    console.log('createConfirmedOrder error:');
-                    console.log(error);
-                    _this.showFailure = true;
-                    _this.failMessage = "Fail";
-                });
-            } else {
-                return;
-            }
+      setTimeout(function () {
+        if (self.$store.getters.currentMealOrder.isDeleted == false) {
+          self.createConfirmedOrder(mealId_timeout, item_timeout.id);
+          self.$store.commit("removeOrderFromPendingMealOrders", self.getPendingMealOrders.findIndex(function (o) {
+            return o.id === self.counter;
+          }));
         }
+      }, 5000);
+
+      this.$router.go(-1);
     },
-    computed: {
-        getUserMeals: function getUserMeals() {
-            return this.$store.getters.userMeals;
-        },
-        getPendingMealOrders: function getPendingMealOrders() {
-            return this.$store.getters.pendingMealOrders;
-        },
-        getAllItems: function getAllItems() {
-            return this.$store.getters.allItems;
-        },
-        getCurrentMealOrder: function getCurrentMealOrder() {
-            return this.$store.getters.currentMealOrder;
-        },
-        getCounter: function getCounter() {
-            return this.$store.getters.counter;
-        }
+    sendOrderConfirmed: function sendOrderConfirmed() {
+      this.$socket.emit("order_confirmed");
     },
-    mounted: function mounted() {}
+    createDatetimeToOrder: function createDatetimeToOrder() {
+      var currentdate = new Date();
+      var datetimeToOrder = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+      return datetimeToOrder;
+    },
+
+    createConfirmedOrder: function createConfirmedOrder(meal_id, item_number) {
+      var _this = this;
+
+      if (!isNaN(this.getCurrentMealOrder.id)) {
+        axios.post("/api/meal/addOrder/" + meal_id + "/" + item_number).then(function (response) {
+          console.log("createConfirmedOrder request:");
+          console.log(response);
+          _this.successMessage = "Success creating order!";
+          _this.showSuccess = true;
+          _this.sendOrderConfirmed();
+          var msg = "New Order of item " + item_number + "!";
+          _this.$socket.emit("msg_from_client_type_waiter", msg, _this.$store.getters.getAuthUser);
+        }).catch(function (error) {
+          console.log("createConfirmedOrder error:");
+          console.log(error);
+          _this.showFailure = true;
+          _this.failMessage = "Fail";
+        });
+      } else {
+        return;
+      }
+    }
+  },
+  computed: {
+    getUserMeals: function getUserMeals() {
+      return this.$store.getters.userMeals;
+    },
+    getPendingMealOrders: function getPendingMealOrders() {
+      return this.$store.getters.pendingMealOrders;
+    },
+    getAllItems: function getAllItems() {
+      return this.$store.getters.allItems;
+    },
+    getCurrentMealOrder: function getCurrentMealOrder() {
+      return this.$store.getters.currentMealOrder;
+    },
+    getCounter: function getCounter() {
+      return this.$store.getters.counter;
+    }
+  },
+  mounted: function mounted() {}
 };
 
 /***/ }),
@@ -90387,13 +90448,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.getInvoices();
         },
         getInvoiceDetails: function getInvoiceDetails(invoice) {
+            this.$store.commit('setCurrentInvoice', invoice);
+
             this.$emit('invoice-details-click', invoice);
         },
         declareInvoiceAsNotPaid: function declareInvoiceAsNotPaid(invoice) {
             var _this3 = this;
 
             axios.patch('/api/invoice/' + invoice.id + '/declareNotPaid').then(function (response) {
-                sendInvoiceNotPaid(invoice);
+                _this3.sendInvoiceNotPaid(invoice);
                 _this3.getInvoices();
             });
         },

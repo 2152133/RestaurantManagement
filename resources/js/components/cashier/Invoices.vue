@@ -1,33 +1,23 @@
 <template>
     <div>
         <div class="jumbotron">
-            <h1>{{title}}</h1>
+            <h1>Pending Invoices</h1>
         </div>
-
-        <div class="alert" :class="{'alert-success':showSuccess, 'alert-danger':showFailure}" v-if="showSuccess || showFailure">
-            <button type="button" @click="showSuccess = false; showFailure = false;" class="close-btn" >&times;</button>
-            <strong>@{{successMessage}}</strong>
-            <strong>@{{failMessage}}</strong>
-        </div>
-
+        <h3>Pending Invoices</h3>
         <invoices-list :invoices="getPendingInvoices" :meta="getPendingInvoicesMeta" :links="getPendingInvoicesLinks" @refreshInvoices="refreshPendingInvoices"></invoices-list>
+        <br/>
+        <br/>
+        <h3>Paid Invoices</h3>
         <invoices-list :invoices="getPaidInvoices" :meta="getPaidInvoicesMeta" :links="getPaidInvoicesLinks" @refreshInvoices="refreshPaidInvoices"></invoices-list>
-            
-            
-        </div>
-        
-    </div>         
+    </div>
 </template>
 
 <script>
     module.exports = {
         data: function() {
             return {
-                title: 'Pending Invoices',   
-                showSuccess: false,
-                showFailure: false,
-                successMessage: '',
-                failMessage: '',
+ 
+
             }
         }
         ,
