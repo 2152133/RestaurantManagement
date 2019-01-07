@@ -78,6 +78,7 @@
             this.showSuccess = "Meal terminated Successfully";
             this.showSuccess = true;
             this.$store.commit('removeMealFromUserMeals', index);
+            this.sendTerminateMeal();
           })
           .catch(error => {
             this.failMessage = "Error terminating meal";
@@ -89,7 +90,10 @@
       },
       refreshMeals(meals, meta, links) {
         this.$emit('refreshMeals', meals, meta, links);
-      }
+      },
+      sendTerminateMeal(){
+        this.$socket.emit('meal_terminated');
+      },
     },
     computed: {
       getNotDeliveredOrdersOfMeal() {

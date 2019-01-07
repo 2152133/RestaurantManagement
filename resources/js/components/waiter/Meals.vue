@@ -17,15 +17,7 @@ module.exports = {
   },
   methods: {
     getMealsOfWaiter: function() {
-      axios.get("/api/meals/waiterMeals/" + this.getCurrentUser.id)
-        .then(response => {
-          console.log(response);
-          this.$store.commit('setUserMeals', response.data.data);
-          this.$store.commit('setUserMealsMeta', response.data.meta);
-          this.$store.commit('setUserMealsLinks', response.data.links);
-
-          console.log(this.getUserMealsMeta);
-        })
+      this.$store.dispatch('loadWaiterMeals');
     },
     getItems: function() {
       axios.get("/api/items/all")
