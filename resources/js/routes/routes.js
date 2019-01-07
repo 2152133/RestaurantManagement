@@ -89,7 +89,6 @@ const routes = [
         path: '/statistics', 
         component: statisticsComponent,
         meta: {
-            forAuth: true,
             forManager: true,
         }
     },
@@ -97,7 +96,6 @@ const routes = [
         path: '/orders', 
         component: ordersComponent,
         meta: {
-            forAuth: true,
             forCook: true,
         }
     },
@@ -110,9 +108,7 @@ const routes = [
         path: '/invoices', 
         component: invoicesComponent,
         meta: {
-            forAuth: true,
             forCashier: true,
-            forManager: true,
         }
     },
     {
@@ -120,7 +116,7 @@ const routes = [
         component: editNifNameComponent,
         name: 'editNifName',
         meta: {
-            forAuth: true
+            forCashier: true
         }
     },
     {
@@ -140,7 +136,6 @@ const routes = [
         path: '/mealsOfWaiter', 
         component: meals_of_waiter,
         meta: {
-            forAuth: true,
             forWaiter: true,
         }
     },
@@ -149,7 +144,6 @@ const routes = [
         component: create_meal,
         name: 'create_meal',
         meta: {
-            forAuth: true,
             forWaiter: true,
         }
     },
@@ -158,7 +152,6 @@ const routes = [
         component: mealOrdersStateComponent,
         name: 'mealOrdersState',
         meta: {
-            forAuth: true,
             forWaiter: true,
         },
         props: true,
@@ -168,7 +161,6 @@ const routes = [
         component: addOrderToMealComponent,
         name: 'addOrderToMeal',
         meta: {
-            forAuth: true,
             forWaiter: true,
         },
     },
@@ -177,7 +169,6 @@ const routes = [
         component: mealSummaryComponent,
         name: 'mealSummary',
         meta: {
-            forAuth: true,
             forWaiter: true,
         },
     },
@@ -188,7 +179,6 @@ const routes = [
         path: '/tables', 
         component: tablesComponent,
         meta: {
-            forAuth: true,
             forManager: true,
         }
     },
@@ -197,7 +187,6 @@ const routes = [
         component: addEditTableComponent,
         name: 'addTable',
         meta: {
-            forAuth: true,
             forManager: true,
         },
         props: true,
@@ -207,7 +196,6 @@ const routes = [
         component: addEditTableComponent,
         name: 'editTable',
         meta: {
-            forAuth: true,
             forManager: true,
         },
         props: true,
@@ -216,7 +204,6 @@ const routes = [
         path: '/managerMeals', 
         component: managerMealsComponent,
         meta: {
-            forAuth: true,
             forManager: true
         }
     },
@@ -224,7 +211,6 @@ const routes = [
         path: '/managerUsers', 
         component: managerUsersComponent,
         meta: {
-            forAuth: true,
             forManager: true
         }
     },
@@ -232,7 +218,6 @@ const routes = [
         path: '/newUser', 
         component: userAddComponent,
         meta: {
-            forAuth: true,
             forManager: true
         }
     },
@@ -240,7 +225,6 @@ const routes = [
         path: '/newItem', 
         component: itemAddComponent,
         meta: {
-            forAuth: true,
             forManager: true
         }
     },
@@ -249,7 +233,6 @@ const routes = [
         component: editItemComponent,
         name: 'editItem',
         meta: {
-            forAuth: true,
             forManager: true
         },
         props: true,
@@ -258,7 +241,6 @@ const routes = [
         path: '/managerInvoices', 
         component: managerInvoicesComponent,
         meta: {
-            forAuth: true,
             forManager: true
         }
     },

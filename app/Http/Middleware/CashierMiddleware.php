@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class AdminMiddleware
+class CashierMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class AdminMiddleware
     public function handle($request, Closure $next)
     {
         if(auth()->guard('api')->user() != null) {
-            if (auth()->guard('api')->user()->type == 'manager') {
+            if (auth()->guard('api')->user()->type == 'cashier' || auth()->guard('api')->user()->type == 'manager') {
                 return $next($request);
             } else {
                 return redirect('/#/dashboard');

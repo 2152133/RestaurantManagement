@@ -3,6 +3,9 @@
         <ul class="pagination">
             <li v-bind:class="[{disabled: !links.prev}]" 
             class="page-item"><a class="page-link" href="#"
+            @click="getObjects(links.first)">first</a></li>
+            <li v-bind:class="[{disabled: !links.prev}]" 
+            class="page-item"><a class="page-link" href="#"
             @click="getObjects(links.prev)">Previous</a></li>
             
             <li class="page-item disabled"><a class="page-link" href="#">Page {{ meta.current_page }} of {{ meta.last_page }}</a></li>
@@ -10,7 +13,7 @@
             <li v-bind:class="[{disabled: !links.next}]" 
             class="page-item"><a class="page-link" href="#"
             @click="getObjects(links.next)">Next</a></li>
-            <li v-bind:class="[{disabled: !links.last}]" 
+            <li v-bind:class="[{disabled: !links.next}]" 
             class="page-item"><a class="page-link" href="#"
             @click="getObjects(links.last)">last</a></li>
         </ul>

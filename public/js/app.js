@@ -77698,6 +77698,7 @@ var index_esm = {
             localStorage.removeItem('token_type');
             localStorage.removeItem('access_token');
             localStorage.removeItem('expiration_time');
+            localStorage.removeItem('user');
             axios.defaults.headers.common.Authorization = undefined;
             return null;
         }
@@ -78403,14 +78404,12 @@ var routes = [
     path: '/statistics',
     component: statisticsComponent,
     meta: {
-        forAuth: true,
         forManager: true
     }
 }, {
     path: '/orders',
     component: ordersComponent,
     meta: {
-        forAuth: true,
         forCook: true
     }
 },
@@ -78420,16 +78419,14 @@ var routes = [
     path: '/invoices',
     component: invoicesComponent,
     meta: {
-        forAuth: true,
-        forCashier: true,
-        forManager: true
+        forCashier: true
     }
 }, {
     path: '/editNifName',
     component: editNifNameComponent,
     name: 'editNifName',
     meta: {
-        forAuth: true
+        forCashier: true
     }
 }, {
     path: '/invoiceDetails',
@@ -78445,7 +78442,6 @@ var routes = [
     path: '/mealsOfWaiter',
     component: meals_of_waiter,
     meta: {
-        forAuth: true,
         forWaiter: true
     }
 }, {
@@ -78453,7 +78449,6 @@ var routes = [
     component: create_meal,
     name: 'create_meal',
     meta: {
-        forAuth: true,
         forWaiter: true
     }
 }, {
@@ -78461,7 +78456,6 @@ var routes = [
     component: mealOrdersStateComponent,
     name: 'mealOrdersState',
     meta: {
-        forAuth: true,
         forWaiter: true
     },
     props: true
@@ -78470,7 +78464,6 @@ var routes = [
     component: addOrderToMealComponent,
     name: 'addOrderToMeal',
     meta: {
-        forAuth: true,
         forWaiter: true
     }
 }, {
@@ -78478,7 +78471,6 @@ var routes = [
     component: mealSummaryComponent,
     name: 'mealSummary',
     meta: {
-        forAuth: true,
         forWaiter: true
     }
 },
@@ -78488,7 +78480,6 @@ var routes = [
     path: '/tables',
     component: tablesComponent,
     meta: {
-        forAuth: true,
         forManager: true
     }
 }, {
@@ -78496,7 +78487,6 @@ var routes = [
     component: addEditTableComponent,
     name: 'addTable',
     meta: {
-        forAuth: true,
         forManager: true
     },
     props: true
@@ -78505,7 +78495,6 @@ var routes = [
     component: addEditTableComponent,
     name: 'editTable',
     meta: {
-        forAuth: true,
         forManager: true
     },
     props: true
@@ -78513,28 +78502,24 @@ var routes = [
     path: '/managerMeals',
     component: managerMealsComponent,
     meta: {
-        forAuth: true,
         forManager: true
     }
 }, {
     path: '/managerUsers',
     component: managerUsersComponent,
     meta: {
-        forAuth: true,
         forManager: true
     }
 }, {
     path: '/newUser',
     component: userAddComponent,
     meta: {
-        forAuth: true,
         forManager: true
     }
 }, {
     path: '/newItem',
     component: itemAddComponent,
     meta: {
-        forAuth: true,
         forManager: true
     }
 }, {
@@ -78542,7 +78527,6 @@ var routes = [
     component: editItemComponent,
     name: 'editItem',
     meta: {
-        forAuth: true,
         forManager: true
     },
     props: true
@@ -78550,7 +78534,6 @@ var routes = [
     path: '/managerInvoices',
     component: managerInvoicesComponent,
     meta: {
-        forAuth: true,
         forManager: true
     }
 },
@@ -81307,6 +81290,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -81430,6 +81414,17 @@ var render = function() {
               _c("router-link", { attrs: { to: "managerUsers" } }, [
                 _vm._v("Users")
               ])
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.isManager
+        ? _c(
+            "button",
+            { staticClass: "btn btn-dark" },
+            [
+              _c("router-link", { attrs: { to: "tables" } }, [_vm._v("Tables")])
             ],
             1
           )
@@ -82161,9 +82156,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$store.dispatch('loadItems');
         },
         refreshItems: function refreshItems(newItems, newMeta, newLinks) {
-            this.$store.commit('refreshItems', { newItems: newItems, newMeta: newMeta, newLinkmessage: newLinkmessage });
-            this.showSuccess = true;
-            this.successMessage = message;
+            this.$store.commit('refreshItems', { newItems: newItems, newMeta: newMeta, newLinks: newLinks });
         }
     },
     computed: {
@@ -82629,7 +82622,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$validator.validateAll().then(function (result) {
                 if (result) {
                     axios.patch('api/item/' + _this.item.id, _this.item).then(function (response) {
-                        _this.item = response.data.data;
+                        Object.assign(_this.item, response.data.data);
                         _this.$emit('item-saved', _this.item);
                     });
                 }
@@ -82639,7 +82632,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this2 = this;
 
             axios.get('api/item/' + this.item.id).then(function (response) {
-                _this2.item = response.data.data;
+                Object.assign(_this2.item, response.data.data);
                 _this2.$emit('item-canceled', _this2.item);
             });
         },
@@ -90905,9 +90898,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     computed: {
@@ -90976,7 +90966,7 @@ var render = function() {
               )
             ]),
             _vm._v(" "),
-            _vm.isCook || _vm.isManager
+            _vm.isCook
               ? _c("li", { staticClass: "nav-item" }, [
                   _c(
                     "a",
@@ -90995,7 +90985,7 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm.isCashier || _vm.isManager
+            _vm.isCashier
               ? _c("li", { staticClass: "nav-item" }, [
                   _c(
                     "a",
@@ -91014,7 +91004,7 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm.isWaiter || _vm.isManager
+            _vm.isWaiter
               ? _c("li", { staticClass: "nav-item" }, [
                   _c(
                     "a",
@@ -91045,25 +91035,6 @@ var render = function() {
                           attrs: { to: "dashboard" }
                         },
                         [_vm._v("Dashboard")]
-                      )
-                    ],
-                    1
-                  )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.isManager
-              ? _c("li", { staticClass: "nav-item" }, [
-                  _c(
-                    "a",
-                    [
-                      _c(
-                        "router-link",
-                        {
-                          staticClass: "nav-item nav-link",
-                          attrs: { to: "tables" }
-                        },
-                        [_vm._v("Tables")]
                       )
                     ],
                     1
@@ -91216,6 +91187,9 @@ module.exports = Component.exports
 //
 //
 //
+//
+//
+//
 
 module.exports = {
     props: ["objects", "meta", "links"],
@@ -91257,6 +91231,26 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
     _c("ul", { staticClass: "pagination" }, [
+      _c(
+        "li",
+        { staticClass: "page-item", class: [{ disabled: !_vm.links.prev }] },
+        [
+          _c(
+            "a",
+            {
+              staticClass: "page-link",
+              attrs: { href: "#" },
+              on: {
+                click: function($event) {
+                  _vm.getObjects(_vm.links.first)
+                }
+              }
+            },
+            [_vm._v("first")]
+          )
+        ]
+      ),
+      _vm._v(" "),
       _c(
         "li",
         { staticClass: "page-item", class: [{ disabled: !_vm.links.prev }] },
@@ -91310,7 +91304,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "li",
-        { staticClass: "page-item", class: [{ disabled: !_vm.links.last }] },
+        { staticClass: "page-item", class: [{ disabled: !_vm.links.next }] },
         [
           _c(
             "a",

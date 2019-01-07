@@ -74,7 +74,7 @@ export default {
                 if(result) {
                     axios.patch('api/item/'+this.item.id, this.item)
                     .then(response=>{
-                        this.item = response.data.data
+                        Object.assign(this.item,  response.data.data)
                         this.$emit('item-saved', this.item)
                     });
                 }
@@ -83,7 +83,7 @@ export default {
         cancelEdit(){
             axios.get('api/item/'+this.item.id)
             .then(response=>{
-                this.item = response.data.data
+                Object.assign(this.item,  response.data.data)
                 this.$emit('item-canceled', this.item)
             });
         },

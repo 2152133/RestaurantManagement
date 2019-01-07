@@ -27,7 +27,7 @@ class OrderController extends Controller
                             ->paginate(5);
 
         // Return collection of orders as a resource
-        return (OrderResource::collection($orders))->response()->setStatusCode(201);
+        return (OrderResource::collection($orders))->response()->setStatusCode(200);
     }
 
     public function inPreparationWhereUser($userId)
@@ -39,7 +39,7 @@ class OrderController extends Controller
                             ->paginate(5);
 
         // Return collection of orders as a resource
-        return (OrderResource::collection($orders))->response()->setStatusCode(201);
+        return (OrderResource::collection($orders))->response()->setStatusCode(200);
     }
 
     public function assignOrderToCook($orderId, $userId)
@@ -51,7 +51,7 @@ class OrderController extends Controller
             $order->responsible_cook_id = $userId;
 
             if ($order->save()) {
-                return (new OrderResource($order))->response()->setStatusCode(201);
+                return (new OrderResource($order))->response()->setStatusCode(200);
             }
         } catch (Exception $e) {
             Debugbar::addThrowable($e);

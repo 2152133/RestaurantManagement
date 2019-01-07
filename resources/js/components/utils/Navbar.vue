@@ -10,20 +10,17 @@
                 <li class="nav-item">
                     <a><router-link class="nav-item nav-link" to="items">Items</router-link></a>
                 </li>
-                <li v-if="isCook || isManager" class="nav-item">
+                <li v-if="isCook" class="nav-item">
                     <a><router-link class="nav-item nav-link" to="orders">Orders</router-link></a>
                 </li>
-                <li v-if="isCashier || isManager" class="nav-item">
+                <li v-if="isCashier" class="nav-item">
                     <a><router-link class="nav-item nav-link" to="invoices">Invoices</router-link></a>
                 </li>
-                <li v-if="isWaiter || isManager" class="nav-item">
+                <li v-if="isWaiter" class="nav-item">
                     <a><router-link class="nav-item nav-link" to="mealsOfWaiter">MyMeals</router-link></a>
                 </li>
                 <li v-if="isAuthenticated" class="nav-item">
                     <a><router-link class="nav-item nav-link" to="dashboard">Dashboard</router-link></a>
-                </li>
-                <li v-if="isManager" class="nav-item">
-                    <a><router-link class="nav-item nav-link" to="tables">Tables</router-link></a>
                 </li>
             </ul>
             <ul class="navbar-nav">

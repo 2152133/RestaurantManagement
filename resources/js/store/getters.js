@@ -14,6 +14,7 @@ export default {
             localStorage.removeItem('token_type')
             localStorage.removeItem('access_token')
             localStorage.removeItem('expiration_time')
+            localStorage.removeItem('user')
             axios.defaults.headers.common.Authorization = undefined;
             return null;
         }

@@ -7,6 +7,7 @@
         <button class="btn btn-primary" @click.prevent="sendManagerMessage">Send Manager message</button>
         <button class="btn btn-dark"><router-link to="profileEdit">Edit Profile</router-link></button>
         <button v-if="isManager" class="btn btn-dark"><router-link to="managerUsers">Users</router-link></button>
+        <button v-if="isManager" class="btn btn-dark"><router-link to="tables">Tables</router-link></button>
         <button v-if="isManager" class="btn btn-dark"><router-link to="managerMeals">Meals</router-link></button>
         <button v-if="isManager" class="btn btn-dark"><router-link to="managerInvoices">Invoices</router-link></button>
         <button v-if="isManager" class="btn btn-dark"><router-link to="statistics">Statistics</router-link></button>

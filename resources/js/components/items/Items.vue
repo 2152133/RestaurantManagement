@@ -47,9 +47,7 @@ export default {
             this.$store.dispatch('loadItems')
         },
         refreshItems(newItems, newMeta, newLinks) {
-            this.$store.commit('refreshItems', {newItems, newMeta, newLinkmessage})
-            this.showSuccess = true
-            this.successMessage = message
+            this.$store.commit('refreshItems', {newItems, newMeta, newLinks})
         },
     },
     computed: {
