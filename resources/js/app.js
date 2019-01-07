@@ -199,8 +199,8 @@ const app = new Vue({
         responsableWaiterMessage_unavailable(destUser_id){
             this.$toasted.error('Waiter "' + destUser_id + '" is not available');       
         },
-        responsableWaiterMessage_sent(dataFromServer){
-            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        responsableWaiterMessage_sent(msg){
+            this.$toasted.success('Message "' + msg + '" was sent to responsable waiter"');
         },
         refresh_waiter_confirmed_orders(){
             this.$store.dispatch('loadMealConfirmedOrders');
@@ -244,6 +244,23 @@ const app = new Vue({
                     }
                 },
             });
+        },
+        new_invoice(msg){
+            this.$toasted.show(msg, {
+                action : {
+                    text : 'Go to Invoices',
+                    onClick : (e, toastObject) => {
+                        this.$router.push("/invoices")
+                        toastObject.goAway(0);
+                    }
+                },
+            });
+        },
+        new_invoice_manager(msg){
+            this.$toasted.show(msg)
+        },
+        invoice_paid_manager(msg){
+            this.$toasted.show(msg)
         },
         refresh_invoices(){
             this.$store.dispatch('loadPendingInvoices');

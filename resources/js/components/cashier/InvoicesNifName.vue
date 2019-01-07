@@ -41,6 +41,7 @@
                                 this.sendInvoicePaid();
                                 this.$router.go(-1);
                                 console.log(response);
+                                this.$socket.emit('meal_paid');
                             })
                         }
                     })

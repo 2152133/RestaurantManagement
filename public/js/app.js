@@ -54356,8 +54356,8 @@ var app = new __WEBPACK_IMPORTED_MODULE_6_vue___default.a({
         responsableWaiterMessage_unavailable: function responsableWaiterMessage_unavailable(destUser_id) {
             this.$toasted.error('Waiter "' + destUser_id + '" is not available');
         },
-        responsableWaiterMessage_sent: function responsableWaiterMessage_sent(dataFromServer) {
-            this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
+        responsableWaiterMessage_sent: function responsableWaiterMessage_sent(msg) {
+            this.$toasted.success('Message "' + msg + '" was sent to responsable waiter"');
         },
         refresh_waiter_confirmed_orders: function refresh_waiter_confirmed_orders() {
             this.$store.dispatch('loadMealConfirmedOrders');
@@ -54406,6 +54406,25 @@ var app = new __WEBPACK_IMPORTED_MODULE_6_vue___default.a({
                     }
                 }
             });
+        },
+        new_invoice: function new_invoice(msg) {
+            var _this5 = this;
+
+            this.$toasted.show(msg, {
+                action: {
+                    text: 'Go to Invoices',
+                    onClick: function onClick(e, toastObject) {
+                        _this5.$router.push("/invoices");
+                        toastObject.goAway(0);
+                    }
+                }
+            });
+        },
+        new_invoice_manager: function new_invoice_manager(msg) {
+            this.$toasted.show(msg);
+        },
+        invoice_paid_manager: function invoice_paid_manager(msg) {
+            this.$toasted.show(msg);
         },
         refresh_invoices: function refresh_invoices() {
             this.$store.dispatch('loadPendingInvoices');
@@ -84582,6 +84601,7 @@ module.exports = {
                         _this.sendInvoicePaid();
                         _this.$router.go(-1);
                         console.log(response);
+                        _this.$socket.emit('meal_paid');
                     });
                 }
             });
