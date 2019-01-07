@@ -102,9 +102,8 @@ class MealController extends Controller
             ->get();
 
 
-        $ordersOfMealDelivered = DB::table('orders')
-            ->where('orders.meal_id', '=', $meal_id)
-            ->where('orders.state', '=', 'delivered')
+        $ordersOfMealDelivered = Order::where('orders.meal_id', $meal_id)
+            ->where('state', 'delivered')
             ->get();
 
         $counterTotalPrice = 0;
@@ -125,21 +124,18 @@ class MealController extends Controller
         ]);
 
         //Ir buscar o invoice ID que acabamos de inserir
-        $createdInvoiceID = DB::table('invoices')
-            ->where('meal_id', '=', $meal_id)
+        $createdInvoiceID = Invoice::where('meal_id', $meal_id)
             ->select('id')
             ->get();
 
         foreach($ordersOfMealDelivered as $order){
 
-            $priceOfItem = DB::table('items')
-            ->where('id', '=', $order->item_id)
+            $priceOfItem = Item::where('id', $order->item_id)
             ->select('price')
             ->get();
 
-            $invoiceItemIfExists = DB::table('invoice_items')
-            ->where('invoice_id', '=', $createdInvoiceID->pluck("id")[0])
-            ->where('item_id', '=', $order->item_id)
+            $invoiceItemIfExists = InvoiceItems::where('invoice_id', $createdInvoiceID->pluck("id")[0])
+            ->where('item_id', $order->item_id)
             ->get();
 
             //dd($invoiceItemIfExists->pluck("items"));
@@ -157,8 +153,7 @@ class MealController extends Controller
             else{
                 
 
-                DB::table('invoice_items')
-                ->where('invoice_id', '=', $invoiceItemIfExists->pluck("invoice_id")[0])
+                InvoiceItems::where('invoice_id', $invoiceItemIfExists->pluck("invoice_id")[0])
                 ->update([
                     'quantity' => $invoiceItemIfExists->pluck("quantity")[0] + 1,
                     'sub_total_price' => (($invoiceItemIfExists->pluck("quantity")[0]) + 1) *  ($invoiceItemIfExists->pluck("unit_price")[0])
@@ -166,8 +161,7 @@ class MealController extends Controller
             }
         }
 
-        DB::table('meals')
-            ->where('id', '=', $meal_id)
+        Meal::where('id', $meal_id)
             ->update(['end' => date('Y-m-d H:i:s'),
                 'state' => 'terminated',
                 'total_price_preview' => $counterTotalPrice

@@ -1,18 +1,14 @@
 <template>
     <div>
         <div class="jumbotron">
-            <h1>{{title}}</h1>
+            <h1>List Orders</h1>
         </div>
-        
+
         <orders-list :orders="inPreparationUserOrders" :meta="inPreparationUserOrdersMeta" :links="inPreparationUserOrdersLinks" @refreshOrders="refreshInPreparationUserOrders"></orders-list>
         
         <orders-list :orders="confirmedOrders" :meta="confirmedOrdersMeta" :links="confirmedOrdersLinks" @refreshOrders="refreshConfirmedOrders" ></orders-list>
             
-        <div class="alert" :class="{'alert-success':showSuccess, 'alert-danger':showFailure}" v-if="showSuccess || showFailure">
-            <button type="button" @click="showSuccess = false; showFailure = false;" class="close-btn" >&times;</button>
-            <strong>@{{successMessage}}</strong>
-            <strong>@{{failMessage}}</strong>
-        </div>
+        
         
     </div>         
 </template>
@@ -21,11 +17,7 @@
     module.exports = {
         data: function() {
             return {
-                title: 'List Orders',   
-                showSuccess: false,
-                showFailure: false,
-                successMessage: '',
-                failMessage: '',
+  
             }
         },
         methods: {
@@ -62,9 +54,6 @@
             inPreparationUserOrdersLinks(){
                 return this.$store.getters.inPreparationUserOrdersLinks;
             },
-            currentOrder(){
-                return this.$store.getters.currentOrder;
-            }
         },
         mounted() {
             this.loadConfirmedOrders();

@@ -54325,14 +54325,6 @@ var app = new __WEBPACK_IMPORTED_MODULE_6_vue___default.a({
         cookMessage_sent: function cookMessage_sent(dataFromServer) {
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
         },
-        refresh_orders_assignment_update: function refresh_orders_assignment_update(dataFromServer) {
-            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
-            this.$store.dispatch('loadConfirmedOrders');
-        },
-        refresh_prepared_orders: function refresh_prepared_orders(order) {
-            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
-            this.$store.dispatch('loadConfirmedOrders');
-        },
         refresh_cook_orders: function refresh_cook_orders() {
             this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
             this.$store.dispatch('loadConfirmedOrders');
@@ -76667,69 +76659,69 @@ module.exports = function spread(callback) {
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
 
 /* harmony default export */ __webpack_exports__["a"] = (new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
-    state: {
-        user: {},
-        tokenType: "",
-        token: "",
-        expiration: 0,
+        state: {
+                user: {},
+                tokenType: "",
+                token: "",
+                expiration: 0,
 
-        //--------------Orders-------------------------
-        confirmedOrders: [],
-        confirmedOrdersMeta: [],
-        confirmedOrdersLinks: [],
-        inPreparationUserOrders: [],
-        inPreparationUserOrdersMeta: [],
-        inPreparationUserOrdersLinks: [],
-        currentOrder: {},
+                //--------------Orders-------------------------
+                confirmedOrders: [],
+                confirmedOrdersMeta: [],
+                confirmedOrdersLinks: [],
+                inPreparationUserOrders: [],
+                inPreparationUserOrdersMeta: [],
+                inPreparationUserOrdersLinks: [],
+                currentOrder: {},
 
-        //----------------Invoices----------------------
-        currentInvoice: {},
-        pendingInvoices: [],
-        pendingInvoicesMeta: [],
-        pendingInvoicesLinks: [],
-        paidInvoices: [],
-        paidInvoicesMeta: [],
-        paidInvoicesLinks: [],
-        editingNifName: false,
-        viewingDetails: false,
+                //----------------Invoices----------------------
+                currentInvoice: {},
+                pendingInvoices: [],
+                pendingInvoicesMeta: [],
+                pendingInvoicesLinks: [],
+                paidInvoices: [],
+                paidInvoicesMeta: [],
+                paidInvoicesLinks: [],
+                editingNifName: false,
+                viewingDetails: false,
 
-        //-----------------Meals------------------------
-        userMeals: [],
-        userMealsMeta: [],
-        userMealsLinks: [],
-        currentMeal: {},
-        allMealOrders: [],
-        pendingMealOrders: [],
-        pendingMealOrdersMeta: [],
-        pendingMealOrdersLinks: [],
-        confirmedMealOrders: [],
-        confirmedMealOrdersMeta: [],
-        confirmedMealOrdersLinks: [],
-        preparedMealOrders: [],
-        preparedMealOrdersMeta: [],
-        preparedMealOrdersLinks: [],
-        notDeliveredOrdersOfMeal: [],
-        allItems: [],
-        mealDetails: [],
-        currentMealOrder: {},
-        counter: 0,
+                //-----------------Meals------------------------
+                userMeals: [],
+                userMealsMeta: [],
+                userMealsLinks: [],
+                currentMeal: {},
+                allMealOrders: [],
+                pendingMealOrders: [],
+                pendingMealOrdersMeta: [],
+                pendingMealOrdersLinks: [],
+                confirmedMealOrders: [],
+                confirmedMealOrdersMeta: [],
+                confirmedMealOrdersLinks: [],
+                preparedMealOrders: [],
+                preparedMealOrdersMeta: [],
+                preparedMealOrdersLinks: [],
+                notDeliveredOrdersOfMeal: [],
+                allItems: [],
+                mealDetails: [],
+                currentMealOrder: {},
+                counter: 0,
 
-        //---------------Management---------------------
-        tables: [],
-        currentTable: {},
-        tablesMeta: {},
-        tablesLinks: {},
-        editingTable: false,
-        creatingTable: false,
-        currentItem: null,
-        items: [],
-        itemsMeta: [],
-        itemsLinks: []
+                //---------------Management---------------------
+                tables: [],
+                currentTable: {},
+                tablesMeta: {},
+                tablesLinks: {},
+                editingTable: false,
+                creatingTable: false,
+                currentItem: null,
+                items: [],
+                itemsMeta: [],
+                itemsLinks: []
 
-    },
-    getters: __WEBPACK_IMPORTED_MODULE_2__getters__["a" /* default */],
-    mutations: __WEBPACK_IMPORTED_MODULE_3__mutations__["a" /* default */],
-    actions: __WEBPACK_IMPORTED_MODULE_4__actions__["a" /* default */]
+        },
+        getters: __WEBPACK_IMPORTED_MODULE_2__getters__["a" /* default */],
+        mutations: __WEBPACK_IMPORTED_MODULE_3__mutations__["a" /* default */],
+        actions: __WEBPACK_IMPORTED_MODULE_4__actions__["a" /* default */]
 }));
 
 /***/ }),
@@ -82719,9 +82711,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82752,7 +82744,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Dish\n            "),
+        _vm._v(" Dish\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -82773,7 +82765,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Drink\n            "),
+        _vm._v(" Drink\r\n            "),
         _c(
           "div",
           {
@@ -82789,9 +82781,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("type")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82850,9 +82842,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("description")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82910,9 +82902,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("price")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -82948,9 +82940,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("image")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -83256,9 +83248,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -83289,7 +83281,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Dish\n            "),
+        _vm._v(" Dish\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -83310,7 +83302,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Drink\n            "),
+        _vm._v(" Drink\r\n            "),
         _c(
           "div",
           {
@@ -83326,9 +83318,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("type")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -83387,9 +83379,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("description")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -83447,9 +83439,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("price")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -83485,9 +83477,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("image")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -83603,20 +83595,10 @@ module.exports = Component.exports
 //
 //
 //
-//
-//
-//
-//
 
 module.exports = {
     data: function data() {
-        return {
-            title: 'List Orders',
-            showSuccess: false,
-            showFailure: false,
-            successMessage: '',
-            failMessage: ''
-        };
+        return {};
     },
     methods: {
         loadInPreparationUserOrders: function loadInPreparationUserOrders() {
@@ -83650,9 +83632,6 @@ module.exports = {
         },
         inPreparationUserOrdersLinks: function inPreparationUserOrdersLinks() {
             return this.$store.getters.inPreparationUserOrdersLinks;
-        },
-        currentOrder: function currentOrder() {
-            return this.$store.getters.currentOrder;
         }
     },
     mounted: function mounted() {
@@ -83672,9 +83651,7 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("div", { staticClass: "jumbotron" }, [
-        _c("h1", [_vm._v(_vm._s(_vm.title))])
-      ]),
+      _vm._m(0),
       _vm._v(" "),
       _c("orders-list", {
         attrs: {
@@ -83692,45 +83669,21 @@ var render = function() {
           links: _vm.confirmedOrdersLinks
         },
         on: { refreshOrders: _vm.refreshConfirmedOrders }
-      }),
-      _vm._v(" "),
-      _vm.showSuccess || _vm.showFailure
-        ? _c(
-            "div",
-            {
-              staticClass: "alert",
-              class: {
-                "alert-success": _vm.showSuccess,
-                "alert-danger": _vm.showFailure
-              }
-            },
-            [
-              _c(
-                "button",
-                {
-                  staticClass: "close-btn",
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      _vm.showSuccess = false
-                      _vm.showFailure = false
-                    }
-                  }
-                },
-                [_vm._v("×")]
-              ),
-              _vm._v(" "),
-              _c("strong", [_vm._v("@" + _vm._s(_vm.successMessage))]),
-              _vm._v(" "),
-              _c("strong", [_vm._v("@" + _vm._s(_vm.failMessage))])
-            ]
-          )
-        : _vm._e()
+      })
     ],
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "jumbotron" }, [
+      _c("h1", [_vm._v("List Orders")])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -83840,22 +83793,6 @@ module.exports = Component.exports
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 module.exports = {
   props: ["orders", "meta", "links"],
@@ -83873,8 +83810,7 @@ module.exports = {
       });
     },
     sendOrderAssignment: function sendOrderAssignment() {
-      this.$socket.emit('order_assignment_update', { order: this.$store.getters.currentOrder, user: this.$store.getters.getAuthUser });
-      this.$store.commit('setCurrentOrder', {});
+      this.$socket.emit('order_assignment_update');
     },
     declareOrderAsPrepared: function declareOrderAsPrepared(order, index) {
       var _this2 = this;
@@ -83959,7 +83895,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("\n                Assign to me\n            ")]
+                        [_vm._v("\n              Assign to me\n            ")]
                       )
                     ])
                   : _vm._e(),
@@ -83976,7 +83912,7 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v("\n              Prepared\n          ")]
+                      [_vm._v("\n            Prepared\n          ")]
                     )
                   : _vm._e(),
                 _vm._v(" "),
@@ -83997,7 +83933,7 @@ var render = function() {
                             },
                             [
                               _vm._v(
-                                "\n                Delete Order\n            "
+                                "\n              Delete Order\n            "
                               )
                             ]
                           )
@@ -84021,7 +83957,7 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                Mark as Delivered\n            "
+                            "\n              Mark as Delivered\n            "
                           )
                         ]
                       )
@@ -84800,7 +84736,7 @@ var content = __webpack_require__(180);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(182)("80d289ce", content, false, {});
+var update = __webpack_require__(182)("43c06ff3", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -87868,9 +87804,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -87927,9 +87863,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("username")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -87960,7 +87896,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cook\n            "),
+        _vm._v(" Cook\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -87981,7 +87917,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Waiter\n            "),
+        _vm._v(" Waiter\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -88002,7 +87938,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cashier\n            "),
+        _vm._v(" Cashier\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -88023,7 +87959,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Manager\n            "),
+        _vm._v(" Manager\r\n            "),
         _c(
           "div",
           {
@@ -88039,9 +87975,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("role")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88098,9 +88034,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("email")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88850,9 +88786,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("name")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88909,9 +88845,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("username")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -88942,7 +88878,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cook\n            "),
+        _vm._v(" Cook\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -88963,7 +88899,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Waiter\n            "),
+        _vm._v(" Waiter\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -88984,7 +88920,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Cashier\n            "),
+        _vm._v(" Cashier\r\n            "),
         _c("br"),
         _vm._v(" "),
         _c("input", {
@@ -89005,7 +88941,7 @@ var render = function() {
             }
           }
         }),
-        _vm._v(" Manager\n            "),
+        _vm._v(" Manager\r\n            "),
         _c(
           "div",
           {
@@ -89021,9 +88957,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("role")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )
@@ -89080,9 +89016,9 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n                " +
+              "\r\n                " +
                 _vm._s(_vm.errors.first("email")) +
-                "\n            "
+                "\r\n            "
             )
           ]
         )

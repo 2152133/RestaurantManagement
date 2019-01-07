@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Order as OrderResource;
 use App\Order;
+use App\Item;
+use App\Meal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 
 class OrderController extends Controller
 {
@@ -19,6 +22,7 @@ class OrderController extends Controller
         
     }
 
+    //--------------------------------------Cooks-------------------------------------------------
     public function allConfirmed()
     {
         // Get orders
@@ -27,7 +31,7 @@ class OrderController extends Controller
                             ->paginate(5);
 
         // Return collection of orders as a resource
-        return (OrderResource::collection($orders))->response()->setStatusCode(201);
+        return (OrderResource::collection($orders))->response()->setStatusCode(200);
     }
 
     public function inPreparationWhereUser($userId)
@@ -39,7 +43,7 @@ class OrderController extends Controller
                             ->paginate(5);
 
         // Return collection of orders as a resource
-        return (OrderResource::collection($orders))->response()->setStatusCode(201);
+        return (OrderResource::collection($orders))->response()->setStatusCode(200);
     }
 
     public function assignOrderToCook($orderId, $userId)
@@ -51,7 +55,7 @@ class OrderController extends Controller
             $order->responsible_cook_id = $userId;
 
             if ($order->save()) {
-                return (new OrderResource($order))->response()->setStatusCode(201);
+                return (new OrderResource($order))->response()->setStatusCode(200);
             }
         } catch (Exception $e) {
             Debugbar::addThrowable($e);
@@ -76,6 +80,9 @@ class OrderController extends Controller
         }
     }
 
+
+    //------------------------------------Waiters----------------------------------------------
+
     public function getConfirmedOrdersForMeal($meal_id)
     {
         $confirmedOrdersOfMeal = Order::where('meal_id', $meal_id)
@@ -97,21 +104,18 @@ class OrderController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
-        $priceOfItem = DB::table('items')
-            ->where('id', '=', $item_id)
+        $priceOfItem = Item::where('id', $item_id)
             ->select('price')
             ->get();
         $p = $priceOfItem->pluck("price")[0];
-
-        $current_meal_price = DB::table('meals')
-            ->where('id', '=', $meal_number)
+        
+        $current_meal_price = Meal::where('id', $meal_number)
             ->select('total_price_preview')
             ->get();
 
         $cp = $current_meal_price->pluck("total_price_preview")[0];
 
-        DB::table('meals')
-            ->where('id', '=', $meal_number)
+        Meal::where('id', $meal_number)
             ->update(['total_price_preview' => $p + $cp]);
     }
 
@@ -123,16 +127,14 @@ class OrderController extends Controller
     }
 
     public function markPreparedOrderAsDelivered($order_id){
-        DB::table('orders')
-            ->where('id', '=', $order_id)
+        Order::where('id', '=', $order_id)
             ->update(['state' => 'delivered',
                       'end' => date('Y-m-d H:i:s'),
                       'updated_at' => date('Y-m-d H:i:s')]);
     }
 
     public function getAllMealDetails($meal_id){
-        $allOrders = DB::table('orders')
-            ->join('meals', 'meals.id', '=', 'orders.meal_id')
+        $allOrders = DB::join('meals', 'meals.id', '=', 'orders.meal_id')
             ->join('items', 'orders.item_id', '=', 'items.id')
             ->where('meals.id', '=', $meal_id)
             ->select('meals.table_number', 'meals.total_price_preview', 'items.name', 'items.price', 'orders.id', 'orders.meal_id')
@@ -141,16 +143,14 @@ class OrderController extends Controller
     }
 
     public function getAllOrdersForMeal($meal_id){
-        $allOrders = DB::table('orders')
-                    ->where('orders.meal_id', '=', $meal_id)
+        $allOrders = Order::where('meal_id', $meal_id)
                     ->paginate(30);
         return response()->json($allOrders, 200);
     }
 
     public function getNotDeliveredOrdersOfMeal($meal_id){
-        $notDeliveredMealOrders = DB::table('orders')
-                            ->where('orders.meal_id', '=', $meal_id)
-                            ->where('orders.state', '!=', 'delivered')
+        $notDeliveredMealOrders = Order::where('meal_id', $meal_id)
+                            ->where('state', '!=', 'delivered')
                             ->get();
         return $notDeliveredMealOrders;
     }

@@ -170,15 +170,6 @@ const app = new Vue({
         cookMessage_sent(dataFromServer){
             this.$toasted.success('Message "' + dataFromServer[0] + '" was sent to "' + dataFromServer[1].name + '"');
         },
-        refresh_orders_assignment_update(dataFromServer){
-            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
-            this.$store.dispatch('loadConfirmedOrders');
-            
-        },
-        refresh_prepared_orders(order){
-            this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
-            this.$store.dispatch('loadConfirmedOrders');
-        },
         refresh_cook_orders(){
             this.$store.dispatch('loadInPreparationUserOrders', this.$store.getters.getAuthUser.id);
             this.$store.dispatch('loadConfirmedOrders');
